@@ -29,11 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.motors.GoBILDA5202Series;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -65,9 +62,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Basic: Omni Linear OpMode", group="Linear OpMode")
+@Autonomous(name="Blue_2", group="Linear OpMode")
 //@Disabled
-public class BasicOmniOpMode_Linear extends LinearOpMode {
+public class Blue_2 extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -126,10 +123,10 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         }
 
         // Step 2:  Turn 90
-        lfmotor0.setPower(FORWARD_SPEED);
-        rfmotor2.setPower(-FORWARD_SPEED);
-        lbmotor1.setPower(FORWARD_SPEED);
-        rbmotor3.setPower(-FORWARD_SPEED);
+        lfmotor0.setPower(-FORWARD_SPEED);
+        rfmotor2.setPower(FORWARD_SPEED);
+        lbmotor1.setPower(-FORWARD_SPEED);
+        rbmotor3.setPower(FORWARD_SPEED);
         runtime.reset();
 
 
