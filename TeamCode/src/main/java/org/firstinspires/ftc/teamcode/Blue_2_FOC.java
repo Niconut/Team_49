@@ -29,10 +29,13 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.arcrobotics.ftclib.controller.PIDController;
 
 /*
  * This file contains an example of a Linear "OpMode".
@@ -62,9 +65,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Blue_1", group="Linear OpMode")
+@TeleOp(name="Blue_2_FOC", group="Linear OpMode")
 //@Disabled
-public class Blue_1 extends LinearOpMode {
+public class Blue_2_FOC extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -72,10 +75,39 @@ public class Blue_1 extends LinearOpMode {
     private DcMotor lbmotor1 = null;
     private DcMotor rfmotor2 = null;
     private DcMotor rbmotor3 = null;
-
-
+    private DcMotor armMotor = null;
+    private DcMotor wristMotor = null;
+    private Servo gripperRight = null;
+    private Servo gripperLeft = null;
+    private int armDownTargetPosition = 0;
+    private int armUpTargetPosition = 8000;
+    private int armStartPosition = 0;
+    private int armCurrentPosition = 0;
+    private int wristCurrentPosition=0;
+    private int wristStartPosition=0;
+    private int wristUpTargetPosition=0;
+    private int wristDownTargetPosition=-2200;
+    private int gripperleft_Open=0;
+    private int gripperleft_Close=0;
+    private int gripperleftCurrentPosition=0;
+    private double gripperLeftClosedPosition = 0.425;
+    private double gripperRightClosedPosition = 0.6;
+    private double gripperLeftOpenPosition = 0.6;
+    private double gripperRightOpenPosition = 0.45;
     static final double     FORWARD_SPEED = 0.2;
     static final double     TURN_SPEED    = 0.5;
+
+    static final double     ARM_UP_SPEED   = 1.0;
+    static final double     ARM_DOWN_SPEED   = 0.3;
+    static final double     WRIST_UP_SPEED = 0.4;
+    static final double     WRIST_DOWN_SPEED = 0.4;
+    static final double     GRIPPER_SPEED = 0.1;
+    double arm_move_power =  0;
+    double wrist_move_power = 0;
+    double gripper_move_power = 0;
+    double kP = 0;
+    double kD = 0;
+    double kI = 0;
 
     @Override
     public void runOpMode() {
@@ -87,6 +119,31 @@ public class Blue_1 extends LinearOpMode {
         rfmotor2 = hardwareMap.get(DcMotor.class, "rfmotor2");
         rbmotor3 = hardwareMap.get(DcMotor.class, "rbmotor3");
 
+        armMotor = hardwareMap.get(DcMotor.class, "armMotor");
+        wristMotor = hardwareMap.get(DcMotor.class, "wristMotor");
+        gripperLeft = hardwareMap.get(Servo.class, "gripperLeft");
+        gripperRight = hardwareMap.get(Servo.class, "gripperRight");
+
+        gripperLeft.setDirection(Servo.Direction.FORWARD);
+        gripperRight.setDirection(Servo.Direction.FORWARD);
+
+        armMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // Using our own PIDF, RUN_WITHOUT_ENCODER
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armStartPosition = armMotor.getCurrentPosition();
+
+        wristMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        wristMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // Using our own PIDF, RUN_WITHOUT_ENCODER
+        wristMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        wristStartPosition = wristMotor.getCurrentPosition();
+
+                // Using our own PIDF, RUN_WITHOUT_ENCODER
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
         // ########################################################################################
@@ -102,6 +159,9 @@ public class Blue_1 extends LinearOpMode {
         rfmotor2.setDirection(DcMotor.Direction.FORWARD);
         rbmotor3.setDirection(DcMotor.Direction.FORWARD);
 
+        // Creates a PIDFController with gains kP, kI, kD, and kF
+        PIDController wristPID = new PIDController(kP, kI, kD);
+
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -109,18 +169,7 @@ public class Blue_1 extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        lfmotor0.setPower(FORWARD_SPEED);
-        rfmotor2.setPower(-FORWARD_SPEED);
-        lbmotor1.setPower(-FORWARD_SPEED);
-        rbmotor3.setPower(FORWARD_SPEED);
-        runtime.reset();
-
-
-        while (opModeIsActive() && (runtime.seconds() < 1.0)) {
-            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-        // Step 1:  Drive forward for 3 seconds
+        /* Step 1:  Drive forward for 3 seconds
         lfmotor0.setPower(FORWARD_SPEED);
         rfmotor2.setPower(FORWARD_SPEED);
         lbmotor1.setPower(FORWARD_SPEED);
@@ -132,13 +181,46 @@ public class Blue_1 extends LinearOpMode {
             telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
+
+        // Step 2:  Turn 90
+        lfmotor0.setPower(-FORWARD_SPEED);
+        rfmotor2.setPower(FORWARD_SPEED);
+        lbmotor1.setPower(-FORWARD_SPEED);
+        rbmotor3.setPower(FORWARD_SPEED);
+        runtime.reset();
+
+
+        while (opModeIsActive() && (runtime.seconds() < 3.0)) {
+            telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+
+        // Step 1:  Drive forward for 11 seconds
+        lfmotor0.setPower(FORWARD_SPEED);
+        rfmotor2.setPower(FORWARD_SPEED);
+        lbmotor1.setPower(FORWARD_SPEED);
+        rbmotor3.setPower(FORWARD_SPEED);
+        runtime.reset();
+
+
+        while (opModeIsActive() && (runtime.seconds() < 10.0)) {
+            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        } */
+
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             double max;
+
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral =  gamepad1.left_stick_x;
             double yaw     =  gamepad1.right_stick_x;
+            double arm_move = -gamepad2.left_stick_y;
+            double wrist_move = -gamepad2.right_stick_y;
+            //double gripperleft_move = gamepad2.right_stick_x;
+            //double gripperight_move = gamepad2.left_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
@@ -183,10 +265,76 @@ public class Blue_1 extends LinearOpMode {
             lbmotor1.setPower(leftBackPower);
             rbmotor3.setPower(rightBackPower);
 
+            if (gamepad2.left_bumper)
+            {
+                gripperLeft.setPosition(gripperLeftOpenPosition );
+            } else
+            {
+                gripperLeft.setPosition(gripperLeftClosedPosition);
+            }
+
+            if (gamepad2.right_bumper)
+            {
+                gripperRight.setPosition(gripperRightOpenPosition );
+            } else
+            {
+                gripperRight.setPosition(gripperRightClosedPosition);
+            }
+
+            armCurrentPosition = armMotor.getCurrentPosition();
+            wristCurrentPosition = wristMotor.getCurrentPosition();
+
+            if ((arm_move > 0) && (armCurrentPosition < armUpTargetPosition))
+            {
+                arm_move_power = arm_move * ARM_UP_SPEED;
+                armMotor.setTargetPosition(armUpTargetPosition);
+                armMotor.setPower(arm_move_power);
+            } else if ((arm_move < 0) && (armCurrentPosition > armDownTargetPosition))
+            {
+                arm_move_power = arm_move * ARM_DOWN_SPEED;
+                armMotor.setTargetPosition(armDownTargetPosition);
+                armMotor.setPower(arm_move_power);
+            } else
+            {
+                armMotor.setPower(0);
+            }
+
+
+            if ((wrist_move > 0) && (wristCurrentPosition < wristUpTargetPosition))
+            //if (wrist_move > 0)
+            {
+                wrist_move_power = wrist_move * WRIST_UP_SPEED;
+                wristMotor.setTargetPosition(wristUpTargetPosition);
+                wristMotor.setPower(wrist_move_power);
+            }
+            else if ((wrist_move < 0) && (wristCurrentPosition > wristDownTargetPosition))
+            //else if (wrist_move < 0)
+            {
+                wrist_move_power = wrist_move * WRIST_DOWN_SPEED;
+                wristMotor.setTargetPosition(wristDownTargetPosition);
+                wristMotor.setPower(wrist_move_power);
+            } else
+            {
+                wristMotor.setPower(0);
+            }
+
+            wristPID.setSetPoint(wristDownTargetPosition);
+
+            while (!wristPID.atSetPoint()) {
+                double output = wristPID.calculate(
+                        wristMotor.getCurrentPosition()
+                );
+                wristMotor.setPower(output);
+            }
+            wristMotor.setPower(0); // stop the motor
+
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
+            telemetry.addData("Current Arm Position", "%4d,", armCurrentPosition );
+            telemetry.addData("Current Wrist Position", "%4d", wristCurrentPosition);
+           // telemetry.addData("Gripper Left Command", "%4.2f", gripperleft_move);
             telemetry.update();
         }
     }}
