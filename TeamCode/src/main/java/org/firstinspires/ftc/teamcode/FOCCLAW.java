@@ -48,15 +48,15 @@ public class FOCCLAW extends LinearOpMode {
     private DcMotor wristMotor = null;
     private Servo gripperRight = null;
     private Servo gripperLeft = null;
-    private int armDownTargetPosition = 0;
-    private int armUpTargetPosition = 8000;
+    private int armDownTargetPosition = 100;
+    private int armUpTargetPosition = 11500;
     private int armStartPosition = 0;
     private int armCurrentPosition = 0;
     private int wristCurrentPosition = 0;
     private int wristStartPosition = 0;
     private int wristUpTargetPosition = 0;
-    private int wristScoreTargetPosition = -500;
-    private int wristDownTargetPosition = -2200;
+    private int wristScoreTargetPosition = -400;
+    private int wristDownTargetPosition = -2300;
     private int gripperleft_Open = 0;
     private int gripperleft_Close = 0;
     private int gripperleftCurrentPosition = 0;
@@ -82,6 +82,7 @@ public class FOCCLAW extends LinearOpMode {
     double armkI = 0;
     double wristPower = 0;
     double armPower = 0;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -215,7 +216,7 @@ public class FOCCLAW extends LinearOpMode {
             }
             */
 
-
+/*
             if ((wrist_move > 0) && (wristCurrentPosition < wristUpTargetPosition))
             //if (wrist_move > 0)
             {
@@ -232,7 +233,7 @@ public class FOCCLAW extends LinearOpMode {
             } else
             {
                 wristMotor.setPower(0);
-            }
+            }*/
 
             /*
             if (gamepad2.a && (armCurrentPosition < 3000))
@@ -302,7 +303,11 @@ public class FOCCLAW extends LinearOpMode {
                 armCurrentPosition = armMotor.getCurrentPosition();
                 armPID.setSetPoint(armCurrentPosition + (50 * arm_move));
             }
-
+            if(!(wrist_move == 0))
+            {
+                wristCurrentPosition = wristMotor.getCurrentPosition();
+                wristPID.setSetPoint(wristCurrentPosition + (50 * wrist_move));
+            }
             if(gamepad2.a)
             {
                 wristPID.setSetPoint(wristDownTargetPosition);
