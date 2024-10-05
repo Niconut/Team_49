@@ -30,13 +30,20 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Pincer;
 import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
@@ -72,8 +79,11 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 public class Teleop extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
+    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private ElapsedTime runtime = new ElapsedTime();
-    private static Intake Intake= null;
+    private static Intake Intake = null;
+    private static Pincer Pincer = null;
+    private static IMU imu = null;
     private static Arm arm1 = null;
     private static Wrist wrist = null;
     public static double armkP = 0.01;
@@ -92,11 +102,16 @@ public class Teleop extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Intake = new Intake(hardwareMap);
+        leftFront = hardwareMap.get(DcMotorEx.class, "lfmotor0");
+        leftRear = hardwareMap.get(DcMotorEx.class, "lbmotor1");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rbmotor3");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rfmotor2");
         arm1 = new Arm(hardwareMap);
         wrist = new Wrist(hardwareMap);
+        Pincer = new Pincer(hardwareMap);
 
+        leftFront.setDirection(DcMotorEx.Direction.REVERSE);
+        leftRear.setDirection(DcMotorEx.Direction.REVERSE);
         /*PIDController armPID = new PIDController(armkP, armkI, armkD);
         armPID.setTolerance(50, 10);*/
 
@@ -104,8 +119,10 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        intake_roller_position = 0;
-
+        imu = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                DriveConstants.LOGO_FACING_DIR, DriveConstants.USB_FACING_DIR));
+        imu.initialize(parameters);
 
         waitForStart();
         runtime.reset();
@@ -114,26 +131,27 @@ public class Teleop extends LinearOpMode {
         while (opModeIsActive()) {
             double max;
 
-            drive.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad1.left_stick_y * DriveScale,
-                            -gamepad1.left_stick_x * DriveScale,
-                            -gamepad1.right_stick_x * DriveScale
-                    )
-            );
+            double y = -gamepad1.left_stick_y; // Remember, Y stick is reversed!
+            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
+            double rx = gamepad1.right_stick_x;
 
-            drive.update();
 
-            wrist.setPosition(gamepad2.left_bumper? .3 : .66);
-
-            if (gamepad2.a){
-                Intake.setPower(0.9);
-            } else if(gamepad2.y){
-                Intake.setPower(-0.9);
-            } else {
-                Intake.setPower(0);
+            if (gamepad1.options) {
+                imu.resetYaw();
             }
 
+            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+            double frontLeftPower = (rotY + rotX + rx) / denominator;
+            double backLeftPower = (rotY - rotX + rx) / denominator;
+            double frontRightPower = (rotY - rotX - rx) / denominator;
+            double backRightPower = (rotY + rotX - rx) / denominator;
+
+            wrist.setPosition(gamepad2.left_bumper? .3 : .1);
+            Pincer.setPosition(gamepad2.right_bumper? .3: .1);
             /*if(!(arm_move == 0))
             {
                 armCurrentPosition = arm1.getCurrentPosition();
@@ -158,11 +176,13 @@ public class Teleop extends LinearOpMode {
 
             arm1.setPower1(gamepad2.left_stick_y);
 
+            leftFront.setPower(frontLeftPower*DriveScale);
+            leftRear.setPower(backLeftPower*DriveScale);
+            rightFront.setPower(frontRightPower*DriveScale);
+            rightRear.setPower(backRightPower*DriveScale);
+
             // Show the elapsed game time and wheel power.
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.addData("Power", "Wheels", frontLeftPower, backLeftPower, frontRightPower, backRightPower);
             telemetry.addData("ArmPos1", arm1.getCurrentPosition());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
