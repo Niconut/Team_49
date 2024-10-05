@@ -93,7 +93,7 @@ public class Teleop extends LinearOpMode {
     private static int newArmPosition = 0;
     public static double arm_move = 0;
     public static int armRotateScale = 200;
-    private static double driveSlowScale = 0.5;
+    private static double driveSlowScale = 0.2;
     private static double DriveScale = 1;
     private static double wrist_move = 0;
     private static double intake_spin = 0;
@@ -151,7 +151,7 @@ public class Teleop extends LinearOpMode {
             double backRightPower = (rotY + rotX - rx) / denominator;
 
             wrist.setPosition(gamepad2.left_bumper? .3 : .1);
-            Pincer.setPosition(gamepad2.right_bumper? .3: .1);
+            Pincer.setPosition(gamepad2.right_bumper? .8: .62);
             /*if(!(arm_move == 0))
             {
                 armCurrentPosition = arm1.getCurrentPosition();
