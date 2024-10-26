@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Intake_Touch;
 import org.firstinspires.ftc.teamcode.subsystems.Limit_Switch;
 import org.firstinspires.ftc.teamcode.subsystems.Park_Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Gripper;
@@ -77,6 +78,7 @@ public class Teleop extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private static Intake IntakeLeft = null;
     private static Intake IntakeRight = null;
+    private static Intake_Touch Intake_Touch  = null;
     private static Viper_Slide Viper_Slide1;
     private static Viper_Slide Viper_Slide2;
     private static Gripper gripper = null;
@@ -97,7 +99,7 @@ public class Teleop extends LinearOpMode {
     public static double viperSlidePositionLowRung = -800;
     public static double viperSlidePositionHighRung = -1600;
     public static double viperSlidePositionHighBasket = -2400;
-    public static int armRotateScale = 200;
+    public static int viperRotateScale = 200;
     private static double driveSlowScale = 0.5;
     private static double DriveScale = 1;
     private static double viper_Power = 0;
@@ -116,6 +118,7 @@ public class Teleop extends LinearOpMode {
         Viper_Slide1 = new Viper_Slide(hardwareMap);
         Viper_Slide2 = new Viper_Slide(hardwareMap);
         gripper = new Gripper(hardwareMap);
+        Intake_Touch = new Intake_Touch(hardwareMap);
 
         PIDController viper_SlidePID = new PIDController(viperkP, viperkI, viperkD);
         viper_SlidePID.setTolerance(10, 10);
@@ -146,13 +149,28 @@ public class Teleop extends LinearOpMode {
             double viper_move = gamepad2.left_stick_y;
             gripper.setPosition(gamepad2.left_bumper? 0.35 : 0.6);
 
-            if (viper_move != 0){
+            if(!(viper_move == 0))
+            {
+                viper_Current_Position = Viper_Slide1.getCurrentPosition();
+                if(viper_move < 0){
+                    viperRotateScale = 10 + (armCurrentPosition / 15);
+                    viperRotateScale = viperRotateScale < 0? 50 : viperRotateScale;
+                }
+                viperRotateScale = 50
+                ;
+                newArmPosition = (int) (armCurrentPosition + (viperRotateScale * viper_move));
+                viper_SlidePID.setSetPoint(newArmPosition);
+            }
+
+           /* if (viper_move != 0){
                 Viper_Slide1.setPower1(viper_move);
                 Viper_Slide2.setPower2(viper_move);
-            }
+            }*/
             if (gamepad2.b){
-                IntakeRight.setPower1(0.7);
-                IntakeLeft.setPower2(0.7);
+              while(Intake_Touch.getState()) {
+                  IntakeRight.setPower1(0.7);
+                  IntakeLeft.setPower2(0.7);
+              }
             } else if(gamepad2.x){
                 IntakeRight.setPower1(-0.7);
                 IntakeLeft.setPower2(-0.7);
@@ -199,6 +217,7 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("WristOrientation", wristOrientation);
             telemetry.addData("ViperSlideCurrentPosition", Viper_Slide1.getCurrentPosition());
+            telemetry.addData("Touch Sensor State", Intake_Touch.getState());
 
             telemetry.update();
         }
