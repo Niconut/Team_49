@@ -35,10 +35,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.subsystems.Arm;
+import org.firstinspires.ftc.teamcode.subsystems.Basket;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Intake_Touch;
-import org.firstinspires.ftc.teamcode.subsystems.Limit_Switch;
-import org.firstinspires.ftc.teamcode.subsystems.Park_Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Gripper;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Viper_Slide;
@@ -82,22 +82,29 @@ public class Teleop extends LinearOpMode {
     private static Viper_Slide Viper_Slide1;
     private static Viper_Slide Viper_Slide2;
     private static Gripper gripper = null;
+    private static Arm arm = null;
+    private static Basket basket = null;
     public static double viperkP = 0.01;
     public static double viperkD= 0.0000;
     public static double viperkI = 0.000;
+    public static double armkP = 0.0025;
+    public static double armkD= 0.0000;
+    public static double armkI = 0.000;
+    private static int newViperPosition = 0;
     private static int armCurrentPosition = 0;
     private static int newArmPosition = 0;
     private static int armHighChamberPosition = 3554;
     private static int armLowChamberPosition = 5900;
-    private static int armPickUpPositon = 7427;
+    private static int armPickUpPositon = 4860;
     private static int armStartPosition = 0;
     private static int armPreClimbPositon = 6051;
     private static int armClimbPosition = 750;
     public static double viper_move = 0;
     public static double viper_target_position = 0;
     public static double viperSlidePositionStart = 0;
-    public static double viperSlidePositionLowRung = -800;
-    public static double viperSlidePositionHighRung = -1600;
+    public static double viperSlidePositionLowRung = -400;
+    public static double viperSlideTrigger = 150;
+    public static double viperSlidePositionHighRung = -1450;
     public static double viperSlidePositionHighBasket = -2400;
     public static int viperRotateScale = 200;
     private static double driveSlowScale = 0.5;
@@ -109,6 +116,9 @@ public class Teleop extends LinearOpMode {
     private static double intake_roller_position = 0;
     private static double armPower = 0;
     private static double wristOrientation = 0;
+    private static double viper_Manual_Position = 0;
+    private boolean intake_Switch = false;
+    private boolean intake_Status = false;
     @Override
     public void runOpMode() {
 
@@ -119,9 +129,14 @@ public class Teleop extends LinearOpMode {
         Viper_Slide2 = new Viper_Slide(hardwareMap);
         gripper = new Gripper(hardwareMap);
         Intake_Touch = new Intake_Touch(hardwareMap);
+        arm = new Arm(hardwareMap);
+        basket = new Basket(hardwareMap);
 
         PIDController viper_SlidePID = new PIDController(viperkP, viperkI, viperkD);
         viper_SlidePID.setTolerance(10, 10);
+
+        PIDController armPID = new PIDController(armkP, armkI, armkD);
+        armPID.setTolerance(10,10);
 
         // Wait for the game to start (driver presses START)
         telemetry.addData("Status", "Initialized");
@@ -147,31 +162,29 @@ public class Teleop extends LinearOpMode {
 
             drive.update();
             double viper_move = gamepad2.left_stick_y;
-            gripper.setPosition(gamepad2.left_bumper? 0.35 : 0.6);
+            gripper.setPosition(gamepad2.left_bumper? 0.6 : 0.35);
+            basket.setPosition(gamepad1.left_bumper? 0.5 : 0.2);
+            double arm_move = gamepad2.right_stick_y;
 
-            if(!(viper_move == 0))
-            {
-                viper_Current_Position = Viper_Slide1.getCurrentPosition();
-                if(viper_move < 0){
-                    viperRotateScale = 10 + (armCurrentPosition / 15);
-                    viperRotateScale = viperRotateScale < 0? 50 : viperRotateScale;
-                }
-                viperRotateScale = 50
-                ;
-                newArmPosition = (int) (armCurrentPosition + (viperRotateScale * viper_move));
-                viper_SlidePID.setSetPoint(newArmPosition);
+
+            if (arm_move != 0){
+                arm.setPower1(arm_move);
+            } else {
+                arm.setPower1(0);
             }
 
-           /* if (viper_move != 0){
-                Viper_Slide1.setPower1(viper_move);
-                Viper_Slide2.setPower2(viper_move);
-            }*/
+            if (Intake_Touch.getState() == false){
+                intake_Status = false;
+            }
+
+            if (gamepad2.x){
+                intake_Status = true;
+            }
+
             if (gamepad2.b){
-              while(Intake_Touch.getState()) {
-                  IntakeRight.setPower1(0.7);
-                  IntakeLeft.setPower2(0.7);
-              }
-            } else if(gamepad2.x){
+                IntakeRight.setPower1(0.7);
+                IntakeLeft.setPower2(0.7);
+            } else if (intake_Status) {
                 IntakeRight.setPower1(-0.7);
                 IntakeLeft.setPower2(-0.7);
             } else {
@@ -195,6 +208,14 @@ public class Teleop extends LinearOpMode {
                 viper_SlidePID.setSetPoint(viperSlidePositionHighBasket);
             }
 
+            if (gamepad1.dpad_up){
+                armPID.setSetPoint(armStartPosition);
+            }
+
+            if (gamepad1.dpad_down){
+                armPID.setSetPoint(armPickUpPositon);
+            }
+
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
 
             if (gamepad1.right_bumper)
@@ -206,9 +227,41 @@ public class Teleop extends LinearOpMode {
             }
 
             viper_Current_Position = Viper_Slide1.getCurrentPosition();
+            if(!(viper_move == 0)){
+                //viper_SlidePID.setSetPoint(viper_Current_Position - (10 * viper_move));
+                newViperPosition = (int)(viper_Current_Position + (50 * viper_move));
+                if (newViperPosition > 50){
+                    newViperPosition = 50;
+                }
+                viper_SlidePID.setSetPoint(newViperPosition);
+                viper_Current_Position = Viper_Slide1.getCurrentPosition();
+            }
+            if (gamepad2.right_bumper){
+                    newViperPosition = (int)(viper_Current_Position + viperSlideTrigger);
+                    if (newViperPosition > 50){
+                        newViperPosition = 50;
+                    }
+                    viper_SlidePID.setSetPoint(newViperPosition);
+                    viper_Current_Position = Viper_Slide1.getCurrentPosition();
+                    gripper.setPosition(0.6);
+                    //sleep(1000);
+
+            }
+            armCurrentPosition = arm.getCurrentPosition();
+            if(!(arm_move == 0)){
+                newArmPosition = (int)(armCurrentPosition + (100 * arm_move));
+                if (newArmPosition < 100){
+                    newArmPosition = 100;
+                }
+                armPID.setSetPoint(newArmPosition);
+                armCurrentPosition = arm.getCurrentPosition();
+            }
+            armPower = armPID.calculate(armCurrentPosition);
+            arm.setPower1(armPower);
             viper_Power = viper_SlidePID.calculate(viper_Current_Position);
             Viper_Slide1.setPower1(viper_Power);
             Viper_Slide2.setPower2(viper_Power);
+
             // Show the elapsed game time and wheel power.
             Pose2d poseEstimate = drive.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
@@ -218,7 +271,10 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("WristOrientation", wristOrientation);
             telemetry.addData("ViperSlideCurrentPosition", Viper_Slide1.getCurrentPosition());
             telemetry.addData("Touch Sensor State", Intake_Touch.getState());
+            telemetry.addData("New Viper Position", newViperPosition);
+            telemetry.addData("ArmCurrentPosition", armCurrentPosition);
 
             telemetry.update();
+            }
         }
-    }}
+    }

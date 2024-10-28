@@ -6,14 +6,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystems.Park_Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous(group="A_DriveCode")
 public class Auto extends LinearOpMode {
     private static Intake intake;
-    private static Park_Arm Park_Arm;
     public static double armkP = 0.01;
     public static double armkD = 0.00001;
     public static double armkI = 0.0001;
@@ -35,7 +33,6 @@ public class Auto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         intake = new Intake(hardwareMap);
-        Park_Arm = new Park_Arm(hardwareMap);
         initPose = new Pose2d(0, 0, Math.toRadians(0));
 
         drive.setPoseEstimate(initPose);
@@ -48,7 +45,6 @@ public class Auto extends LinearOpMode {
         resetRuntime();
 
         runAutoSequence(drive);
-        Park_Arm.setPosition(0.3);
         sleep(5000);
     }
     public void runAutoSequence(SampleMecanumDrive drive){
