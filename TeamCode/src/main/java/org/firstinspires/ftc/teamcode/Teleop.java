@@ -95,7 +95,7 @@ public class Teleop extends LinearOpMode {
     private static int newArmPosition = 0;
     private static int armHighChamberPosition = 3554;
     private static int armLowChamberPosition = 5900;
-    private static int armPickUpPositon = 4860;
+    private static int armPickUpPositon = 4850;
     private static int armStartPosition = 0;
     private static int armPreClimbPositon = 6051;
     private static int armClimbPosition = 750;
@@ -162,16 +162,20 @@ public class Teleop extends LinearOpMode {
 
             drive.update();
             double viper_move = gamepad2.left_stick_y;
-            gripper.setPosition(gamepad2.left_bumper? 0.6 : 0.35);
+            //gripper.setPosition(gamepad2.left_bumper? 0.6 : 0.35);
+            gripper.setPosition(gamepad2.left_bumper? 0.5 : 0.2);
+
             basket.setPosition(gamepad1.left_bumper? 0.5 : 0.2);
+
+
             double arm_move = gamepad2.right_stick_y;
 
-
+            /*
             if (arm_move != 0){
                 arm.setPower1(arm_move);
             } else {
                 arm.setPower1(0);
-            }
+            }*/
 
             if (Intake_Touch.getState() == false){
                 intake_Status = false;
@@ -247,6 +251,7 @@ public class Teleop extends LinearOpMode {
                     //sleep(1000);
 
             }
+
             armCurrentPosition = arm.getCurrentPosition();
             if(!(arm_move == 0)){
                 newArmPosition = (int)(armCurrentPosition + (100 * arm_move));
@@ -256,8 +261,10 @@ public class Teleop extends LinearOpMode {
                 armPID.setSetPoint(newArmPosition);
                 armCurrentPosition = arm.getCurrentPosition();
             }
+
             armPower = armPID.calculate(armCurrentPosition);
             arm.setPower1(armPower);
+
             viper_Power = viper_SlidePID.calculate(viper_Current_Position);
             Viper_Slide1.setPower1(viper_Power);
             Viper_Slide2.setPower2(viper_Power);
