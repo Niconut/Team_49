@@ -38,9 +38,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
+import org.firstinspires.ftc.teamcode.subsystems.Basket;
 import org.firstinspires.ftc.teamcode.subsystems.Gripper;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Park_Arm;
+import org.firstinspires.ftc.teamcode.subsystems.Viper_Slide;
 import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
@@ -79,7 +81,9 @@ public class Teleop extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private static Gripper Gripper_Right = null;
     private static Gripper Gripper_Left = null;
+    private static Viper_Slide Viper_Slide = null;
     private static Arm arm1 = null;
+    private static Basket basket = null;
     private static Wrist wrist = null;
     private static Park_Arm Park_Arm = null;
     public static double armkP = 0.01;
@@ -108,8 +112,10 @@ public class Teleop extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
        Gripper_Left = new Gripper(hardwareMap);
        Gripper_Right = new Gripper(hardwareMap);
-        /*arm1 = new Arm(hardwareMap);
-        wrist = new Wrist(hardwareMap);
+        arm1 = new Arm(hardwareMap);
+        Viper_Slide = new Viper_Slide(hardwareMap);
+        basket = new Basket(hardwareMap);
+        /*wrist = new Wrist(hardwareMap);
         Park_Arm = new Park_Arm(hardwareMap);*/
 
         PIDController armPID = new PIDController(armkP, armkI, armkD);
@@ -140,7 +146,22 @@ public class Teleop extends LinearOpMode {
             drive.update();
             //Park_Arm.setPosition(1);
             double arm_move = gamepad2.left_stick_y;
+            double viper_move = gamepad2.right_stick_y;
 
+            basket.setPosition((gamepad1.left_bumper)? 0.5 : 0.2);
+
+
+            if (arm_move != 0) {
+                arm1.setPower1(arm_move);
+            } else {
+                arm1.setPower1(0);
+            }
+
+            if (viper_move != 0) {
+                Viper_Slide.setPower(viper_move);
+            } else {
+                Viper_Slide.setPower(0);
+            }
 
 
           /*  if (gamepad2.left_bumper){
