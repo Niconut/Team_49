@@ -88,7 +88,7 @@ public class AutoClaw extends LinearOpMode {
     }
     public void runAutoSequence(SampleMecanumDrive drive, PIDController viperPID, PIDController armPID) {
         trajSetUp = drive.trajectoryBuilder(initPose)
-                .forward(19.5)
+                .forward(19)
                 .build();
         drive.followTrajectory(trajSetUp);
 
