@@ -86,6 +86,9 @@ public class Teleop extends LinearOpMode {
     private static Basket basket = null;
     private static Wrist wrist = null;
     private static Park_Arm Park_Arm = null;
+    public static double viperkP = 0.005;
+    public static double viperkD= 0.0000;
+    public static double viperkI = 0.000;
     public static double armkP = 0.01;
     public static double armkD = 0.00001;
     public static double armkI = 0.0001;
@@ -93,14 +96,22 @@ public class Teleop extends LinearOpMode {
     private static int newArmPosition = 0;
     private static int armHighChamberPosition = 3554;
     private static int armLowChamberPosition = 5900;
-    private static int armPickUpPositon = 7427;
+    private static int armPickUpPosition = 2070;
+    private static int armClearPosition = 300;
     private static int armStartPosition = 0;
-    private static int armPreClimbPositon = 6051;
+    private static int armPreClimbPosition = 6051;
     private static int armClimbPosition = 750;
     public static double arm_move = 0;
     public static int armRotateScale = 200;
+    public static int newViperPosition = 0;
+    public static double viperPower = 0;
+    private static int viperCurrentPosition = 0;
+    private static int viperStartPosition = 0;
+    private static int viperHighBasketPosition = -3200;
+    private static int viperLowBasketPosition = -1840;
     private static double driveSlowScale = 0.5;
     private static double DriveScale = 1;
+    private static double DriveRotSlowScale = 0;
     private static double wrist_move = 0;
     private static double intake_spin = 0;
     private static double intake_roller_position = 0;
@@ -121,6 +132,9 @@ public class Teleop extends LinearOpMode {
         PIDController armPID = new PIDController(armkP, armkI, armkD);
         armPID.setTolerance(50, 10);
 
+        PIDController viperPID = new PIDController(viperkP, viperkI, viperkD);
+        viperPID.setTolerance(50, 10);
+
         // Wait for the game to start (driver presses START)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -137,9 +151,9 @@ public class Teleop extends LinearOpMode {
 
             drive.setWeightedDrivePower(
                     new Pose2d(
-                            -gamepad1.left_stick_y * DriveScale,
-                            -gamepad1.left_stick_x * DriveScale,
-                            -gamepad1.right_stick_x * DriveScale
+                            (-gamepad1.left_stick_y * Math.abs(gamepad1.left_stick_y)) * DriveScale,
+                            (-gamepad1.left_stick_x * Math.abs(gamepad1.left_stick_x)) * DriveScale,
+                            (-gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x)) * DriveRotSlowScale
                     )
             );
 
@@ -148,7 +162,7 @@ public class Teleop extends LinearOpMode {
             double arm_move = gamepad2.left_stick_y;
             double viper_move = gamepad2.right_stick_y;
 
-            basket.setPosition((gamepad1.left_bumper)? 0.5 : 0.2);
+            basket.setPosition((gamepad2.left_bumper)? 0.25 : 0.5);
 
 
             if (arm_move != 0) {
@@ -175,68 +189,100 @@ public class Teleop extends LinearOpMode {
            // wrist.setPosition((wristOrientation==0)? 0.3 : 0.66);
 
             if (gamepad2.right_bumper){
+                Gripper_Right.setPosition2(0.65);
+                Gripper_Left.setPosition1(0.4);
+            }else {
                 Gripper_Right.setPosition2(0.5);
                 Gripper_Left.setPosition1(0.5);
-            }else {
-                Gripper_Right.setPosition2(0.75);
-                Gripper_Left.setPosition1(0.3);
             }
 
-         /*   if (gamepad2.y){
-                armPID.setSetPoint(armHighChamberPosition);
-                wristOrientation = 0;
-            }
-
-            if (gamepad2.a){
-                armPID.setSetPoint(armLowChamberPosition);
-                wristOrientation = 0;
-            }
-
-            if (gamepad1.y){
+            if (gamepad2.y){
                 armPID.setSetPoint(armStartPosition);
             }
 
-            if (gamepad1.a && gamepad1.left_bumper) {
-                armPID.setSetPoint(armPreClimbPositon);
+            if (gamepad2.a){
+                armPID.setSetPoint(armPickUpPosition);
+            }
+
+            /*if (gamepad2.x){
+                armPID.setSetPoint(armClearPosition);
+            }*/
+
+         /*   if (gamepad1.a && gamepad1.left_bumper) {
+                armPID.setSetPoint(armPreClimbPosition);
             }
 
             if (gamepad1.b && gamepad1.left_bumper) {
                 armPID.setSetPoint(armClimbPosition);
+            }*/
+
+            if (gamepad2.dpad_down){
+                armPID.setSetPoint(armClearPosition);
+                viperPID.setSetPoint(viperStartPosition);
             }
 
-            if(!(arm_move == 0))
-            {
-                armCurrentPosition = arm1.getCurrentPosition();
-                if(arm_move < 0){
-                    armRotateScale = 10 + (armCurrentPosition / 15);
-                    armRotateScale = armRotateScale < 0? 50 : armRotateScale;
+            if (gamepad2.dpad_right){
+                armPID.setSetPoint(armClearPosition);
+                viperPID.setSetPoint(viperLowBasketPosition);
+            }
+
+            if (gamepad2.dpad_up){
+                armPID.setSetPoint(armClearPosition);
+                viperPID.setSetPoint(viperHighBasketPosition);
+            }
+
+            viperCurrentPosition = Viper_Slide.getCurrentPosition();
+            if(!(viper_move == 0)){
+                //viper_SlidePID.setSetPoint(viper_Current_Position - (10 * viper_move));
+                newViperPosition = (int)(viperCurrentPosition + (50 * viper_move));
+                if (newViperPosition > 50){
+                    newViperPosition = 50;
                 }
-                armRotateScale = 50
-                ;
-                newArmPosition = (int) (armCurrentPosition + (armRotateScale * arm_move));
+                viperPID.setSetPoint(newViperPosition);
+                viperCurrentPosition = Viper_Slide.getCurrentPosition();
+            }
+
+            armCurrentPosition = arm1.getCurrentPosition();
+            if(!(arm_move == 0)){
+                newArmPosition = (int)(armCurrentPosition + (10 * arm_move));
+                if (newArmPosition < 10){
+                    newArmPosition = 10;
+                }
+                if (newArmPosition > 2110){
+                    newArmPosition = 2110;
+                }
                 armPID.setSetPoint(newArmPosition);
+                armCurrentPosition = arm1.getCurrentPosition();
             }
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-*/
+
             if (gamepad1.right_bumper)
             {
                 DriveScale = driveSlowScale;
+                DriveRotSlowScale = 0.25;
             }else
             {
                 DriveScale = 1;
+                DriveRotSlowScale = 0.5;
             }
 
-            //armCurrentPosition = arm1.getCurrentPosition();
-            //armPower = armPID.calculate(armCurrentPosition);
+            armPower = armPID.calculate(armCurrentPosition);
             //arm1.setPower1(gamepad2.left_stick_y);
 
-            //arm1.setPower1(armPower);
+            arm1.setPower1(armPower);
+
+           viperPower = viperPID.calculate(viperCurrentPosition);
+
+           Viper_Slide.setPower(viperPower);
+
+
             // Show the elapsed game time and wheel power.
             Pose2d poseEstimate = drive.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
-            //telemetry.addData("ArmPos1", arm1.getCurrentPosition());
+            telemetry.addData("ArmPos1", armCurrentPosition);
+            telemetry.addData("ViperPos", viperCurrentPosition);
             //telemetry.addData("Status", "Run Time: " + runtime.toString());
             //telemetry.addData("WristOrientation", wristOrientation);
 
