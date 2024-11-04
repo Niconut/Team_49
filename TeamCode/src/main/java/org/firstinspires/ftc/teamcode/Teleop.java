@@ -99,6 +99,7 @@ public class Teleop extends LinearOpMode {
     private static int armPickUpPosition = 2070;
     private static int armClearPosition = 300;
     private static int armStartPosition = 0;
+    private static int armPickEndPosition = 1421;
     private static int armPreClimbPosition = 6051;
     private static int armClimbPosition = 750;
     public static double arm_move = 0;
@@ -204,6 +205,9 @@ public class Teleop extends LinearOpMode {
                 armPID.setSetPoint(armPickUpPosition);
             }
 
+            if (gamepad2.x){
+                armPID.setSetPoint(armPickEndPosition);
+            }
             /*if (gamepad2.x){
                 armPID.setSetPoint(armClearPosition);
             }*/
