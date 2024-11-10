@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous(group="A_DriveCode")
-public class AutoClaw extends LinearOpMode {
+public class AutoClip extends LinearOpMode {
     private static Arm arm1;
     private static Viper_Slide viperSlide;
     private static Basket bucket;
@@ -37,9 +37,9 @@ public class AutoClaw extends LinearOpMode {
     private static int armHighChamberPosition = 3554;
     private static int armParkPosition = 4000;
     private static int armLowChamberPosition = 5900;
-    private static int armPickUpPosition = 2070;
+    private static int armPickUpPosition = 2130;
     private static int armClearPosition = 300;
-    private static int armAutoScorePosition = 1900;
+    private static int armAutoScorePosition = 1390;
     private static int armStartPosition = 0;
     private static int armClimbPosition = 750;
     private static int viperCurrentPosition = 0;
@@ -53,8 +53,8 @@ public class AutoClaw extends LinearOpMode {
     private static int toPark = 68;
     Pose2d initPose;
     Pose2d BucketPose, ClearPose;
-    TrajectorySequence trajPark;
-    Trajectory trajSetUp;
+    TrajectorySequence trajPark, trajSetUp2;
+    Trajectory trajSetUp, trajPark2, trajScore;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -87,22 +87,37 @@ public class AutoClaw extends LinearOpMode {
         runAutoSequence(drive, viperPID, armPID);
     }
     public void runAutoSequence(SampleMecanumDrive drive, PIDController viperPID, PIDController armPID) {
+        closeGripper();
+        armAutoPIDPosition(armPID, armAutoScorePosition);
         trajSetUp = drive.trajectoryBuilder(initPose)
-                .forward(18)
+                .forward(26)
                 .build();
         drive.followTrajectory(trajSetUp);
 
-        armAutoPIDPosition(armPID, armAutoScorePosition);
+
         sleep(500);
         openGripper();
         sleep(500);
         armAutoPIDPosition(armPID, armStartPosition);
 
         trajPark = drive.trajectorySequenceBuilder(trajSetUp.end())
-                .back(13.5)
-                .strafeRight(74)
+                .back(18)
+                .turn(Math.toRadians(-135))
+                .forward(24)
                 .build();
         drive.followTrajectorySequence(trajPark);
+        armAutoPIDPosition(armPID, armPickUpPosition);
+        sleep(500);
+        closeGripper();
+        sleep(500);
+        armAutoPIDPosition(armPID, armAutoScorePosition);
+
+        trajSetUp2 = drive.trajectorySequenceBuilder(trajPark.end())
+                .back(22)
+                .turn(Math.toRadians(135))
+                .forward(20)
+                .build();
+        drive.followTrajectorySequence(trajSetUp2);
     }
     public void armAutoPIDPosition(PIDController armPID, int targetPosition) {
         armPID.setSetPoint(targetPosition);
@@ -138,13 +153,19 @@ public class AutoClaw extends LinearOpMode {
     public void holdSample(){
         bucket.setPosition(0.5);
     }
-    public void closeGripper(){
+    public void openGripper(){
         gripperRight.setPosition2(0.5);
         gripperLeft.setPosition1(0.5);
     }
-    public void openGripper() {
-        gripperRight.setPosition2(0.65);
+    public void closeGripper() {
+        gripperRight.setPosition2(0.625);
         gripperLeft.setPosition1(0.4);
+    }
+    public void bucketScore() {
+        bucket.setPosition(0.25);
+    }
+    public void  bucketStart() {
+        bucket.setPosition(0.5);
     }
     public void getCoordinates(){
         BucketPose = new Pose2d(72, 52, Math.toRadians(-160));

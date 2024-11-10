@@ -24,4 +24,7 @@ public class Viper_Slide {
     public int getCurrentPosition() {
         return Viper_Slide.getCurrentPosition();
         }
+    public double getPower() {
+        return Viper_Slide.getPower();
+    }
 }
