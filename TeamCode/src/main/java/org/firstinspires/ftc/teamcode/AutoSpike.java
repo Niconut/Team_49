@@ -38,7 +38,7 @@ public class AutoSpike extends LinearOpMode {
     private static int armParkPosition = 4000;
     private static int armLowChamberPosition = 5900;
     private static int armPickUpPosition = 2150;
-    private static int armClearPosition = 300;
+    private static int armClearPosition = 550;
     private static int armAutoScorePosition = 1390;
     private static int armStartPosition = 0;
     private static int armClimbPosition = 750;

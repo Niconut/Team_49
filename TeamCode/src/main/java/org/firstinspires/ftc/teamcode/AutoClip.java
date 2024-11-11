@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive.getVelocityConstraint;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Basket;
@@ -35,10 +38,11 @@ public class AutoClip extends LinearOpMode {
     private static int armCurrentPosition = 0;
     private static int newArmPosition = 0;
     private static int armHighChamberPosition = 3554;
-    private static int armParkPosition = 4000;
+    private static int armPrepPosition = 1742;
     private static int armLowChamberPosition = 5900;
-    private static int armPickUpPosition = 2130;
-    private static int armClearPosition = 300;
+    private static int armPickUpPosition = 2200;
+    private static int armClearPosition = 550;
+    private static int armUnderScorePosition = 1590;
     private static int armAutoScorePosition = 1390;
     private static int armStartPosition = 0;
     private static int armClimbPosition = 750;
@@ -53,8 +57,8 @@ public class AutoClip extends LinearOpMode {
     private static int toPark = 68;
     Pose2d initPose;
     Pose2d BucketPose, ClearPose;
-    TrajectorySequence trajPark, trajSetUp2;
-    Trajectory trajSetUp, trajPark2, trajScore;
+    TrajectorySequence trajPark, trajSetUp2, trajScore2;
+    Trajectory trajSetUp, trajPark2, trajScore, trajPark3;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -94,30 +98,59 @@ public class AutoClip extends LinearOpMode {
                 .build();
         drive.followTrajectory(trajSetUp);
 
-
-        sleep(500);
         openGripper();
-        sleep(500);
         armAutoPIDPosition(armPID, armStartPosition);
 
         trajPark = drive.trajectorySequenceBuilder(trajSetUp.end())
                 .back(18)
-                .turn(Math.toRadians(-135))
-                .forward(24)
+                .turn(Math.toRadians(-130))
+                .forward(18)
                 .build();
         drive.followTrajectorySequence(trajPark);
+
         armAutoPIDPosition(armPID, armPickUpPosition);
-        sleep(500);
+        sleep(750);
+        trajPark2 = drive.trajectoryBuilder(trajPark.end())
+                        .forward(13)
+                                .build();
+        drive.followTrajectory(trajPark2);
         closeGripper();
         sleep(500);
-        armAutoPIDPosition(armPID, armAutoScorePosition);
+        armAutoPIDPosition(armPID, armPrepPosition);
 
         trajSetUp2 = drive.trajectorySequenceBuilder(trajPark.end())
-                .back(22)
+                .back(36)
                 .turn(Math.toRadians(135))
-                .forward(20)
                 .build();
         drive.followTrajectorySequence(trajSetUp2);
+
+        trajScore = drive.trajectoryBuilder(trajSetUp2.end())
+                .forward(18)
+                .build();
+        drive.followTrajectory(trajScore);
+
+        armAutoPIDPosition(armPID, armUnderScorePosition);
+
+
+        trajScore2 = drive.trajectorySequenceBuilder(trajScore.end())
+                .setVelConstraint(getVelocityConstraint(
+                        0.3* DriveConstants.MAX_VEL,
+                        0.3*DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH))
+                .back(16)
+                .setVelConstraint(getVelocityConstraint(
+                        DriveConstants.MAX_VEL,
+                        DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH))
+                .build();
+        drive.followTrajectorySequence(trajScore2);
+        openGripper();
+        sleep(100);
+        armAutoPIDPosition(armPID, armStartPosition);
+        trajPark3 = drive.trajectoryBuilder(trajScore2.end())
+                .strafeRight(74)
+                .build();
+        drive.followTrajectory(trajPark3);
     }
     public void armAutoPIDPosition(PIDController armPID, int targetPosition) {
         armPID.setSetPoint(targetPosition);

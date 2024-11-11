@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Basket;
+import org.firstinspires.ftc.teamcode.subsystems.Gripper;
 import org.firstinspires.ftc.teamcode.subsystems.Park_Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Viper_Slide;
 import org.firstinspires.ftc.teamcode.subsystems.Wrist;
@@ -23,6 +24,8 @@ public class AutoBucket extends LinearOpMode {
     private static Wrist wrist;
     private static Intake intake;
     private static Park_Arm Park_Arm;
+    private static Gripper gripper_Right = null;
+    private static Gripper gripper_Left = null;
     public static double armkP = 0.01;
     public static double armkD = 0.00001;
     public static double armkI = 0.0001;
@@ -30,17 +33,18 @@ public class AutoBucket extends LinearOpMode {
     public static double viperkD= 0.0000;
     public static double viperkI = 0.000;
     private static int armCurrentPosition = 0;
+    private static int armAutoScorePosition = 1390;
     private static int newArmPosition = 0;
     private static int armHighChamberPosition = 3554;
     private static int armParkPosition = 4000;
     private static int armLowChamberPosition = 5900;
-    private static int armPickUpPosition = 2070;
+    private static int armPickUpPosition = 2150;
     private static int armClearPosition = 300;
     private static int armStartPosition = 0;
     private static int armClimbPosition = 750;
     private static int viperCurrentPosition = 0;
     private static int viperStartPosition = 0;
-    private static int viperHighBasketPosition = -3300;
+    private static int viperHighBasketPosition = -3200;
     private static int viperLowBasketPosition = -1840;
     private static double armTimeout = 5;
     private static double viperTimeout = 3;
@@ -49,14 +53,16 @@ public class AutoBucket extends LinearOpMode {
     private static int toPark = 68;
     Pose2d initPose;
     Pose2d BucketPose, ClearPose;
-    TrajectorySequence trajSetUp;
-    Trajectory trajScore;
+    TrajectorySequence trajScore, trajScore2;
+    Trajectory trajSetUp, trajScore3, trajScore4;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         arm1 = new Arm(hardwareMap);
         viperSlide = new Viper_Slide(hardwareMap);
         bucket = new Basket(hardwareMap);
+        gripper_Left = new Gripper(hardwareMap);
+        gripper_Right = new Gripper(hardwareMap);
         /*intake = new Intake(hardwareMap);
         wrist = new Wrist(hardwareMap);
         Park_Arm = new Park_Arm(hardwareMap);*/
@@ -80,28 +86,46 @@ public class AutoBucket extends LinearOpMode {
         runAutoSequence(drive, viperPID, armPID);
     }
     public void runAutoSequence(SampleMecanumDrive drive, PIDController viperPID, PIDController armPID){
-        trajSetUp = drive.trajectorySequenceBuilder(initPose)
-                .forward(20)
-                .turn(Math.toRadians(-75))
-                .splineToLinearHeading(ClearPose, Math.toRadians(-160))
+        closeGripper();
+        armAutoPIDPosition(armPID, armAutoScorePosition);
+        trajSetUp = drive.trajectoryBuilder(initPose)
+                .forward(26)
                 .build();
-        drive.followTrajectorySequence(trajSetUp);
+        drive.followTrajectory(trajSetUp);
 
+        openGripper();
+        sleep(500);
+        armAutoPIDPosition(armPID, armStartPosition);
+
+        trajScore = drive.trajectorySequenceBuilder(trajSetUp.end())
+                .back(12)
+                .strafeLeft(70)
+                .build();
+        drive.followTrajectorySequence(trajScore);
+        armAutoPIDPosition(armPID, armPickUpPosition);
+        closeGripper();
+        sleep(500);
+        armAutoPIDPosition(armPID, armStartPosition);
+        openGripper();
+        sleep(250);
+        trajScore2 = drive.trajectorySequenceBuilder(trajScore.end())
+                .turn(Math.toRadians(-90))
+                .build();
+        drive.followTrajectorySequence(trajScore2);
         armAutoPIDPosition(armPID, armClearPosition);
         sleep(500);
         viperAutoPIDPosition(viperPID, viperHighBasketPosition);
-
-        //trajScore = drive.trajectoryBuilder(trajSetUp.end())
-        //    .splineToLinearHeading(BucketPose, Math.toRadians(-160))
-        //    .build();
-        //drive.followTrajectory(trajScore);
-
-        scoreSample();
-
-        viperAutoPIDPosition(viperPID, viperStartPosition);
+        viperSlide.setPower(0.2);
+        trajScore3 = drive.trajectoryBuilder(trajScore2.end())
+                .back(12)
+                .build();
+        drive.followTrajectory(trajScore3);
+        bucketScore();
         sleep(500);
-        armAutoPIDPosition(armPID, armStartPosition);
-        sleep(500);
+        trajScore4 = drive.trajectoryBuilder(trajScore3.end())
+                .forward(12)
+                .build();
+        drive.followTrajectory(trajScore4);
     }
     public void armAutoPIDPosition(PIDController armPID, int targetPosition) {
         armPID.setSetPoint(targetPosition);
@@ -131,10 +155,19 @@ public class AutoBucket extends LinearOpMode {
         arm1.setPower1(0);
         viperSlide.setPower(0);
     }
-    public void scoreSample(){
+
+    public void openGripper(){
+        gripper_Right.setPosition2(0.5);
+        gripper_Left.setPosition1(0.5);
+    }
+    public void closeGripper() {
+        gripper_Right.setPosition2(0.625);
+        gripper_Left.setPosition1(0.4);
+    }
+    public void bucketScore(){
         bucket.setPosition(0.25);
     }
-    public void holdSample(){
+    public void bucketStart(){
         bucket.setPosition(0.5);
     }
     public void getCoordinates(){
