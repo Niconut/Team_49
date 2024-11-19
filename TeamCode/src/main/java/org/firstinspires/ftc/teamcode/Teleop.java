@@ -29,7 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+//import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -45,7 +45,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Park_Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Viper_Slide;
 import org.firstinspires.ftc.teamcode.subsystems.Wrist;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+//import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /*
  * This file contains an example of a Linear "OpMode".
@@ -134,7 +134,7 @@ public class Teleop extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        //SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
       //  intake = new Intake(hardwareMap);
        Gripper_Left = new Gripper(hardwareMap);
        Gripper_Right = new Gripper(hardwareMap);
@@ -168,7 +168,7 @@ public class Teleop extends LinearOpMode {
         while (opModeIsActive()) {
             double max;
 
-            drive.setWeightedDrivePower(
+            /*drive.setWeightedDrivePower(
                     new Pose2d(
                             (-gamepad1.left_stick_y * Math.abs(gamepad1.left_stick_y)) * DriveScale,
                             (-gamepad1.left_stick_x * Math.abs(gamepad1.left_stick_x)) * DriveScale,
@@ -176,7 +176,7 @@ public class Teleop extends LinearOpMode {
                     )
             );
 
-            drive.update();
+            drive.update();*/
             //Park_Arm.setPosition(1);
             double arm_move = gamepad2.left_stick_y;
             double viper_move = gamepad2.right_stick_y;
@@ -337,10 +337,10 @@ public class Teleop extends LinearOpMode {
             ClimbArm.setPower(climbPower);
 
             // Show the elapsed game time and wheel power.
-            Pose2d poseEstimate = drive.getPoseEstimate();
+           /* Pose2d poseEstimate = drive.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.addData("heading", poseEstimate.getHeading());*/
             telemetry.addData("ArmPos1", armCurrentPosition);
             telemetry.addData("ViperPos", viperCurrentPosition);
             telemetry.addData("ClimbPos", climbCurrentPositon);
