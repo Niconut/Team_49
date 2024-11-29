@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.teamcode.teamcode.MecanumDrive;
 
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Basket;
@@ -133,8 +134,6 @@ public class Teleop extends LinearOpMode {
     private static double wristOrientation = 0;
     @Override
     public void runOpMode() {
-
-        //SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
       //  intake = new Intake(hardwareMap);
        Gripper_Left = new Gripper(hardwareMap);
        Gripper_Right = new Gripper(hardwareMap);
