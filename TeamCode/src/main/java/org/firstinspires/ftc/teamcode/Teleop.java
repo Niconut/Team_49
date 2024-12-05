@@ -36,8 +36,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
-import org.firstinspires.ftc.teamcode.subsystems.Basket;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Elbow;
+import org.firstinspires.ftc.teamcode.subsystems.Intake_Gripper;
+import org.firstinspires.ftc.teamcode.subsystems.Shoulder;
+import org.firstinspires.ftc.teamcode.subsystems.Slide;
+import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 import org.firstinspires.ftc.teamcode.subsystems.Intake_Touch;
 import org.firstinspires.ftc.teamcode.subsystems.Gripper;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -76,14 +79,17 @@ public class Teleop extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
-    private static Intake IntakeLeft = null;
-    private static Intake IntakeRight = null;
+    private static Wrist Wrist = null;
+    private static Shoulder shoulder = null;
     private static Intake_Touch Intake_Touch  = null;
     private static Viper_Slide Viper_Slide1;
     private static Viper_Slide Viper_Slide2;
     private static Gripper gripper = null;
-    private static Arm arm = null;
-    private static Basket basket = null;
+    private static Intake_Gripper intake_gripper = null;
+    private static Arm arm1 = null;
+    private static Arm arm2 = null;
+    private static Elbow Elbow = null;
+    private static Slide slide = null;
     public static double viperkP = 0.01;
     public static double viperkD= 0.0000;
     public static double viperkI = 0.000;
@@ -101,14 +107,19 @@ public class Teleop extends LinearOpMode {
     private static int armClimbPosition = 750;
     public static double viper_move = 0;
     public static double viper_target_position = 0;
-    public static double viperSlidePositionStart = 0;
-    public static double viperSlidePositionLowRung = -400;
-    public static double viperSlideTrigger = 150;
-    public static double viperSlidePositionHighRung = -1450;
-    public static double viperSlidePositionHighBasket = -2400;
+    public static double viperSlidePositionStart = -25;
+    public static double viperSlidePositionPickUp = -700;
+    public static double viperSlidePositionHighBasket = -4300;
+    public static double viperSlidePositionHighRung = -1140;
+    public static double viperSlidePositionHighRungScore = -1480;
+    public static double viperSlidePositionHighClimb = -2900;
     public static int viperRotateScale = 200;
+    private static double slideCurrentPosition = 0;
+    private static double shoulderCurrentPosition = 0;
     private static double driveSlowScale = 0.5;
+    private static double driveAngSlowScale = 0.25;
     private static double DriveScale = 1;
+    private static double DriveAngScale = 1;
     private static double viper_Power = 0;
     private static double viper_Current_Position = 0;
     private static double wrist_move = 0;
@@ -119,18 +130,23 @@ public class Teleop extends LinearOpMode {
     private static double viper_Manual_Position = 0;
     private boolean intake_Switch = false;
     private boolean intake_Status = false;
+    private static int wristpos = 1;
     @Override
     public void runOpMode() {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        IntakeLeft = new Intake(hardwareMap);
-        IntakeRight = new Intake(hardwareMap);
+       Wrist = new Wrist(hardwareMap);
+     //  IntakeRight = new Intake(hardwareMap);
         Viper_Slide1 = new Viper_Slide(hardwareMap);
         Viper_Slide2 = new Viper_Slide(hardwareMap);
-        gripper = new Gripper(hardwareMap);
-        Intake_Touch = new Intake_Touch(hardwareMap);
-        arm = new Arm(hardwareMap);
-        basket = new Basket(hardwareMap);
+       gripper = new Gripper(hardwareMap);
+       intake_gripper = new Intake_Gripper(hardwareMap);
+      //  Intake_Touch = new Intake_Touch(hardwareMap);
+        arm1 = new Arm(hardwareMap);
+        arm2 = new Arm(hardwareMap);
+        Elbow = new Elbow(hardwareMap);
+        shoulder = new Shoulder(hardwareMap);
+        slide = new Slide(hardwareMap);
 
         PIDController viper_SlidePID = new PIDController(viperkP, viperkI, viperkD);
         viper_SlidePID.setTolerance(10, 10);
@@ -143,6 +159,9 @@ public class Teleop extends LinearOpMode {
         telemetry.update();
 
         intake_roller_position = 0;
+        shoulder.setPosition(0.5);
+        slide.setPosition(0.25);
+        Elbow.setPosition(0.72);
 
 
         waitForStart();
@@ -156,20 +175,114 @@ public class Teleop extends LinearOpMode {
                     new Pose2d(
                             -gamepad1.left_stick_y * DriveScale,
                             -gamepad1.left_stick_x * DriveScale,
-                            -gamepad1.right_stick_x * DriveScale
+                            -gamepad1.right_stick_x * DriveAngScale
                     )
             );
 
             drive.update();
-            double viper_move = gamepad2.left_stick_y;
-            //gripper.setPosition(gamepad2.left_bumper? 0.6 : 0.35);
-            gripper.setPosition(gamepad2.left_bumper? 0.5 : 0.2);
 
-            basket.setPosition(gamepad1.left_bumper? 0.5 : 0.2);
+            double shoulder_move = -gamepad2.left_stick_x;
+            double slide_move = gamepad2.left_stick_y;
+            intake_gripper.setPosition(gamepad2.right_bumper? 0.55 : 0.325);
+            gripper.setPosition(gamepad1.right_bumper? 0.6 : 0.325);
+            //Elbow.setPosition(gamepad2.left_bumper? 0.6 : 0.75);
+            if(gamepad2.dpad_right){
+                wristpos = wristpos + 1;
+            }
 
+            if(gamepad2.dpad_left){
+                wristpos = wristpos - 1;
+            }
 
-            double arm_move = gamepad2.right_stick_y;
+           wristpos = (wristpos > 2)? 2 : wristpos;
+            wristpos = (wristpos < 0)? 0 : wristpos;
 
+            switch(wristpos){
+                case 0:{
+                    Wrist.setPosition(0.35);
+                    break;
+                }
+                case 1:{
+                    Wrist.setPosition(0.5);
+                    break;
+                }
+                case 2:{
+                    Wrist.setPosition(0.65);
+                    break;
+                }
+                default:{
+                    Wrist.setPosition(0.5);
+                    break;
+                }
+            }
+
+           /* if (intake_gripper_move1 > 0.5){
+                if (Wrist.getCurrentPosition() < 0.5){
+                    Wrist.setPosition(0.5);
+                } else {
+                    Wrist.setPosition(0.65);
+                };
+            } else if (intake_gripper_move2 > 0.5){
+                if (Wrist.getCurrentPosition() > 0.5){
+                    Wrist.setPosition(0.5);
+                } else {
+                    Wrist.setPosition(0.35);
+                }
+            }*/
+
+            if (shoulder_move != 0){
+                shoulderCurrentPosition = shoulder.getCurrentPosition();
+                shoulder.setPosition(shoulder.getCurrentPosition() + (shoulder_move * 0.01));
+                if (shoulderCurrentPosition > 0.88){
+                    shoulder.setPosition(0.88);
+                }
+            }
+
+            if (slide_move !=0){
+                slideCurrentPosition = slide.getCurrentPosition();
+                slide.setPosition(slide.getCurrentPosition() - (slide_move * 0.01));
+                if (slideCurrentPosition > 0.7){
+                    slide.setPosition(0.7);
+                }
+                if (slideCurrentPosition < 0.25){
+                    slide.setPosition(0.25);
+                }
+            }
+
+            if (gamepad2.x) {
+                Elbow.setPosition(0.72);
+                shoulder.setPosition(0.5);
+            }
+
+            if (gamepad2.a) {
+                Elbow.setPosition(0.76);
+            }
+
+            if (gamepad2.b) {
+                Elbow.setPosition(0.7);
+                shoulder.setPosition(0.01);
+                slide.setPosition(0.25);
+            }
+
+            if (gamepad2.y) {
+                shoulder.setPosition(0);
+                Elbow.setPosition(0.65);
+            }
+
+           /* if (gamepad2.left_bumper) {
+                arm1.setPosition1(0.8);
+                arm2.setPosition2(0.8);
+            } else {
+                arm1.setPosition1(0.225);
+                arm2.setPosition2(0.225);
+            }*/
+
+            //double arm_move = gamepad2.right_stick_y;
+
+            /*if (viper_move !=0){
+                Viper_Slide1.setPower1(viper_move);
+                Viper_Slide2.setPower2(viper_move);
+            }*/
             /*
             if (arm_move != 0){
                 arm.setPower1(arm_move);
@@ -177,7 +290,7 @@ public class Teleop extends LinearOpMode {
                 arm.setPower1(0);
             }*/
 
-            if (Intake_Touch.getState() == false){
+           /*if (Intake_Touch.getState() == false){
                 intake_Status = false;
             }
 
@@ -194,64 +307,70 @@ public class Teleop extends LinearOpMode {
             } else {
                 IntakeRight.setPower1(0);
                 IntakeLeft.setPower2(0);
-            }
+            }*/
 
-            if (gamepad2.dpad_down){
+            if (gamepad1.dpad_down){
                 viper_SlidePID.setSetPoint(viperSlidePositionStart);
+
             }
 
-            if (gamepad2.dpad_left){
-                viper_SlidePID.setSetPoint(viperSlidePositionLowRung);
+            if (gamepad1.dpad_left){
+                viper_SlidePID.setSetPoint(viperSlidePositionHighClimb);
             }
 
-            if (gamepad2.dpad_right){
+            if (gamepad1.b){
                 viper_SlidePID.setSetPoint(viperSlidePositionHighRung);
+                arm1.setPosition1(0.8);
+                arm2.setPosition2(0.8);
             }
 
-            if (gamepad2.dpad_up){
+            if (gamepad1.dpad_up){
                 viper_SlidePID.setSetPoint(viperSlidePositionHighBasket);
             }
 
+            if (gamepad1.a){
+                viper_SlidePID.setSetPoint(viperSlidePositionPickUp);
+                arm1.setPosition1(0.225);
+                arm2.setPosition2(0.225);
+            }
+
+            if (gamepad1.y) {
+                viper_SlidePID.setSetPoint(viperSlidePositionHighRungScore);
+                arm1.setPosition1(0.75);
+                arm2.setPosition2(0.75);
+            }
+            /*
             if (gamepad1.dpad_up){
                 armPID.setSetPoint(armStartPosition);
             }
 
             if (gamepad1.dpad_down){
                 armPID.setSetPoint(armPickUpPositon);
-            }
+            }*/
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
 
             if (gamepad1.right_bumper)
             {
                 DriveScale = driveSlowScale;
+                DriveAngScale = 0.2;
             }else
             {
                 DriveScale = 1;
+                DriveAngScale = 0.3;
             }
 
-            viper_Current_Position = Viper_Slide1.getCurrentPosition();
-            if(!(viper_move == 0)){
+            viper_Current_Position = Viper_Slide2.getCurrentPosition();
+            /*if(!(viper_move == 0)){
                 //viper_SlidePID.setSetPoint(viper_Current_Position - (10 * viper_move));
                 newViperPosition = (int)(viper_Current_Position + (50 * viper_move));
-                if (newViperPosition > 50){
-                    newViperPosition = 50;
+                if (newViperPosition > -25){
+                    newViperPosition = -25;
                 }
                 viper_SlidePID.setSetPoint(newViperPosition);
-                viper_Current_Position = Viper_Slide1.getCurrentPosition();
-            }
-            if (gamepad2.right_bumper){
-                    newViperPosition = (int)(viper_Current_Position + viperSlideTrigger);
-                    if (newViperPosition > 50){
-                        newViperPosition = 50;
-                    }
-                    viper_SlidePID.setSetPoint(newViperPosition);
-                    viper_Current_Position = Viper_Slide1.getCurrentPosition();
-                    gripper.setPosition(0.6);
-                    //sleep(1000);
-
-            }
-
+                viper_Current_Position = Viper_Slide2.getCurrentPosition();
+            }*/
+            /*
             armCurrentPosition = arm.getCurrentPosition();
             if(!(arm_move == 0)){
                 newArmPosition = (int)(armCurrentPosition + (100 * arm_move));
@@ -263,7 +382,7 @@ public class Teleop extends LinearOpMode {
             }
 
             armPower = armPID.calculate(armCurrentPosition);
-            arm.setPower1(armPower);
+            arm.setPower1(armPower);*/
 
             viper_Power = viper_SlidePID.calculate(viper_Current_Position);
             Viper_Slide1.setPower1(viper_Power);
@@ -275,12 +394,13 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("WristOrientation", wristOrientation);
-            telemetry.addData("ViperSlideCurrentPosition", Viper_Slide1.getCurrentPosition());
-            telemetry.addData("Touch Sensor State", Intake_Touch.getState());
+           // telemetry.addData("WristOrientation", wristOrientation);
+            telemetry.addData("ViperSlideCurrentPosition", Viper_Slide2.getCurrentPosition());
+            //telemetry.addData("Touch Sensor State", Intake_Touch.getState());
             telemetry.addData("New Viper Position", newViperPosition);
-            telemetry.addData("ArmCurrentPosition", armCurrentPosition);
-
+           // telemetry.addData("ArmCurrentPosition", armCurrentPosition);
+            telemetry.addData("Shoulder", shoulder.getCurrentPosition());
+            telemetry.addData("Slide", slide.getCurrentPosition());
             telemetry.update();
             }
         }

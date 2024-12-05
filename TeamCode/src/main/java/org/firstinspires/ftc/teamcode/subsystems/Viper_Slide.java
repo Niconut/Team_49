@@ -31,6 +31,6 @@ public class Viper_Slide {
     public void setPower1(double power) {Viper_Slide1.setPower(power);}
     public void setPower2(double power) {Viper_Slide2.setPower(power);}
     public int getCurrentPosition() {
-        return Viper_Slide1.getCurrentPosition();
+        return Viper_Slide2.getCurrentPosition();
     }
 }
