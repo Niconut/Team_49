@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
-public class Viper_Slide {
+public class  Viper_Slide {
     private DcMotorEx Viper_Slide;
 
 

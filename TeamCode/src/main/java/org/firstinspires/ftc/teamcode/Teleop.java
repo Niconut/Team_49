@@ -228,9 +228,14 @@ public class Teleop extends LinearOpMode {
             } else {
                 ClimbArm.setPower(0);
             }*/
+            if (viper_move != 0){
+                Viper_Slide.setPower(viper_move);
+            }else{
+                Viper_Slide.setPower(0);
+            }
            /* if (climb_move != 0){
                 ClimbArm.setPower(climb_move);
-            } else {
+     else {
                 ClimbArm.setPower(0);
             }*/
 
@@ -299,8 +304,8 @@ public class Teleop extends LinearOpMode {
                 viperPID.setSetPoint(viperHighBasketPosition);
             }
 
-            viperCurrentPosition = Viper_Slide.getCurrentPosition();
-           if(!(viper_move == 0)){
+            //viperCurrentPosition = Viper_Slide.getCurrentPosition();
+           /*if(!(viper_move == 0)){
                 //viper_SlidePID.setSetPoint(viper_Current_Position - (10 * viper_move));
                 newViperPosition = (int)(viperCurrentPosition + (50 * viper_move));
                 if (newViperPosition > -50){
@@ -308,7 +313,7 @@ public class Teleop extends LinearOpMode {
                 }
                 viperPID.setSetPoint(newViperPosition);
                 viperCurrentPosition = Viper_Slide.getCurrentPosition();
-            }
+            }*/
 
           if(!(arm_move == 0)){
               armkP = 0.01;
@@ -348,11 +353,11 @@ public class Teleop extends LinearOpMode {
             armPower = armPID.calculate(armCurrentPosition);
             //arm1.setPower1(gamepad2.left_stick_y);
             arm1.setPower1(armPower);
-           viperPower = viperPID.calculate(viperCurrentPosition);
+           //viperPower = viperPID.calculate(viperCurrentPosition);
 
-           Viper_Slide.setPower(viperPower);
+           //Viper_Slide.setPower(viperPower);
 
-           viperUsedPower = Viper_Slide.getPower();
+           //viperUsedPower = Viper_Slide.getPower();
 
            climbPower = climbPID.calculate(climbCurrentPositon);
 
