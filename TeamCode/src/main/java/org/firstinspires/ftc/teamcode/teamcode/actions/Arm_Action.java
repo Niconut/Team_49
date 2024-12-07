@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Arm_Action {
     public DcMotorEx arm1;
     public PIDController armPID;
-    private static int armPickUpPosition = 1000;
+    private static int armPickUpPosition = 2150;
     private static int armClearPosition = 550;
     private static int armStartPosition = 0;
     public static double armkP = 0.01;

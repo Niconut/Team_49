@@ -20,6 +20,8 @@ public class Viper_Slide_Action {
     private static int viperStartPosition = 0;
     private static int viperHighBasketPosition = -2900; //uses 0.23
     private static int viperLowBasketPosition = -1921; //uses 0.075
+    private static int viperHighSpecimenPrepPosition = -1389;
+    private static int viperHighSpecimenPosition = -1790;
 
     public Viper_Slide_Action(HardwareMap hardwareMap) {
         this.Viper_Slide = hardwareMap.get(DcMotorEx.class, "Viper_Slide");
@@ -46,7 +48,7 @@ public class Viper_Slide_Action {
         @Override
         public boolean run (@NonNull TelemetryPacket packet){
             if(!initialized){
-                Viper_Slide.setTargetPosition(viperHighBasketPosition);
+                Viper_Slide.setTargetPosition(viperHighSpecimenPosition);
                 Viper_Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide.setPower(-0.8);
                 initialized = true;
@@ -56,7 +58,41 @@ public class Viper_Slide_Action {
 
         }
     }
+    public class ViperPrepScore implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (!initialized) {
+                Viper_Slide.setTargetPosition(viperHighSpecimenPrepPosition);
+                Viper_Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide.setPower(-0.8);
+                initialized = true;
+            }
+
+            return false;
+
+        }
+    }
+    public class ViperStart implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run (@NonNull TelemetryPacket packet){
+            if(!initialized){
+                Viper_Slide.setTargetPosition(viperStartPosition);
+                Viper_Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide.setPower(0.8);
+                initialized = true;
+            }
+
+            return false;
+
+        }
+    }
+    public Action viperPrepScore(){return new ViperPrepScore();}
     public Action viperScore(){
         return new ViperScore();
     }
+    public Action viperStart(){return new ViperStart();}
 }

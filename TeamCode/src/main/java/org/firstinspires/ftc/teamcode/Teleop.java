@@ -30,12 +30,17 @@
 package org.firstinspires.ftc.teamcode;
 
 //import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.subsystems.Specimen_Gripper;
 import org.firstinspires.ftc.teamcode.teamcode.MecanumDrive;
 
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
@@ -83,6 +88,7 @@ public class Teleop extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private static Gripper Gripper_Right = null;
     private static Gripper Gripper_Left = null;
+    private static Specimen_Gripper Gripper = null;
     private static Viper_Slide Viper_Slide = null;
     private static Arm arm1 = null;
     private static Intake intake = null;
@@ -118,6 +124,8 @@ public class Teleop extends LinearOpMode {
     private static int viperStartPosition = 0;
     private static int viperHighBasketPosition = -3200; //uses 0.23
     private static int viperLowBasketPosition = -1921; //uses 0.075
+    private static int viperHighSpecimenPrepPosition = -1389;
+    private static int viperHighSpecimenPosition = -1740;
     private static double driveSlowScale = 0.5;
     private static double newClimbPosition = 0;
     private static double climbCurrentPositon = 0;
@@ -134,7 +142,9 @@ public class Teleop extends LinearOpMode {
     private static double wristOrientation = 0;
     @Override
     public void runOpMode() {
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
       //  intake = new Intake(hardwareMap);
+        Gripper = new Specimen_Gripper(hardwareMap);
        Gripper_Left = new Gripper(hardwareMap);
        Gripper_Right = new Gripper(hardwareMap);
         arm1 = new Arm(hardwareMap);
@@ -154,9 +164,12 @@ public class Teleop extends LinearOpMode {
         climbPID.setTolerance(200, 200);
 
         // Wait for the game to start (driver presses START)
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-
+        while (opModeInInit()) {
+            viperCurrentPosition = Viper_Slide.getCurrentPosition();
+            telemetry.addData("Status", "Initialized");
+            telemetry.addData("ViperPos", viperCurrentPosition);
+            telemetry.update();
+        }
         intake_roller_position = 0;
 
 
@@ -173,13 +186,21 @@ public class Teleop extends LinearOpMode {
                             (-gamepad1.left_stick_x * Math.abs(gamepad1.left_stick_x)) * DriveScale,
                             (-gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x)) * DriveRotSlowScale
                     )
-            );
-
-            drive.update();*/
+            );*/
+            drive.setDrivePowers(new PoseVelocity2d(
+                    new Vector2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x
+                    ),
+                    -gamepad1.right_stick_x
+            ));
+            drive.updatePoseEstimate();
             //Park_Arm.setPosition(1);
             double arm_move = gamepad2.left_stick_y;
             double viper_move = gamepad2.right_stick_y;
             double climbMove = gamepad1.right_stick_y;
+            Gripper.setPosition(gamepad1.left_bumper? 0.7 : 0.5);
+
 
             if (gamepad2.left_bumper) {
                 armPID.setSetPoint(armClearPosition);
@@ -188,7 +209,11 @@ public class Teleop extends LinearOpMode {
                 basket.setPosition(0.55);
             }
 
-
+            if (viper_move !=0) {
+                Viper_Slide.setPower(viper_move);
+            } else {
+                Viper_Slide.setPower(0);
+            }
             /*
              if (arm_move != 0) {
                 arm1.setPower1(arm_move);
@@ -278,15 +303,15 @@ public class Teleop extends LinearOpMode {
            if(!(viper_move == 0)){
                 //viper_SlidePID.setSetPoint(viper_Current_Position - (10 * viper_move));
                 newViperPosition = (int)(viperCurrentPosition + (50 * viper_move));
-                if (newViperPosition > 50){
-                    newViperPosition = 50;
+                if (newViperPosition > -50){
+                    newViperPosition = -50;
                 }
                 viperPID.setSetPoint(newViperPosition);
                 viperCurrentPosition = Viper_Slide.getCurrentPosition();
             }
 
           if(!(arm_move == 0)){
-              armkP = 0.1;
+              armkP = 0.01;
               armCurrentPosition = arm1.getCurrentPosition();
                 newArmPosition = (int)(armCurrentPosition + (20 * arm_move));
                 if (newArmPosition < 10){
@@ -294,10 +319,10 @@ public class Teleop extends LinearOpMode {
                 }
                 if (newArmPosition > 2200){
                     newArmPosition = 2200;
-              }
+                }
                 armPID.setSetPoint(newArmPosition);
                 //armCurrentPosition = arm1.getCurrentPosition();
-            }
+          }
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
 
            /* if(!(climbMove == 0)){
@@ -336,10 +361,9 @@ public class Teleop extends LinearOpMode {
             ClimbArm.setPower(climbPower);
 
             // Show the elapsed game time and wheel power.
-           /* Pose2d poseEstimate = drive.getPoseEstimate();
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());*/
+             telemetry.addData("x", drive.pose.position.x);
+             telemetry.addData("y", drive.pose.position.y);
+             telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
             telemetry.addData("ArmPos1", armCurrentPosition);
             telemetry.addData("ViperPos", viperCurrentPosition);
             telemetry.addData("ClimbPos", climbCurrentPositon);
@@ -348,5 +372,6 @@ public class Teleop extends LinearOpMode {
             //telemetry.addData("WristOrientation", wristOrientation);
 
             telemetry.update();
-        }
-    }}
+         }
+    }
+}

@@ -8,32 +8,27 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Gripper_Action {
-    private Servo GripperLeft;
-    private Servo GripperRight;
+    private Servo Gripper;
 
     public Gripper_Action(HardwareMap hardwareMap) {
-        this.GripperLeft = hardwareMap.get(Servo.class, "Gripper_Left");
-        this.GripperLeft.setDirection(Servo.Direction.FORWARD);
-
-        this.GripperRight = hardwareMap.get(Servo.class, "Gripper_Right");
-        this.GripperRight.setDirection(Servo.Direction.FORWARD);
+        this.Gripper = hardwareMap.get(Servo.class, "Gripper");
+        this.Gripper.setDirection(Servo.Direction.FORWARD);
     }
-    public void setPosition1(double position){GripperLeft.setPosition(position);}
-    public void setPosition2(double position){GripperRight.setPosition(position);}
-    public void getPosition1(){GripperRight.getPosition();}
-    public void getPosition2(){GripperLeft.getPosition();}
+    public void setPosition1(double position){Gripper.setPosition(position);}
+    public void setPosition2(double position){Gripper.setPosition(position);}
+    public void getPosition1(){Gripper.getPosition();}
+    public void getPosition2(){Gripper.getPosition();}
 
     public class Gripper_Open implements Action {
         private boolean initialized = false;
         @Override
         public boolean run (@NonNull TelemetryPacket Packet){
             if (!initialized) {
-                GripperLeft.setPosition(0.5);
-                GripperRight.setPosition(0.5);
+                Gripper.setPosition(0.7);
                 initialized = true;
             }
 
-            double pos = GripperRight.getPosition();
+            double pos = Gripper.getPosition();
             Packet.put("Gripper1Pos", pos);
             return false;
         }
@@ -44,11 +39,10 @@ public class Gripper_Action {
         @Override
         public boolean run (@NonNull TelemetryPacket Packet){
             if (!initialized) {
-                GripperLeft.setPosition(0.4);
-                GripperRight.setPosition(0.625);
+                Gripper.setPosition(0.5);
                 initialized = true;
             }
-            double pos = GripperRight.getPosition();
+            double pos = Gripper.getPosition();
             Packet.put("Gripper1Pos", pos);
             return false;
         }
