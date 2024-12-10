@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.teamcode.actions.Arm_Action;
 import org.firstinspires.ftc.teamcode.teamcode.actions.Basket_Action;
 import org.firstinspires.ftc.teamcode.teamcode.actions.Gripper_Action;
 import org.firstinspires.ftc.teamcode.teamcode.actions.Viper_Slide_Action;
+import org.firstinspires.ftc.teamcode.teamcode.actions.Intake_Gripper_Action;
 import org.firstinspires.ftc.teamcode.teamcode.tuning.TuningOpModes;
 @Autonomous(name="Auto", group="A_DriveCode")
 public final class RightAuto extends LinearOpMode {
@@ -24,6 +25,7 @@ public final class RightAuto extends LinearOpMode {
     public Gripper_Action Gripper;
     public Arm_Action Arm;
     public Viper_Slide_Action Viper_Slide;
+    public Intake_Gripper_Action Intake_Gripper;
     Action TrajectoryHighSpecimenPrep, TrajectoryPickuUpSamples1, TrajectoryPickUpSamples2;
      @Override
     public void runOpMode() throws InterruptedException {
@@ -34,21 +36,22 @@ public final class RightAuto extends LinearOpMode {
             Gripper_Action Gripper = new Gripper_Action(hardwareMap);
             Arm_Action Arm = new Arm_Action(hardwareMap);
             Viper_Slide_Action Viper_Slide = new Viper_Slide_Action(hardwareMap);
+            Intake_Gripper_Action Intake_Gripper = new Intake_Gripper_Action(hardwareMap);
 
           TrajectoryActionBuilder trajectoryHighSpecimenPrep = drive.actionBuilder(beginPose)
           .setReversed(true)
           .lineToY(33);
           //.splineTo(new Vector2d(0,32), Math.toRadians(90))
 
-          TrajectoryActionBuilder trajectoryPickUpSamples1 = trajectoryHighSpecimenPrep.endTrajectory().fresh()
-          .setReversed(false)
-          .lineToY(52)
+          TrajectoryActionBuilder trajectoryPickUpSamples1 = drive.actionBuilder(beginPose)
+                  .setReversed(false)
+                  .lineToY(52)
           .setReversed(true)
-          .splineTo(new Vector2d(-48,52), Math.toRadians(90));
+          .strafeToLinearHeading(new Vector2d(-49,56), Math.toRadians(-90));
 
           TrajectoryActionBuilder trajectoryPickUpSamples2 = trajectoryPickUpSamples1.endTrajectory().fresh()
           .setReversed(false)
-         .strafeTo(new Vector2d(-56,52));
+         .strafeTo(new Vector2d(-59,56));
 
 
           TrajectoryHighSpecimenPrep = trajectoryHighSpecimenPrep.build();
@@ -104,17 +107,25 @@ public final class RightAuto extends LinearOpMode {
                         ),
                         new SleepAction(0.1),
                         Arm.armPickup(),
-                        new SleepAction(0.3),
-                        Gripper.gripper_Close(),
-                        new SleepAction(0.3),
+                        new SleepAction(1.1),
+                        Intake_Gripper.gripper_Close(),
+                        new SleepAction(0.7),
+                        Arm.armReset(),
+                        new SleepAction(1.1),
+                        Intake_Gripper.gripper_Open(),
+                        new SleepAction(0.4),
                         Basket.basket_Score(),
-                        Gripper.gripper_Open(),
                         new SleepAction(0.1),
+                        Basket.basket_Hold(),
                         TrajectoryPickUpSamples2,
                         Arm.armPickup(),
-                        new SleepAction(0.3),
-                        Gripper.gripper_Close(),
-                        new SleepAction(0.1),
+                        new SleepAction(1.1),
+                        Intake_Gripper.gripper_Close(),
+                        new SleepAction(0.7),
+                        Arm.armReset(),
+                        new SleepAction(1.1),
+                        Intake_Gripper.gripper_Open(),
+                        new SleepAction(0.4),
                         Basket.basket_Score()
                         )
                 );

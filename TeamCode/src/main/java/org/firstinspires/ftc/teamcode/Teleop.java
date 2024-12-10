@@ -125,13 +125,13 @@ public class Teleop extends LinearOpMode {
     private static int viperHighBasketPosition = -3200; //uses 0.23
     private static int viperLowBasketPosition = -1921; //uses 0.075
     private static int viperHighSpecimenPrepPosition = -1389;
-    private static int viperHighSpecimenPosition = -1740;
+    private static int viperHighSpecimenPosition = -1790;
     private static double driveSlowScale = 0.5;
     private static double newClimbPosition = 0;
     private static double climbCurrentPositon = 0;
     private static double climbStartPosition = 0;
     private static double climbPrepPosition = -11500;
-    private static double climbClimbPosition = -1570;
+    private static double climbClimbPosition = -1300;
     private static double DriveScale = 1;
     private static double DriveRotSlowScale = 0;
     private static double wrist_move = 0;
@@ -158,7 +158,7 @@ public class Teleop extends LinearOpMode {
         armPID.setTolerance(50, 10);
 
         PIDController viperPID = new PIDController(viperkP, viperkI, viperkD);
-        viperPID.setTolerance(50, 10);
+        viperPID.setTolerance(200, 50);
 
         PIDController climbPID = new PIDController(climbkP, climbkI, climbkD);
         climbPID.setTolerance(200, 200);
@@ -209,11 +209,11 @@ public class Teleop extends LinearOpMode {
                 basket.setPosition(0.55);
             }
 
-            if (viper_move !=0) {
+          /*  if (viper_move !=0) {
                 Viper_Slide.setPower(viper_move);
             } else {
                 Viper_Slide.setPower(0);
-            }
+            }*/
             /*
              if (arm_move != 0) {
                 arm1.setPower1(arm_move);
@@ -255,11 +255,27 @@ public class Teleop extends LinearOpMode {
                 }
             }*/
 
+            if (gamepad2.dpad_right && gamepad2.left_bumper){
+                viperPID.setSetPoint(viperHighSpecimenPrepPosition);
+            }
+
+            if (gamepad2.dpad_up && gamepad2.left_bumper){
+                viperPID.setSetPoint(viperHighSpecimenPosition);
+            }
+
            // wrist.setPosition((wristOrientation==0)? 0.3 : 0.66);
             if (gamepad1.y) {
+                Gripper_Right.setPosition2(0.625);
+                Gripper_Left.setPosition1(0.4);
+                armPID.setSetPoint(armStartPosition);
+                sleep(1000);
                 climbPID.setSetPoint(climbPrepPosition);
             }
             if (gamepad1.a) {
+                Gripper_Right.setPosition2(0.625);
+                Gripper_Left.setPosition1(0.4);
+                armPID.setSetPoint(armStartPosition);
+                sleep(1000);
                 climbPID.setSetPoint(climbClimbPosition);
             }
 
@@ -304,12 +320,12 @@ public class Teleop extends LinearOpMode {
                 viperPID.setSetPoint(viperHighBasketPosition);
             }
 
-            //viperCurrentPosition = Viper_Slide.getCurrentPosition();
+            viperCurrentPosition = Viper_Slide.getCurrentPosition();
            /*if(!(viper_move == 0)){
                 //viper_SlidePID.setSetPoint(viper_Current_Position - (10 * viper_move));
                 newViperPosition = (int)(viperCurrentPosition + (50 * viper_move));
-                if (newViperPosition > -50){
-                    newViperPosition = -50;
+                if (newViperPosition > -100){
+                    newViperPosition = -100;
                 }
                 viperPID.setSetPoint(newViperPosition);
                 viperCurrentPosition = Viper_Slide.getCurrentPosition();
@@ -353,11 +369,12 @@ public class Teleop extends LinearOpMode {
             armPower = armPID.calculate(armCurrentPosition);
             //arm1.setPower1(gamepad2.left_stick_y);
             arm1.setPower1(armPower);
-           //viperPower = viperPID.calculate(viperCurrentPosition);
+            viperCurrentPosition = Viper_Slide.getCurrentPosition();
+            viperPower = viperPID.calculate(viperCurrentPosition);
 
-           //Viper_Slide.setPower(viperPower);
+           Viper_Slide.setPower(viperPower);
 
-           //viperUsedPower = Viper_Slide.getPower();
+           viperUsedPower = Viper_Slide.getPower();
 
            climbPower = climbPID.calculate(climbCurrentPositon);
 

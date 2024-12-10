@@ -14,7 +14,7 @@ public class ClimbArm {
 
         this.ClimbArm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
-        this.ClimbArm.setDirection(DcMotorEx.Direction.FORWARD);
+        this.ClimbArm.setDirection(DcMotorEx.Direction.REVERSE);
         this.ClimbArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.ClimbArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
