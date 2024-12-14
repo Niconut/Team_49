@@ -18,10 +18,10 @@ public class Viper_Slide_Action {
     private PIDController viperPID;
     private double viperPower = 0;
     private static int viperStartPosition = 0;
-    private static int viperHighBasketPosition = -2900; //uses 0.23
-    private static int viperLowBasketPosition = -1921; //uses 0.075
-    private static int viperHighSpecimenPrepPosition = -1389;
-    private static int viperHighSpecimenPosition = -1790;
+    private static int viperHighBasketPosition = -4270; //uses 0.23
+    private static int viperLowBasketPosition = -2230; //uses 0.075
+    private static int   viperHighSpecimenPrepPosition = -1880;
+    private static int     viperHighSpecimenPosition = -2345;
 
     public Viper_Slide_Action(HardwareMap hardwareMap) {
         this.Viper_Slide = hardwareMap.get(DcMotorEx.class, "Viper_Slide");
@@ -49,6 +49,22 @@ public class Viper_Slide_Action {
         public boolean run (@NonNull TelemetryPacket packet){
             if(!initialized){
                 Viper_Slide.setTargetPosition(viperHighSpecimenPosition);
+                Viper_Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide.setPower(-0.8);
+                initialized = true;
+            }
+
+            return false;
+
+        }
+    }
+    public class ViperHighScore implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run (@NonNull TelemetryPacket packet){
+            if(!initialized){
+                Viper_Slide.setTargetPosition(viperHighBasketPosition);
                 Viper_Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide.setPower(-0.8);
                 initialized = true;
@@ -95,4 +111,5 @@ public class Viper_Slide_Action {
         return new ViperScore();
     }
     public Action viperStart(){return new ViperStart();}
+    public Action viperHighScore(){return new ViperHighScore();}
 }

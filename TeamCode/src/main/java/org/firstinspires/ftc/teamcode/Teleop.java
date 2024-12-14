@@ -122,10 +122,10 @@ public class Teleop extends LinearOpMode {
     public static double viperUsedPower = 0;
     private static int viperCurrentPosition = 0;
     private static int viperStartPosition = 0;
-    private static int viperHighBasketPosition = -3200; //uses 0.23
-    private static int viperLowBasketPosition = -1921; //uses 0.075
-    private static int viperHighSpecimenPrepPosition = -1389;
-    private static int viperHighSpecimenPosition = -1790;
+    private static int viperHighBasketPosition = -4270; //uses 0.23
+    private static int viperLowBasketPosition = -2230; //uses 0.075
+    private static int   viperHighSpecimenPrepPosition = -1880;
+    private static int viperHighSpecimenPosition = -1340;
     private static double driveSlowScale = 0.5;
     private static double newClimbPosition = 0;
     private static double climbCurrentPositon = 0;
@@ -158,7 +158,7 @@ public class Teleop extends LinearOpMode {
         armPID.setTolerance(50, 10);
 
         PIDController viperPID = new PIDController(viperkP, viperkI, viperkD);
-        viperPID.setTolerance(200, 50);
+        viperPID.setTolerance(50, 10);
 
         PIDController climbPID = new PIDController(climbkP, climbkI, climbkD);
         climbPID.setTolerance(200, 200);
@@ -209,7 +209,7 @@ public class Teleop extends LinearOpMode {
                 basket.setPosition(0.55);
             }
 
-          /*  if (viper_move !=0) {
+            /*if (viper_move !=0) {
                 Viper_Slide.setPower(viper_move);
             } else {
                 Viper_Slide.setPower(0);
@@ -228,11 +228,11 @@ public class Teleop extends LinearOpMode {
             } else {
                 ClimbArm.setPower(0);
             }*/
-            if (viper_move != 0){
+           /* if (viper_move != 0){
                 Viper_Slide.setPower(viper_move);
             }else{
                 Viper_Slide.setPower(0);
-            }
+            }*/
            /* if (climb_move != 0){
                 ClimbArm.setPower(climb_move);
      else {
@@ -255,11 +255,11 @@ public class Teleop extends LinearOpMode {
                 }
             }*/
 
-            if (gamepad2.dpad_right && gamepad2.left_bumper){
+            if (gamepad2.dpad_left){
                 viperPID.setSetPoint(viperHighSpecimenPrepPosition);
             }
 
-            if (gamepad2.dpad_up && gamepad2.left_bumper){
+            if (gamepad2.b){
                 viperPID.setSetPoint(viperHighSpecimenPosition);
             }
 
@@ -321,7 +321,7 @@ public class Teleop extends LinearOpMode {
             }
 
             viperCurrentPosition = Viper_Slide.getCurrentPosition();
-           /*if(!(viper_move == 0)){
+           if(!(viper_move == 0)){
                 //viper_SlidePID.setSetPoint(viper_Current_Position - (10 * viper_move));
                 newViperPosition = (int)(viperCurrentPosition + (50 * viper_move));
                 if (newViperPosition > -100){
@@ -329,7 +329,7 @@ public class Teleop extends LinearOpMode {
                 }
                 viperPID.setSetPoint(newViperPosition);
                 viperCurrentPosition = Viper_Slide.getCurrentPosition();
-            }*/
+            }
 
           if(!(arm_move == 0)){
               armkP = 0.01;

@@ -12,24 +12,23 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.teamcode.TankDrive;
 import org.firstinspires.ftc.teamcode.teamcode.actions.Arm_Action;
 import org.firstinspires.ftc.teamcode.teamcode.actions.Basket_Action;
 import org.firstinspires.ftc.teamcode.teamcode.actions.Gripper_Action;
-import org.firstinspires.ftc.teamcode.teamcode.actions.Viper_Slide_Action;
 import org.firstinspires.ftc.teamcode.teamcode.actions.Intake_Gripper_Action;
-import org.firstinspires.ftc.teamcode.teamcode.tuning.TuningOpModes;
-@Autonomous(name="Right Auto", group="A_DriveCode")
-public final class RightAuto extends LinearOpMode {
+import org.firstinspires.ftc.teamcode.teamcode.actions.Viper_Slide_Action;
+
+@Autonomous(name="LeftAuto", group="A_DriveCode")
+public final class LeftAuto extends LinearOpMode {
     public Basket_Action Basket;
     public Gripper_Action Gripper;
     public Arm_Action Arm;
     public Viper_Slide_Action Viper_Slide;
     public Intake_Gripper_Action Intake_Gripper;
-    Action TrajectoryHighSpecimenPrep, TrajectoryPickuUpSamples1, TrajectoryPickUpSamples2;
+    Action TrajectoryHighSpecimenPrep, TrajectoryPickuUpSamples1, TrajectoryScore1, TrajectoryPickUpSamples2, TrajectoryScore2, TrajectoryPark;
      @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d beginPose = new Pose2d(0, 63.5, Math.toRadians(90));
+        Pose2d beginPose = new Pose2d(10, 62, Math.toRadians(90));
 
             MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
             Basket_Action Basket = new Basket_Action(hardwareMap);
@@ -40,23 +39,43 @@ public final class RightAuto extends LinearOpMode {
 
           TrajectoryActionBuilder trajectoryHighSpecimenPrep = drive.actionBuilder(beginPose)
           .setReversed(true)
-          .lineToY(35);
+          .lineToY(33);
           //.splineTo(new Vector2d(0,32), Math.toRadians(90))
 
-          TrajectoryActionBuilder trajectoryPickUpSamples1 = drive.actionBuilder(beginPose)
-                  .setReversed(false)
-                  .lineToY(52)
-          .setReversed(true)
-          .strafeToLinearHeading(new Vector2d(-49,56), Math.toRadians(-90));
+          TrajectoryActionBuilder trajectoryPickUpSamples1 = trajectoryHighSpecimenPrep.endTrajectory().fresh()
+                  .setReversed(true)
+                  .strafeToLinearHeading(new Vector2d(51,48), Math.toRadians(-90));
 
-          TrajectoryActionBuilder trajectoryPickUpSamples2 = trajectoryPickUpSamples1.endTrajectory().fresh()
-          .setReversed(false)
-         .strafeTo(new Vector2d(-59,56));
+
+
+          TrajectoryActionBuilder trajectoryScore1 = trajectoryPickUpSamples1.endTrajectory().fresh()
+                  .setReversed(true)
+                  .strafeToLinearHeading(new Vector2d(60,60), Math.toRadians(-187));
+
+
+          TrajectoryActionBuilder trajectoryPickUpSamples2 = trajectoryScore1.endTrajectory().fresh()
+                  .setReversed(false)
+                  .strafeToLinearHeading(new Vector2d(62,47), Math.toRadians(-90));
+
+
+          TrajectoryActionBuilder trajectoryScore2 = trajectoryPickUpSamples2.endTrajectory().fresh()
+                  .setReversed(true)
+                  .strafeToLinearHeading(new Vector2d(60,60), Math.toRadians(-187));
+          //59,65
+
+         TrajectoryActionBuilder trajectoryPark = trajectoryPickUpSamples2.endTrajectory().fresh()
+                 .setReversed(false)
+                 .strafeToLinearHeading(new Vector2d(-49,62), Math.toRadians(-90));
+
+
 
 
           TrajectoryHighSpecimenPrep = trajectoryHighSpecimenPrep.build();
           TrajectoryPickuUpSamples1 = trajectoryPickUpSamples1.build();
+          TrajectoryScore1 = trajectoryScore1.build();
           TrajectoryPickUpSamples2 = trajectoryPickUpSamples2.build();
+          TrajectoryScore2 = trajectoryScore2.build();
+          TrajectoryPark = trajectoryPark.build();
 
         waitForStart();
             /*Actions.runBlocking(
@@ -91,7 +110,10 @@ public final class RightAuto extends LinearOpMode {
 
 
                 Actions.runBlocking(
+
                         new SequentialAction(
+                        Intake_Gripper.gripper_Open(),
+                        Basket.basket_Hold(),
                         Arm.armClear(),
                         new ParallelAction(
                             TrajectoryHighSpecimenPrep,
@@ -101,6 +123,7 @@ public final class RightAuto extends LinearOpMode {
                         new SleepAction(0.5),
                         Gripper.gripper_Open(),
                         new SleepAction(0.5),
+                        Intake_Gripper.gripper_Open(),
                         new ParallelAction(
                             TrajectoryPickuUpSamples1,
                             Viper_Slide.viperStart()
@@ -114,10 +137,20 @@ public final class RightAuto extends LinearOpMode {
                         new SleepAction(1.1),
                         Intake_Gripper.gripper_Open(),
                         new SleepAction(0.4),
-                        Basket.basket_Score(),
+                        Arm.armClear(),
+                        new SleepAction(0.3),
+                        Viper_Slide.viperHighScore(),
+                        new SleepAction(2),
+                        TrajectoryScore1,
                         new SleepAction(0.1),
+                        Basket.basket_Score(),
+                        new SleepAction(1),
                         Basket.basket_Hold(),
+                        new ParallelAction(
                         TrajectoryPickUpSamples2,
+                                Viper_Slide.viperStart()
+                        ),
+                        new SleepAction(0.1),
                         Arm.armPickup(),
                         new SleepAction(1.1),
                         Intake_Gripper.gripper_Close(),
@@ -126,7 +159,19 @@ public final class RightAuto extends LinearOpMode {
                         new SleepAction(1.1),
                         Intake_Gripper.gripper_Open(),
                         new SleepAction(0.4),
-                        Basket.basket_Score()
+                        Arm.armClear(),
+                        new SleepAction(0.5),
+                        Viper_Slide.viperHighScore(),
+                        new SleepAction(2),
+                        TrajectoryScore2,
+                        new SleepAction(0.1),
+                        Basket.basket_Score(),
+                        new SleepAction(1),
+                                Arm.armReset(),
+                                new SleepAction(1),
+                                TrajectoryPark,
+                                Viper_Slide.viperStart(),
+                                new SleepAction(1)
                         )
                 );
     }
