@@ -29,7 +29,7 @@ public final class RightAuto extends LinearOpMode {
     Action TrajectoryHighSpecimenPrep, TrajectoryPickuUpSamples1, TrajectoryPickUpSamples2;
      @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d beginPose = new Pose2d(0, 63.5, Math.toRadians(90));
+        Pose2d beginPose = new Pose2d(-10, 63.5, Math.toRadians(90));
 
             MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
             Basket_Action Basket = new Basket_Action(hardwareMap);
