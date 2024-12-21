@@ -94,12 +94,12 @@ public class Teleop extends LinearOpMode {
 
     private static int armCurrentPosition = 0;
     private static int newArmPosition = 0;
-    private static int ArmMinimum = 80;
-    private static int ArmMaximum = 2360;
+    private static int ArmMinimum = 100;
+    private static int ArmMaximum = 3180;
     private static int ArmIncrements = 25;
 
     private static int SlideMinimum = 80;
-    private static int SlideMaximum = 3480;
+    private static int SlideMaximum = 3470;
     private static int slideCurrentPosition = 0;
     private static int newSlidePosition = 0;
     private static int SlideIncrements = 25;
