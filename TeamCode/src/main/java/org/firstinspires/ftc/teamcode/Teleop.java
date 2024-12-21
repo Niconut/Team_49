@@ -108,10 +108,10 @@ public class Teleop extends LinearOpMode {
     public static double viper_move = 0;
     public static double viper_target_position = 0;
     public static double viperSlidePositionStart = -25;
-    public static double viperSlidePositionPickUp = -700;
+    public static double viperSlidePositionPickUp = -950;
     public static double viperSlidePositionHighBasket = -4300;
-    public static double viperSlidePositionHighRung = -1140;
-    public static double viperSlidePositionHighRungScore = -1480;
+    public static double viperSlidePositionHighRung = -1300;
+    public static double viperSlidePositionHighRungScore = -1560;
     public static double viperSlidePositionHighClimb = -2900;
     public static int viperRotateScale = 200;
     private static double slideCurrentPosition = 0;
@@ -162,6 +162,8 @@ public class Teleop extends LinearOpMode {
         shoulder.setPosition(0.5);
         slide.setPosition(0.25);
         Elbow.setPosition(0.72);
+        Wrist.setPosition(0.5);
+        gripper.setPosition(0.75);
 
 
         waitForStart();
@@ -184,36 +186,37 @@ public class Teleop extends LinearOpMode {
             double shoulder_move = -gamepad2.left_stick_x;
             double slide_move = gamepad2.left_stick_y;
             intake_gripper.setPosition(gamepad2.right_bumper? 0.55 : 0.325);
-            gripper.setPosition(gamepad1.right_bumper? 0.6 : 0.325);
+            //gripper.setPosition(gamepad1.right_bumper? 0.6 : 0.325);
             //Elbow.setPosition(gamepad2.left_bumper? 0.6 : 0.75);
-            if(gamepad2.dpad_right){
+
+            if (gamepad1.right_bumper){
+                gripper.setPosition(0.6);
+                sleep(200);
+                Elbow.setPosition(0.74);
+            }
+
+            if (gamepad1.left_bumper){
+                Elbow.setPosition(0.75);
+                sleep(200);
+                gripper.setPosition(0.325);
+            }
+            if(gamepad2.right_bumper){
                 wristpos = wristpos + 1;
             }
 
-            if(gamepad2.dpad_left){
+            if(gamepad2.left_bumper){
                 wristpos = wristpos - 1;
             }
 
-           wristpos = (wristpos > 2)? 2 : wristpos;
+           wristpos = (wristpos > 75)? 75 : wristpos;
             wristpos = (wristpos < 0)? 0 : wristpos;
 
-            switch(wristpos){
-                case 0:{
-                    Wrist.setPosition(0.35);
-                    break;
-                }
-                case 1:{
-                    Wrist.setPosition(0.5);
-                    break;
-                }
-                case 2:{
-                    Wrist.setPosition(0.65);
-                    break;
-                }
-                default:{
-                    Wrist.setPosition(0.5);
-                    break;
-                }
+            if (wristpos < 0.26){
+                Wrist.setPosition(0.35);
+            } else if(wristpos > 0.5) {
+                Wrist.setPosition(0.65);
+            } else {
+                Wrist.setPosition(0.5);
             }
 
            /* if (intake_gripper_move1 > 0.5){
@@ -252,22 +255,25 @@ public class Teleop extends LinearOpMode {
             if (gamepad2.x) {
                 Elbow.setPosition(0.72);
                 shoulder.setPosition(0.5);
-            }
-
-            if (gamepad2.a) {
-                Elbow.setPosition(0.76);
+                sleep(500);
+                gripper.setPosition(0.6);
+                sleep(200);
+                Elbow.setPosition(0.65);
+                shoulder.setPosition(0.5);
             }
 
             if (gamepad2.b) {
-                Elbow.setPosition(0.7);
-                shoulder.setPosition(0.01);
+                Elbow.setPosition(0.74);
+                slide.setPosition(0.75);
+                shoulder.setPosition(0.5);
+            }
+
+            if (gamepad2.a) {
+                Elbow.setPosition(0.65);
+                shoulder.setPosition(0);
                 slide.setPosition(0.25);
             }
 
-            if (gamepad2.y) {
-                shoulder.setPosition(0);
-                Elbow.setPosition(0.65);
-            }
 
            /* if (gamepad2.left_bumper) {
                 arm1.setPosition1(0.8);
@@ -331,7 +337,6 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.a){
                 viper_SlidePID.setSetPoint(viperSlidePositionPickUp);
                 arm1.setPosition1(0.225);
-                arm2.setPosition2(0.225);
             }
 
             if (gamepad1.y) {
