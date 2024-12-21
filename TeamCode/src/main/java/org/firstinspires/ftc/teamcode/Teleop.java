@@ -131,6 +131,26 @@ public class Teleop extends LinearOpMode {
     private boolean intake_Switch = false;
     private boolean intake_Status = false;
     private static int wristpos = 1;
+    private static double wristLeft = 0.65;
+    private static double wristRight = 0.35;
+    private static double wristInit = 0.5;
+    private static double intakeGripperInit = 0.55;
+    private static double intakeGripperOpen = 0.55;
+    private static double intakeGripperClose = 0.325;
+    private static double gripperClosed = 0.325;
+    private static double gripperOpen = 0.6;
+    private static double slideInit = 0.25;
+    private static double slideMin = 0.25;
+    private static double slideMax = 0.75;
+    private static double elbowInit = 0.47;
+    private static double elbowStow = 0.47;
+    private static double elbowDrop = 0.54;
+    private static double elbowPickUpPrep = 0.555;
+    private static double elbowPickUp = 0.57;
+    private static double shoulderInit = 0.15;
+    private static double shoulderStow = 0.15;
+    private static double shoulderPickup = 0.675;
+    private static double shoulderDrop = 0.2;
     @Override
     public void runOpMode() {
 
@@ -159,11 +179,12 @@ public class Teleop extends LinearOpMode {
         telemetry.update();
 
         intake_roller_position = 0;
-        shoulder.setPosition(0.5);
-        slide.setPosition(0.25);
-        Elbow.setPosition(0.72);
-        Wrist.setPosition(0.5);
-        gripper.setPosition(0.75);
+        shoulder.setPosition(shoulderInit);
+        slide.setPosition(slideInit);
+        Elbow.setPosition(elbowInit);
+        Wrist.setPosition(wristInit);
+        intake_gripper.setPosition(intakeGripperInit);
+        wristpos = 30;
 
 
         waitForStart();
@@ -185,35 +206,45 @@ public class Teleop extends LinearOpMode {
 
             double shoulder_move = -gamepad2.left_stick_x;
             double slide_move = gamepad2.left_stick_y;
-            intake_gripper.setPosition(gamepad2.right_bumper? 0.55 : 0.325);
-            //gripper.setPosition(gamepad1.right_bumper? 0.6 : 0.325);
+            //intake_gripper.setPosition(gamepad2.right_bumper? 0.55 : 0.325);
             //Elbow.setPosition(gamepad2.left_bumper? 0.6 : 0.75);
 
             if (gamepad1.right_bumper){
-                gripper.setPosition(0.6);
-                sleep(200);
-                Elbow.setPosition(0.74);
+                gripper.setPosition(gripperOpen);
             }
 
             if (gamepad1.left_bumper){
-                Elbow.setPosition(0.75);
-                sleep(200);
-                gripper.setPosition(0.325);
+                gripper.setPosition(gripperClosed);
             }
-            if(gamepad2.right_bumper){
+
+            if (gamepad2.right_bumper){
+                intake_gripper.setPosition(intakeGripperOpen);
+               sleep(200);
+                Elbow.setPosition(elbowPickUpPrep);
+            }
+
+            if (gamepad2.left_bumper){
+                Elbow.setPosition(elbowPickUp);
+                sleep(200);
+                intake_gripper.setPosition(intakeGripperClose);
+                sleep(200);
+                Elbow.setPosition(elbowPickUpPrep);
+            }
+            if(gamepad2.right_trigger > 0.5){
                 wristpos = wristpos + 1;
             }
 
-            if(gamepad2.left_bumper){
+            if(gamepad2.left_trigger > 0.5){
                 wristpos = wristpos - 1;
             }
+
 
            wristpos = (wristpos > 75)? 75 : wristpos;
             wristpos = (wristpos < 0)? 0 : wristpos;
 
-            if (wristpos < 0.26){
+            if (wristpos < 26){
                 Wrist.setPosition(0.35);
-            } else if(wristpos > 0.5) {
+            } else if(wristpos > 50) {
                 Wrist.setPosition(0.65);
             } else {
                 Wrist.setPosition(0.5);
@@ -236,8 +267,11 @@ public class Teleop extends LinearOpMode {
             if (shoulder_move != 0){
                 shoulderCurrentPosition = shoulder.getCurrentPosition();
                 shoulder.setPosition(shoulder.getCurrentPosition() + (shoulder_move * 0.01));
-                if (shoulderCurrentPosition > 0.88){
-                    shoulder.setPosition(0.88);
+                if (shoulderCurrentPosition > 1){
+                    shoulder.setPosition(1);
+                }
+                if (shoulderCurrentPosition < shoulderStow){
+                    shoulder.setPosition(shoulderStow);
                 }
             }
 
@@ -253,25 +287,25 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad2.x) {
-                Elbow.setPosition(0.72);
-                shoulder.setPosition(0.5);
+                Elbow.setPosition(elbowDrop);
+                shoulder.setPosition(shoulderDrop);
                 sleep(500);
-                gripper.setPosition(0.6);
+                intake_gripper.setPosition(intakeGripperOpen);
                 sleep(200);
-                Elbow.setPosition(0.65);
-                shoulder.setPosition(0.5);
+                Elbow.setPosition(elbowStow);
+                shoulder.setPosition(shoulderStow);
             }
 
             if (gamepad2.b) {
-                Elbow.setPosition(0.74);
-                slide.setPosition(0.75);
-                shoulder.setPosition(0.5);
+                Elbow.setPosition(elbowPickUpPrep);
+                slide.setPosition(slideMax);
+                shoulder.setPosition(shoulderPickup);
             }
 
             if (gamepad2.a) {
-                Elbow.setPosition(0.65);
-                shoulder.setPosition(0);
-                slide.setPosition(0.25);
+                Elbow.setPosition(elbowStow);
+                shoulder.setPosition(shoulderStow);
+                slide.setPosition(slideMin);
             }
 
 
@@ -316,8 +350,11 @@ public class Teleop extends LinearOpMode {
             }*/
 
             if (gamepad1.dpad_down){
+                gripper.setPosition(gripperClosed);
                 viper_SlidePID.setSetPoint(viperSlidePositionStart);
-
+                arm1.setPosition1(0.14);
+                arm2.setPosition2(0.14);
+                gripper.setPosition(gripperOpen);
             }
 
             if (gamepad1.dpad_left){
@@ -325,6 +362,11 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad1.b){
+                arm1.setPosition1(0.225);
+                arm2.setPosition2(0.225);
+                sleep(200);
+                gripper.setPosition(gripperClosed);
+                sleep(500);
                 viper_SlidePID.setSetPoint(viperSlidePositionHighRung);
                 arm1.setPosition1(0.8);
                 arm2.setPosition2(0.8);
@@ -332,11 +374,18 @@ public class Teleop extends LinearOpMode {
 
             if (gamepad1.dpad_up){
                 viper_SlidePID.setSetPoint(viperSlidePositionHighBasket);
+                arm1.setPosition1(0.75);
+                arm2.setPosition2(0.75);
             }
 
             if (gamepad1.a){
+                gripper.setPosition(gripperClosed);
+                sleep(100);
+                arm1.setPosition1(0.175);
+                arm2.setPosition2(0.175);
+                sleep(200);
                 viper_SlidePID.setSetPoint(viperSlidePositionPickUp);
-                arm1.setPosition1(0.225);
+                gripper.setPosition(gripperOpen);
             }
 
             if (gamepad1.y) {
@@ -406,6 +455,9 @@ public class Teleop extends LinearOpMode {
            // telemetry.addData("ArmCurrentPosition", armCurrentPosition);
             telemetry.addData("Shoulder", shoulder.getCurrentPosition());
             telemetry.addData("Slide", slide.getCurrentPosition());
+            telemetry.addData("Elbow", Elbow.getCurrentPosition());
+            telemetry.addData("Wrist", Wrist.getCurrentPosition());
+            telemetry.addData("Gripper", gripper.getCurrentPosition());
             telemetry.update();
             }
         }

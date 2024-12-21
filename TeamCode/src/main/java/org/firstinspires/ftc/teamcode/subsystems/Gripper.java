@@ -15,5 +15,5 @@ public class Gripper {
     public void setPosition(double position) {
         Gripper.setPosition(position);
     }
-    public void getPosition(){Gripper.getPosition();}
+    public double getCurrentPosition(){return Gripper.getPosition();}
 }
