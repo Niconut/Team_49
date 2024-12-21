@@ -79,20 +79,27 @@ public class Teleop extends LinearOpMode {
     private Slide slide = null;
     private Gripper gripper = null;
 
-    private static double DriveScale = 0.5;
-    private static double DriveRotSlowScale = 0;
-    private static  double DriveSlowScale = 0.5;
-    private static double armkP = 0.1;
+    private static double DriveScale = 1;
+    private static double DriveRotScale = 1;
+    private static double DriveNormalScale = 0.5;
+    private static double DriveRotNormalScale = 0.25;
+    private static double DriveRotSlowScale = .1;
+    private static  double DriveSlowScale = 0.25;
+
     private static int armCurrentPosition = 0;
     private static int newArmPosition = 0;
     private static int ArmMinimum = 80;
     private static int ArmMaximum = 2360;
-    private static int armPower = 0;
+    private static int ArmIncrements = 25;
+
     private static int SlideMinimum = 80;
     private static int SlideMaximum = 3480;
     private static int slideCurrentPosition = 0;
     private static int newSlidePosition = 0;
-    private static int slidePower = 0;
+    private static int SlideIncrements = 25;
+
+    private static double GripperOpen = 0.7;
+    private static double GripperClose = 0.5;
 
     @Override
     public void runOpMode() {
@@ -101,12 +108,9 @@ public class Teleop extends LinearOpMode {
         arm = new Arm(hardwareMap);
         slide = new Slide(hardwareMap);
         gripper = new Gripper(hardwareMap);
-      //  intake = new Intake(hardwareMap);
-        /*wrist = new Wrist(hardwareMap);
-        Park_Arm = new Park_Arm(hardwareMap);*/
-
 
         // Wait for the game to start (driver presses START)
+        // display arm and slide positions while in init, this is useful in determining values for desired positions
         telemetry.addData("Status", "Initialized");
         while(opModeInInit()){
             telemetry.addData("armCurrentPosition", arm.getCurrentPosition());
@@ -115,41 +119,53 @@ public class Teleop extends LinearOpMode {
         }
         telemetry.update();
 
+        // define PID controllers for arm and slide
+        PIDController armPID = new PIDController(0.01, 0, 0);
+        armPID.setTolerance(20,50);
 
-        PIDController armPID = new PIDController(0.01, 0.01, 0);
-        armPID.setTolerance(10,50);
-
-        PIDController slidePID = new PIDController(0.01, 0.01, 0);
-        slidePID.setTolerance(10,50);
+        PIDController slidePID = new PIDController(0.01, 0, 0);
+        slidePID.setTolerance(20,50);
 
         waitForStart();
         runtime.reset();
 
         armPID.setSetPoint(ArmMinimum);
+        slidePID.setSetPoint(SlideMinimum);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             double max;
 
+            // determine speed scaling
+            if (gamepad1.left_bumper)
+            {
+                DriveScale = DriveSlowScale;
+                DriveRotScale = DriveRotSlowScale;
+            }else
+            {
+                DriveScale = DriveNormalScale;
+                DriveRotScale = DriveRotNormalScale;
+            }
+
             drive.setWeightedDrivePower(
                     new Pose2d(
                             (-gamepad1.left_stick_y * Math.abs(gamepad1.left_stick_y)) * DriveScale,
                             (-gamepad1.left_stick_x * Math.abs(gamepad1.left_stick_x)) * DriveScale,
-                            (-gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x)) * DriveRotSlowScale
+                            (-gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x)) * DriveRotScale
                     )
             );
             drive.update();
-            gripper.setPosition((gamepad1.right_bumper)? 0.7 : 0.5);
 
-
+            // control the intake gripper
+            gripper.setPosition((gamepad1.right_bumper)? GripperOpen : GripperClose);
 
             // control the arm
             armCurrentPosition = arm.getCurrentPosition();
             if(gamepad1.dpad_up){
-                newArmPosition = (armCurrentPosition + (25));
+                newArmPosition = (armCurrentPosition + (ArmIncrements));
             }
             if(gamepad1.dpad_down){
-                newArmPosition = (armCurrentPosition - (25));
+                newArmPosition = (armCurrentPosition - (ArmIncrements));
             }
 
             if (newArmPosition < ArmMinimum){
@@ -163,12 +179,13 @@ public class Teleop extends LinearOpMode {
             double armPower = armPID.calculate(armCurrentPosition);
             arm.setPower1(armPower);
 
+            // control the slide
             slideCurrentPosition = slide.getCurrentPosition();
             if(gamepad1.dpad_right){
-                newSlidePosition = (slideCurrentPosition + (25));
+                newSlidePosition = (slideCurrentPosition + (SlideIncrements));
             }
             if(gamepad1.dpad_left){
-                newSlidePosition = (slideCurrentPosition - (25));
+                newSlidePosition = (slideCurrentPosition - (SlideIncrements));
             }
 
             if (newSlidePosition < SlideMinimum){
@@ -182,18 +199,6 @@ public class Teleop extends LinearOpMode {
             double slidePower = slidePID.calculate(slideCurrentPosition);
             slide.setPower(slidePower);
 
-            if (gamepad1.right_bumper)
-            {
-                DriveScale = DriveSlowScale;
-                DriveRotSlowScale = 0.25;
-            }else
-            {
-                DriveScale = DriveSlowScale;
-                DriveRotSlowScale = 0.25;
-            }
-
-
-
             // Show the elapsed game time and wheel power.
             Pose2d poseEstimate = drive.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
@@ -203,7 +208,6 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("slideCurrentPosition", slide.getCurrentPosition());
             //telemetry.addData("Status", "Run Time: " + runtime.toString());
             //telemetry.addData("WristOrientation", wristOrientation);
-
             telemetry.update();
         }
     }}
