@@ -80,11 +80,17 @@ public class Teleop extends LinearOpMode {
     private Gripper gripper = null;
 
     private static double DriveScale = 1;
-    private static double DriveRotScale = 1;
     private static double DriveNormalScale = 0.5;
-    private static double DriveRotNormalScale = 0.25;
-    private static double DriveRotSlowScale = .1;
-    private static  double DriveSlowScale = 0.25;
+    private static double DriveSlowScale = 0.25;
+
+    private static double StrafeScale = 1;
+    private static double StrafeNormalScale = 0.6;
+    private static double StrafeSlowScale = 0.375;
+
+    private static double RotScale = 1;
+    private static double RotNormalScale = 0.5;
+    private static double RotSlowScale = 0.25;
+
 
     private static int armCurrentPosition = 0;
     private static int newArmPosition = 0;
@@ -136,28 +142,30 @@ public class Teleop extends LinearOpMode {
         while (opModeIsActive()) {
             double max;
 
-            // determine speed scaling
-            if (gamepad1.left_bumper)
-            {
-                DriveScale = DriveSlowScale;
-                DriveRotScale = DriveRotSlowScale;
-            }else
+            // determine speed scaling, speed up when pressing right bumper
+            if (gamepad1.right_bumper)
             {
                 DriveScale = DriveNormalScale;
-                DriveRotScale = DriveRotNormalScale;
+                StrafeScale = StrafeNormalScale;
+                RotScale = RotNormalScale;
+            }else
+            {
+                DriveScale = DriveSlowScale;
+                StrafeScale = StrafeSlowScale;
+                RotScale = RotSlowScale;
             }
 
             drive.setWeightedDrivePower(
                     new Pose2d(
                             (-gamepad1.left_stick_y * Math.abs(gamepad1.left_stick_y)) * DriveScale,
-                            (-gamepad1.left_stick_x * Math.abs(gamepad1.left_stick_x)) * DriveScale,
-                            (-gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x)) * DriveRotScale
+                            (-gamepad1.left_stick_x * Math.abs(gamepad1.left_stick_x)) * StrafeScale,
+                            (-gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x)) * RotScale
                     )
             );
             drive.update();
 
             // control the intake gripper
-            gripper.setPosition((gamepad1.right_bumper)? GripperOpen : GripperClose);
+            gripper.setPosition((gamepad1.a)? GripperOpen : GripperClose);
 
             // control the arm
             armCurrentPosition = arm.getCurrentPosition();
