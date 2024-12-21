@@ -65,7 +65,7 @@ public final class LeftAuto extends LinearOpMode {
 
          TrajectoryActionBuilder trajectoryPark = trajectoryPickUpSamples2.endTrajectory().fresh()
                  .setReversed(false)
-                 .strafeToLinearHeading(new Vector2d(-49,62), Math.toRadians(-90));
+                 .strafeToLinearHeading(new Vector2d(51,48), Math.toRadians(-90));
 
 
 
@@ -124,10 +124,9 @@ public final class LeftAuto extends LinearOpMode {
                         Gripper.gripper_Open(),
                         new SleepAction(0.5),
                         Intake_Gripper.gripper_Open(),
-                        new ParallelAction(
                             TrajectoryPickuUpSamples1,
-                            Viper_Slide.viperStart()
-                        ),
+                            new SleepAction(0.5),
+                            Viper_Slide.viperStart(),
                         new SleepAction(0.1),
                         Arm.armPickup(),
                         new SleepAction(1.1),
@@ -146,10 +145,9 @@ public final class LeftAuto extends LinearOpMode {
                         Basket.basket_Score(),
                         new SleepAction(1),
                         Basket.basket_Hold(),
-                        new ParallelAction(
                         TrajectoryPickUpSamples2,
-                                Viper_Slide.viperStart()
-                        ),
+                        new SleepAction(0.5),
+                        Viper_Slide.viperStart(),
                         new SleepAction(0.1),
                         Arm.armPickup(),
                         new SleepAction(1.1),
@@ -167,11 +165,12 @@ public final class LeftAuto extends LinearOpMode {
                         new SleepAction(0.1),
                         Basket.basket_Score(),
                         new SleepAction(1),
-                                Arm.armReset(),
-                                new SleepAction(1),
-                                TrajectoryPark,
-                                Viper_Slide.viperStart(),
-                                new SleepAction(1)
+                        TrajectoryPark,
+                        new SleepAction(1),
+                        Viper_Slide.viperStart(),
+                        new SleepAction(2),
+                        Arm.armReset(),
+                        new SleepAction(1)
                         )
                 );
     }

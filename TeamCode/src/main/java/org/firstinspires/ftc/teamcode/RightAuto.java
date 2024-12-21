@@ -92,6 +92,7 @@ public final class RightAuto extends LinearOpMode {
 
                 Actions.runBlocking(
                         new SequentialAction(
+                        Intake_Gripper.gripper_Open(),
                         Arm.armClear(),
                         new ParallelAction(
                             TrajectoryHighSpecimenPrep,
@@ -126,7 +127,8 @@ public final class RightAuto extends LinearOpMode {
                         new SleepAction(1.1),
                         Intake_Gripper.gripper_Open(),
                         new SleepAction(0.4),
-                        Basket.basket_Score()
+                        Basket.basket_Score(),
+                        new SleepAction(0.4)
                         )
                 );
     }

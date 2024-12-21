@@ -109,7 +109,7 @@ public class Teleop extends LinearOpMode {
     private static int newArmPosition = 0;
     private static int armHighChamberPosition = 3554;
     private static int armLowChamberPosition = 5900;
-    private static int armPickUpPosition = 2150;
+    private static int armPickUpPosition = 2200;
     private static int armClearPosition = 550;
     private static int armStartPosition = 0;
     private static int armPickEndPosition = 1742;
@@ -166,8 +166,10 @@ public class Teleop extends LinearOpMode {
         // Wait for the game to start (driver presses START)
         while (opModeInInit()) {
             viperCurrentPosition = Viper_Slide.getCurrentPosition();
+            armCurrentPosition = arm1.getCurrentPosition();
             telemetry.addData("Status", "Initialized");
             telemetry.addData("ViperPos", viperCurrentPosition);
+            telemetry.addData("ArmPos", armCurrentPosition);
             telemetry.update();
         }
         intake_roller_position = 0;
