@@ -6,8 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Constants.*;
-
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Gripper;
@@ -39,6 +37,7 @@ public class Teleop extends LinearOpMode {
     private static double WRIST_TARGET_POSITION = 0.5;
     private static double SHOULDER_TARGET_POSITION = 0.5;
     private static double SLIDE_TARGGET_POSITION = 0.5;
+    private static double SCORING_ARM_TARGET_POSITION = 0.5;
     private static int SCORING_SLIDE_SETPOINT = 0;
     @Override
     public void runOpMode() {
@@ -89,8 +88,8 @@ public class Teleop extends LinearOpMode {
             right stick     --> rotate
             left bumper     --> scoring gripper OPEN
             right bumper    --> normal driving speed when pressed
-            left trigger    --> NOT USED
-            right trigger   --> NOT USED
+            left trigger    --> rotate scoring arm
+            right trigger   --> rotate scoring arm
             dpad up         --> high basket scoring
             dpad down       --> ground pickup
             dpad left       --> NOT USED
@@ -122,6 +121,13 @@ public class Teleop extends LinearOpMode {
             drive.update();
 
             //if (gamepad1.right_bumper){ scoringGripper.setState(OPEN); }
+
+            /* calculate new scoring arm position */
+            double scoring_arm_move = gamepad1.right_trigger - gamepad1.left_trigger;
+            if (Math.abs(scoring_arm_move) > CONSTANTS.SCORING_ARM_MOVE_THRESHOLD) {
+                SCORING_ARM_TARGET_POSITION = scoringArm.getSoringArm1position() + (scoring_arm_move * CONSTANTS.SCORING_ARM_MOVE_INCREMENTS);
+                scoringArm.setPosition(SCORING_ARM_TARGET_POSITION);
+            }
 
             if (gamepad1.left_bumper){ scoringGripper.setState(ScoringGripperState.OPEN); }
 

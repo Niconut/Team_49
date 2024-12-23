@@ -19,4 +19,6 @@ public class Constants {
     public double SLIDE_MOVE_INCREMENTS = 0.01;
     public double SLIDE_MOVE_THRESHOLD = 0.25;
 
+    public double SCORING_ARM_MOVE_INCREMENTS = 0.01;
+    public double SCORING_ARM_MOVE_THRESHOLD = 0.25;
 }
