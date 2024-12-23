@@ -140,8 +140,8 @@ public class Teleop extends LinearOpMode {
 
             if (gamepad1.dpad_up){
                 SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.HIGH_BASKET_SCORE_PREP);
-                scoringArm.setState(ScoringArmState.HIGH_CHAMBER_SCORE_PREP);
-                scoringGripper.setState(ScoringGripperState.CLOSED);
+                scoringArm.setState(ScoringArmState.HIGH_BASKET_SCORE_PREP);
+                //scoringGripper.setState(ScoringGripperState.CLOSED);
             }
 
             if (gamepad1.dpad_left){ }
@@ -160,7 +160,7 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.b){
                 pauseDrive(drive);
                 scoringArm.setState(ScoringArmState.WALL_PICKUP);
-                sleep(100);
+                sleep(200);
                 scoringGripper.setState(ScoringGripperState.CLOSED);
                 sleep(300);
                 SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.HIGH_CHAMBER_SCORE_PREP);
