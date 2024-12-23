@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Constants.*;
+
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Gripper;
@@ -28,7 +30,7 @@ public class Teleop extends LinearOpMode {
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
 
-    public static Constants CONSTANTS;
+    private static Constants CONSTANTS;
 
     private static double DRIVE_SCALE = 1;
     private static double STRAFE_SCALE = 1;
@@ -141,8 +143,8 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.dpad_right){ }
 
             if (gamepad1.a){
-                scoringGripper.setState(ScoringGripperState.CLOSED);
-                sleep(100);
+                //scoringGripper.setState(ScoringGripperState.CLOSED);
+                //sleep(100);
                 scoringArm.setState(ScoringArmState.WALL_PICKUP_PREP);
                 //sleep(200);
                 SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.WALL_PICKUP_PREP);
@@ -150,6 +152,7 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad1.b){
+                pauseDrive(drive);
                 scoringArm.setState(ScoringArmState.WALL_PICKUP);
                 sleep(100);
                 scoringGripper.setState(ScoringGripperState.CLOSED);
@@ -159,6 +162,7 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad1.y) {
+                //pauseDrive(drive);
                 SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.HIGH_CHAMBER_SCORE);
                 scoringArm.setState(ScoringArmState.HIGH_CHAMBER_SCORE);
             }
