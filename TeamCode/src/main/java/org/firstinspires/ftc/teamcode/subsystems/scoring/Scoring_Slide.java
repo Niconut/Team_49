@@ -9,13 +9,6 @@ public class Scoring_Slide {
     private DcMotorEx Viper_Slide1;
     private DcMotorEx Viper_Slide2;
 
-    PIDController viper_SlidePID = new PIDController(0.01, 0, 0);
-
-    public void setViper_SlidePID(PIDController viper_SlidePID) {
-        this.viper_SlidePID = viper_SlidePID;
-        viper_SlidePID.setTolerance(10,10);
-    }
-
     private int INIT = 0;
     private int HOME = 25;
     private int STOW = 25;
@@ -44,7 +37,6 @@ public class Scoring_Slide {
         LOW_BASKET_SCORE;
     }
 
-
     public Scoring_Slide(HardwareMap hardwareMap) {
         this.Viper_Slide1 = hardwareMap.get(DcMotorEx.class, "ViperSlide 1");
         this.Viper_Slide2 = hardwareMap.get(DcMotorEx.class, "ViperSlide 2");
@@ -61,10 +53,10 @@ public class Scoring_Slide {
         this.Viper_Slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.Viper_Slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        this.Viper_Slide1.setPositionPIDFCoefficients(0.01);
-        this.Viper_Slide2.setPositionPIDFCoefficients(0.01);
+        //this.Viper_Slide1.setPositionPIDFCoefficients(0.01);
+        //this.Viper_Slide2.setPositionPIDFCoefficients(0.01);
 
-        this.setViper_SlidePID(viper_SlidePID);
+        //this.setViper_SlidePID(viper_SlidePID);
     }
 
     public void setPower1(double power) {Viper_Slide1.setPower(power);}
@@ -79,7 +71,7 @@ public class Scoring_Slide {
         return Viper_Slide2.getCurrentPosition();
     }
 
-    public void setState(ScoringSlideState  state){
+    public int setState(ScoringSlideState  state){
         int newpos = switch (state){
             case INIT -> INIT;
             case HOME -> HOME;
@@ -94,11 +86,8 @@ public class Scoring_Slide {
             case LOW_BASKET_SCORE_PREP -> LOW_BASKET_SCORE_PREP;
             case LOW_BASKET_SCORE -> LOW_BASKET_SCORE;
         };
-        viper_SlidePID.setSetPoint(newpos);
-        int currentpos = Viper_Slide2.getCurrentPosition();
-        double power = viper_SlidePID.calculate(currentpos);
-        Viper_Slide1.setPower(power);
-        Viper_Slide2.setPower(power);
+
+        return newpos;
     }
 }
 

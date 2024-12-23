@@ -34,6 +34,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -50,9 +51,10 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Arm;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide;
 
-import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.ScoringGripperState.*;
-import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Arm.ScoringArmState;
-import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState;
+import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.ScoringGripperState;
+import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Arm.ScoringArmState;
+import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState;
+
 
 /*
  * This file contains an example of a Linear "OpMode".
@@ -190,11 +192,15 @@ public class Teleop extends LinearOpMode {
         scoringArm = new Scoring_Arm(hardwareMap);
         scoringSlide = new Scoring_Slide(hardwareMap);
 
+        PIDController viper_SlidePID = new PIDController(0.01, 0, 0);
+        viper_SlidePID.setTolerance(10,10);
+
         // Wait for the game to start (driver presses START)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         while (opModeInInit()){
+            double slidepos = scoringSlide.getCurrentPosition();
             telemetry.addData("intakeGripper: ", intakeGripper.getCurrentPosition());
             telemetry.addData("intakeWrist: ", intakeWrist.getCurrentPosition());
             telemetry.addData("intakeElbow: ", intakeElbow.getCurrentPosition());
@@ -202,27 +208,19 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("intakeSlide: ", intakeSlide.getCurrentPosition());
 
             telemetry.addData("scoringGripper: ", scoringGripper.getCurrentPosition());
-            telemetry.addData("scoringArm1: ", scoringArm.getSoringArm1position());
-            telemetry.addData("scoringArm2: ", scoringArm.getSoringArm2position());
-            telemetry.addData("scoringSlide: ", scoringSlide.getCurrentPosition());
+            telemetry.addData("scoringArm1: ", "(%.2f)", scoringArm.getSoringArm1position());
+            telemetry.addData("scoringArm2: ", "(%.2f)", scoringArm.getSoringArm2position());
+            telemetry.addData("scoringSlide: ", slidepos);
 
             telemetry.update();
         }
-        /*
-        intake_roller_position = 0;
-        intakeShoulder.setPosition(shoulderInit);
-        intakeSlide.setPosition(slideInit);
-        intakeElbow.setPosition(elbowInit);
-        intakeWrist.setPosition(wristInit);
-        intakeGripper.setPosition(intakeGripperInit);
-        wristpos = 30;
-        */
 
         waitForStart();
         runtime.reset();
-
+        int setpoint = 0;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
 
             /* ******** GROUP ALL DRIVER CONTROLS HERE ******** */
             /*
@@ -264,19 +262,19 @@ public class Teleop extends LinearOpMode {
 
             //if (gamepad1.right_bumper){ scoringGripper.setState(OPEN); }
 
-            if (gamepad1.left_bumper){ scoringGripper.setState(OPEN); }
+            if (gamepad1.left_bumper){ scoringGripper.setState(ScoringGripperState.OPEN); }
 
             if (gamepad1.dpad_down){
-                scoringGripper.setState(CLOSED);
-                scoringSlide.setState(ScoringSlideState.GROUND_PICKUP);
+                scoringGripper.setState(ScoringGripperState.CLOSED);
+                setpoint = scoringSlide.setState(ScoringSlideState.GROUND_PICKUP);
                 scoringArm.setState(ScoringArmState.GROUND_PICKUP);
-                scoringGripper.setState(OPEN);
+                scoringGripper.setState(ScoringGripperState.OPEN);
             }
 
             if (gamepad1.dpad_up){
-                scoringSlide.setState(ScoringSlideState.HIGH_BASKET_SCORE_PREP);
+                setpoint = scoringSlide.setState(ScoringSlideState.HIGH_BASKET_SCORE_PREP);
                 scoringArm.setState(ScoringArmState.HIGH_CHAMBER_SCORE_PREP);
-                scoringGripper.setState(CLOSED);
+                scoringGripper.setState(ScoringGripperState.CLOSED);
             }
 
             if (gamepad1.dpad_left){ }
@@ -284,25 +282,25 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.dpad_right){ }
 
             if (gamepad1.a){
-                scoringGripper.setState(CLOSED);
+                scoringGripper.setState(ScoringGripperState.CLOSED);
                 sleep(100);
                 scoringArm.setState(ScoringArmState.WALL_PICKUP_PREP);
                 //sleep(200);
-                scoringSlide.setState(ScoringSlideState.WALL_PICKUP_PREP);
-                scoringGripper.setState(OPEN);
+                setpoint = scoringSlide.setState(ScoringSlideState.WALL_PICKUP_PREP);
+                scoringGripper.setState(ScoringGripperState.OPEN);
             }
 
             if (gamepad1.b){
                 scoringArm.setState(ScoringArmState.WALL_PICKUP);
                 sleep(100);
-                scoringGripper.setState(CLOSED);
+                scoringGripper.setState(ScoringGripperState.CLOSED);
                 sleep(300);
-                scoringSlide.setState(ScoringSlideState.HIGH_CHAMBER_SCORE_PREP);
+                setpoint = scoringSlide.setState(ScoringSlideState.HIGH_CHAMBER_SCORE_PREP);
                 scoringArm.setState(ScoringArmState.HIGH_CHAMBER_SCORE_PREP);
             }
 
             if (gamepad1.y) {
-                scoringSlide.setState(ScoringSlideState.HIGH_CHAMBER_SCORE);
+                setpoint = scoringSlide.setState(ScoringSlideState.HIGH_CHAMBER_SCORE);
                 scoringArm.setState(ScoringArmState.HIGH_CHAMBER_SCORE);
             }
 
@@ -391,6 +389,10 @@ public class Teleop extends LinearOpMode {
                 intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.STOW);
                 intakeWrist.setState(Intake_Wrist.IntakeWristState.STOW);
             }
+
+            viper_SlidePID.setSetPoint(setpoint);
+            double power = viper_SlidePID.calculate(scoringSlide.getCurrentPosition());
+            scoringSlide.setPower(power);
 
             // Show the elapsed game time and wheel power.
             Pose2d poseEstimate = drive.getPoseEstimate();
