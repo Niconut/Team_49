@@ -36,15 +36,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystems.Arm;
-import org.firstinspires.ftc.teamcode.subsystems.Elbow;
-import org.firstinspires.ftc.teamcode.subsystems.Gripper;
-import org.firstinspires.ftc.teamcode.subsystems.Intake_Gripper;
+import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Arm;
+import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper;
 import org.firstinspires.ftc.teamcode.subsystems.Intake_Touch;
-import org.firstinspires.ftc.teamcode.subsystems.Shoulder;
-import org.firstinspires.ftc.teamcode.subsystems.Slide;
-import org.firstinspires.ftc.teamcode.subsystems.Viper_Slide;
-import org.firstinspires.ftc.teamcode.subsystems.Wrist;
+import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide;
 
 /*
  * This file contains an example of a Linear "OpMode".
@@ -80,11 +75,11 @@ public class NoArmTeleop extends LinearOpMode {
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
     private static Intake_Touch Intake_Touch  = null;
-    private static Viper_Slide Viper_Slide1;
-    private static Viper_Slide Viper_Slide2;
-    private static Gripper gripper = null;
-    private static Arm arm1 = null;
-    private static Arm arm2 = null;
+    private static Scoring_Slide scoring_Slide1;
+    private static Scoring_Slide scoring_Slide2;
+    private static Scoring_Gripper viperGripper = null;
+    private static Scoring_Arm viperArm1 = null;
+    private static Scoring_Arm viperArm2 = null;
     public static double viperkP = 0.01;
     public static double viperkD= 0.0000;
     public static double viperkI = 0.000;
@@ -136,12 +131,12 @@ public class NoArmTeleop extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
      //  IntakeRight = new Intake(hardwareMap);
-        Viper_Slide1 = new Viper_Slide(hardwareMap);
-        Viper_Slide2 = new Viper_Slide(hardwareMap);
-       gripper = new Gripper(hardwareMap);
+        scoring_Slide1 = new Scoring_Slide(hardwareMap);
+        scoring_Slide2 = new Scoring_Slide(hardwareMap);
+       viperGripper = new Scoring_Gripper(hardwareMap);
       //  Intake_Touch = new Intake_Touch(hardwareMap);
-        arm1 = new Arm(hardwareMap);
-        arm2 = new Arm(hardwareMap);
+        viperArm1 = new Scoring_Arm(hardwareMap);
+        viperArm2 = new Scoring_Arm(hardwareMap);
 
 
         PIDController viper_SlidePID = new PIDController(viperkP, viperkI, viperkD);
@@ -182,11 +177,11 @@ public class NoArmTeleop extends LinearOpMode {
             //Elbow.setPosition(gamepad2.left_bumper? 0.6 : 0.75);
 
             if (gamepad1.right_bumper){
-                gripper.setPosition(gripperOpen);
+                viperGripper.setPosition(gripperOpen);
             }
 
             if (gamepad1.left_bumper){
-                gripper.setPosition(gripperClosed);
+                viperGripper.setPosition(gripperClosed);
             }
 
             /*switch(wristpos){
@@ -273,18 +268,18 @@ public class NoArmTeleop extends LinearOpMode {
 
             }
 
-            if (gamepad1.dpad_left){
+          /*  if (gamepad1.dpad_left){
                 viper_SlidePID.setSetPoint(viperSlidePositionHighClimb);
-                arm1.setPosition1(0.2);
-                arm2.setPosition2(0.2);
+                viperArm1.setPosition1(0.2);
+                viperArm2.setPosition2(0.2);
             }
 
             if (gamepad1.b){
-                gripper.setPosition(gripperClosed);
+                viperGripper.setPosition(gripperClosed);
                 sleep(1000);
                 viper_SlidePID.setSetPoint(viperSlidePositionHighRung);
-                arm1.setPosition1(0.8);
-                arm2.setPosition2(0.8);
+                viperArm1.setPosition1(0.8);
+                viperArm2.setPosition2(0.8);
             }
 
             if (gamepad1.dpad_up){
@@ -293,16 +288,16 @@ public class NoArmTeleop extends LinearOpMode {
 
             if (gamepad1.a){
                 viper_SlidePID.setSetPoint(viperSlidePositionPickUp);
-                arm1.setPosition1(0.2);
-                arm2.setPosition2(0.2);
-                gripper.setPosition(gripperOpen);
+                viperArm1.setPosition1(0.2);
+                viperArm2.setPosition2(0.2);
+                viperGripper.setPosition(gripperOpen);
             }
 
             if (gamepad1.y) {
                 viper_SlidePID.setSetPoint(viperSlidePositionHighRungScore);
-                arm1.setPosition1(0.75);
-                arm2.setPosition2(0.75);
-            }
+                viperArm1.setPosition1(0.75);
+                viperArm2.setPosition2(0.75);
+            }*/
             /*
             if (gamepad1.dpad_up){
                 armPID.setSetPoint(armStartPosition);
@@ -324,7 +319,7 @@ public class NoArmTeleop extends LinearOpMode {
                 DriveAngScale = 0.3;
             }
 
-            viper_Current_Position = Viper_Slide2.getCurrentPosition();
+            viper_Current_Position = scoring_Slide2.getCurrentPosition();
             /*if(!(viper_move == 0)){
                 //viper_SlidePID.setSetPoint(viper_Current_Position - (10 * viper_move));
                 newViperPosition = (int)(viper_Current_Position + (50 * viper_move));
@@ -349,8 +344,8 @@ public class NoArmTeleop extends LinearOpMode {
             arm.setPower1(armPower);*/
 
             viper_Power = viper_SlidePID.calculate(viper_Current_Position);
-            Viper_Slide1.setPower1(viper_Power);
-            Viper_Slide2.setPower2(viper_Power);
+            scoring_Slide1.setPower1(viper_Power);
+            scoring_Slide2.setPower2(viper_Power);
 
             // Show the elapsed game time and wheel power.
             Pose2d poseEstimate = drive.getPoseEstimate();
@@ -359,7 +354,7 @@ public class NoArmTeleop extends LinearOpMode {
             telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
            // telemetry.addData("WristOrientation", wristOrientation);
-            telemetry.addData("ViperSlideCurrentPosition", Viper_Slide2.getCurrentPosition());
+            telemetry.addData("ViperSlideCurrentPosition", scoring_Slide2.getCurrentPosition());
             //telemetry.addData("Touch Sensor State", Intake_Touch.getState());
             telemetry.addData("New Viper Position", newViperPosition);
            // telemetry.addData("ArmCurrentPosition", armCurrentPosition);
