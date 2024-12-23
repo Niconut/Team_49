@@ -1,37 +1,4 @@
-/* Copyright (c) 2021 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package org.firstinspires.ftc.teamcode;
-
-
-
-
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.controller.PIDController;
@@ -55,152 +22,46 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.Scoring
 import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Arm.ScoringArmState;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState;
 
-
-/*
- * This file contains an example of a Linear "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When a selection is made from the menu, the corresponding OpMode is executed.
- *
- * This particular OpMode illustrates driving a 4-motor Omni-Directional (or Holonomic) robot.
- * This code will work with either a Mecanum-Drive or an X-Drive train.
- * Both of these drives are illustrated at https://gm0.org/en/latest/docs/robot-design/drivetrains/holonomic.html
- * Note that a Mecanum drive must display an X roller-pattern when viewed from above.
- *
- * Also note that it is critical to set the correct rotation direction for each motor.  See details below.
- *
- * Holonomic drives provide the ability for the robot to move in three axes (directions) simultaneously.
- * Each motion axis is controlled by one Joystick axis.
- *
- * 1) Axial:    Driving forward and backward               Left-joystick Forward/Backward
- * 2) Lateral:  Strafing right and left                     Left-joystick Right and Left
- * 3) Yaw:      Rotating Clockwise and counter clockwise    Right-joystick Right and Left
- *
- * This code is written assuming that the right-side motors need to be reversed for the robot to drive forward.
- * When you first test your robot, if it moves backward when you push the left stick forward, then you must flip
- * the direction of all 4 motors (see code below).
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
- */
-
 @TeleOp(name="Teleop", group="A_DriveCode")
 public class Teleop extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private static Intake_Gripper intakeGripper = null;
-    private static Intake_Wrist intakeWrist = null;
-    private static Intake_Elbow intakeElbow = null;
-    private static Intake_Shoulder intakeShoulder = null;
-    private static Intake_Slide intakeSlide = null;
+    public static Constants CONSTANTS;
 
-    private static Scoring_Gripper scoringGripper = null;
-    private static Scoring_Arm scoringArm = null;
-    private static Scoring_Slide scoringSlide = null;
+    private static double DRIVE_SCALE = 1;
+    private static double STRAFE_SCALE = 1;
+    private static double ROT_SCALE = 0.5;
 
-    private static double DriveScale = 1;
-    private static double StrafeScale = 1;
-    private static double RotScale = 0.5;
-
-    private static double DriveNormalScale = 1;
-    private static double StrafeNormalScale = 1;
-    private static double RotNormalScale = 0.5;
-
-    private static double DriveSlowScale = 0.3;
-    private static double StrafeSlowScale = 0.3;
-    private static double RotSlowScale = 0.3;
-
-    private static double wristMoveIncrements = 0.025;
-    private static double wristMoveThreshold = 0.25;
-    private static double wristNewPosition = 0;
-
-    private static double shoulderMoveIncrements = 0.01;
-    private static double shoulderMoveThreshold = 0.25;
-    private static double shoulderNewPosition = 0;
-
-    private static double slideMoveIncrements = 0.01;
-    private static double slideMoveThreshold = 0.25;
-    private static double slideNewPosition = 0;
-
-    private static double scoringArm2position = 0;
-
-
-    /*
-    private static int newViperPosition = 0;
-
-    public static double viper_target_position = 0;
-    public static double viperSlidePositionStart = -25;
-    public static double viperSlidePositionPickUp = -950;
-    public static double viperSlidePositionHighBasket = -4300;
-    public static double viperSlidePositionHighRung = -1300;
-    public static double viperSlidePositionHighRungScore = -1560;
-    public static double viperSlidePositionHighClimb = -2900;
-
-
-    private static double slideCurrentPosition = 0;
-    private static double shoulderCurrentPosition = 0;
-    private static double driveSlowScale = 0.5;
-    private static double driveAngSlowScale = 0.25;
-
-    private static double DriveAngScale = 1;
-    private static double viper_Power = 0;
-    private static double viper_Current_Position = 0;
-    private static double wrist_move = 0;
-    private static double intake_spin = 0;
-    private static double intake_roller_position = 0;
-    private static double armPower = 0;
-    private static double wristOrientation = 0;
-    private static double viper_Manual_Position = 0;
-    private boolean intake_Switch = false;
-    private boolean intake_Status = false;
-    private static int wristpos = 1;
-    private static double wristLeft = 0.65;
-    private static double wristRight = 0.35;
-    private static double wristInit = 0.5;
-    private static double intakeGripperInit = 0.55;
-    private static double intakeGripperOpen = 0.55;
-    private static double intakeGripperClose = 0.325;
-    private static double gripperClosed = 0.325;
-    private static double gripperOpen = 0.6;
-    private static double slideInit = 0.25;
-    private static double slideMin = 0.25;
-    private static double slideMax = 0.75;
-    private static double elbowInit = 0.47;
-    private static double elbowStow = 0.47;
-    private static double elbowDrop = 0.54;
-    private static double elbowPickUpPrep = 0.555;
-    private static double elbowPickUp = 0.57;
-    private static double shoulderInit = 0.15;
-    private static double shoulderStow = 0.15;
-    private static double shoulderPickup = 0.675;
-    private static double shoulderDrop = 0.2;
-    */
+    private static double WRIST_TARGET_POSITION = 0.5;
+    private static double SHOULDER_TARGET_POSITION = 0.5;
+    private static double SLIDE_TARGGET_POSITION = 0.5;
+    private static int SCORING_SLIDE_SETPOINT = 0;
     @Override
     public void runOpMode() {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        intakeGripper = new Intake_Gripper(hardwareMap);
-        intakeWrist = new Intake_Wrist(hardwareMap);
-        intakeElbow = new Intake_Elbow(hardwareMap);
-        intakeShoulder = new Intake_Shoulder(hardwareMap);
-        intakeSlide = new Intake_Slide(hardwareMap);
+        Intake_Gripper intakeGripper = new Intake_Gripper(hardwareMap);
+        Intake_Wrist intakeWrist = new Intake_Wrist(hardwareMap);
+        Intake_Elbow intakeElbow = new Intake_Elbow(hardwareMap);
+        Intake_Shoulder intakeShoulder = new Intake_Shoulder(hardwareMap);
+        Intake_Slide intakeSlide = new Intake_Slide(hardwareMap);
 
-        scoringGripper = new Scoring_Gripper(hardwareMap);
-        scoringArm = new Scoring_Arm(hardwareMap);
-        scoringSlide = new Scoring_Slide(hardwareMap);
+        Scoring_Gripper scoringGripper = new Scoring_Gripper(hardwareMap);
+        Scoring_Arm scoringArm = new Scoring_Arm(hardwareMap);
+        Scoring_Slide scoringSlide = new Scoring_Slide(hardwareMap);
 
-        PIDController viper_SlidePID = new PIDController(0.01, 0, 0);
-        viper_SlidePID.setTolerance(10,10);
+        PIDController scoringSlidePID = new PIDController(0.01, 0, 0);
+        scoringSlidePID.setTolerance(10,10);
 
         // Wait for the game to start (driver presses START)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         while (opModeInInit()){
-            double slidepos = scoringSlide.getCurrentPosition();
+            int slidepos = scoringSlide.getCurrentPosition();
             telemetry.addData("intakeGripper: ", intakeGripper.getCurrentPosition());
             telemetry.addData("intakeWrist: ", intakeWrist.getCurrentPosition());
             telemetry.addData("intakeElbow: ", intakeElbow.getCurrentPosition());
@@ -208,8 +69,8 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("intakeSlide: ", intakeSlide.getCurrentPosition());
 
             telemetry.addData("scoringGripper: ", scoringGripper.getCurrentPosition());
-            telemetry.addData("scoringArm1: ", "(%.2f)", scoringArm.getSoringArm1position());
-            telemetry.addData("scoringArm2: ", "(%.2f)", scoringArm.getSoringArm2position());
+            telemetry.addData("scoringArm1: ", scoringArm.getSoringArm1position());
+            telemetry.addData("scoringArm2: ", scoringArm.getSoringArm2position());
             telemetry.addData("scoringSlide: ", slidepos);
 
             telemetry.update();
@@ -217,11 +78,9 @@ public class Teleop extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
-        int setpoint = 0;
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-
             /* ******** GROUP ALL DRIVER CONTROLS HERE ******** */
             /*
             left stick      --> drive/strafe
@@ -241,21 +100,21 @@ public class Teleop extends LinearOpMode {
             */
 
             if (gamepad1.right_bumper){
-                DriveScale = DriveNormalScale;
-                StrafeScale = StrafeNormalScale;
-                RotScale = RotNormalScale;
+                DRIVE_SCALE = CONSTANTS.DRIVE_NORMAL_SCALE;
+                STRAFE_SCALE = CONSTANTS.STRAFE_NORMAL_SCALE;
+                ROT_SCALE = CONSTANTS.ROT_NORMAL_SCALE;
 
             }else{
-                DriveScale = DriveSlowScale;
-                StrafeScale = StrafeSlowScale;
-                RotScale = RotSlowScale;
+                DRIVE_SCALE = CONSTANTS.DRIVE_SLOW_SCALE;
+                STRAFE_SCALE = CONSTANTS.STRAFE_SLOW_SCALE;
+                ROT_SCALE = CONSTANTS.ROT_SLOW_SCALE;
             }
 
             drive.setWeightedDrivePower(
                     new Pose2d(
-                            -gamepad1.left_stick_y * Math.abs(gamepad1.left_stick_y) * DriveScale,
-                            -gamepad1.left_stick_x * Math.abs(gamepad1.left_stick_x) * StrafeScale,
-                            -gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x) * RotScale
+                            -gamepad1.left_stick_y * Math.abs(gamepad1.left_stick_y) * DRIVE_SCALE,
+                            -gamepad1.left_stick_x * Math.abs(gamepad1.left_stick_x) * STRAFE_SCALE,
+                            -gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x) * ROT_SCALE
                     )
             );
             drive.update();
@@ -266,13 +125,13 @@ public class Teleop extends LinearOpMode {
 
             if (gamepad1.dpad_down){
                 scoringGripper.setState(ScoringGripperState.CLOSED);
-                setpoint = scoringSlide.setState(ScoringSlideState.GROUND_PICKUP);
+                SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.GROUND_PICKUP);
                 scoringArm.setState(ScoringArmState.GROUND_PICKUP);
                 scoringGripper.setState(ScoringGripperState.OPEN);
             }
 
             if (gamepad1.dpad_up){
-                setpoint = scoringSlide.setState(ScoringSlideState.HIGH_BASKET_SCORE_PREP);
+                SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.HIGH_BASKET_SCORE_PREP);
                 scoringArm.setState(ScoringArmState.HIGH_CHAMBER_SCORE_PREP);
                 scoringGripper.setState(ScoringGripperState.CLOSED);
             }
@@ -286,7 +145,7 @@ public class Teleop extends LinearOpMode {
                 sleep(100);
                 scoringArm.setState(ScoringArmState.WALL_PICKUP_PREP);
                 //sleep(200);
-                setpoint = scoringSlide.setState(ScoringSlideState.WALL_PICKUP_PREP);
+                SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.WALL_PICKUP_PREP);
                 scoringGripper.setState(ScoringGripperState.OPEN);
             }
 
@@ -295,12 +154,12 @@ public class Teleop extends LinearOpMode {
                 sleep(100);
                 scoringGripper.setState(ScoringGripperState.CLOSED);
                 sleep(300);
-                setpoint = scoringSlide.setState(ScoringSlideState.HIGH_CHAMBER_SCORE_PREP);
+                SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.HIGH_CHAMBER_SCORE_PREP);
                 scoringArm.setState(ScoringArmState.HIGH_CHAMBER_SCORE_PREP);
             }
 
             if (gamepad1.y) {
-                setpoint = scoringSlide.setState(ScoringSlideState.HIGH_CHAMBER_SCORE);
+                SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.HIGH_CHAMBER_SCORE);
                 scoringArm.setState(ScoringArmState.HIGH_CHAMBER_SCORE);
             }
 
@@ -313,8 +172,8 @@ public class Teleop extends LinearOpMode {
             R3              --> intake gripper OPEN
             left bumper     --> drop sample
             right bumper    --> NOT USED
-            left trigger    --> change wrist orientation
-            right trigger   --> change wrist orientation
+            left trigger    --> change wrist orientation - clockwise
+            right trigger   --> change wrist orientation - counter clockwise
             dpad up         --> NOT USED
             dpad down       --> NOT USED
             dpad left       --> NOT USED
@@ -329,21 +188,21 @@ public class Teleop extends LinearOpMode {
             double slide_move = gamepad2.left_stick_y;
 
             /* calculate new wrist position */
-            if (Math.abs(wrist_move) > wristMoveThreshold ) {
-                wristNewPosition = intakeWrist.getCurrentPosition() + (wrist_move * wristMoveIncrements);
-                intakeWrist.setPosition(wristNewPosition);
+            if (Math.abs(wrist_move) > CONSTANTS.WRIST_MOVE_THRESHOLD) {
+                WRIST_TARGET_POSITION = intakeWrist.getCurrentPosition() + (wrist_move * CONSTANTS.WRIST_MOVE_INCREMENTS);
+                intakeWrist.setPosition(WRIST_TARGET_POSITION);
             }
 
             /* calculate new shoulder position */
-            if (Math.abs(shoulder_move) > shoulderMoveThreshold ) {
-                shoulderNewPosition = intakeShoulder.getCurrentPosition() + (shoulder_move * shoulderMoveIncrements);
-                intakeShoulder.setPosition(shoulderNewPosition);
+            if (Math.abs(shoulder_move) > CONSTANTS.SHOULDER_MOVE_THRESHOLD) {
+                SHOULDER_TARGET_POSITION = intakeShoulder.getCurrentPosition() + (shoulder_move * CONSTANTS.SHOULDER_MOVE_INCREMENTS);
+                intakeShoulder.setPosition(SHOULDER_TARGET_POSITION);
             }
 
             /* calculate new slide position */
-            if (Math.abs(slide_move) > slideMoveThreshold ) {
-                slideNewPosition = intakeSlide.getCurrentPosition() + (slide_move * slideMoveIncrements);
-                intakeSlide.setPosition(slideNewPosition);
+            if (Math.abs(slide_move) > CONSTANTS.SLIDE_MOVE_THRESHOLD) {
+                SLIDE_TARGGET_POSITION = intakeSlide.getCurrentPosition() + (slide_move * CONSTANTS.SLIDE_MOVE_INCREMENTS);
+                intakeSlide.setPosition(SLIDE_TARGGET_POSITION);
             }
 
             if (gamepad2.a) {
@@ -357,9 +216,9 @@ public class Teleop extends LinearOpMode {
             if (gamepad2.b){
                 pauseDrive(drive);
                 intakeElbow.setState(Intake_Elbow.IntakeElbowState.PICKUP);
-                sleep(200);
+                sleep(300);
                 intakeGripper.setState(Intake_Gripper.IntakeGripperState.CLOSE);
-                sleep(200);
+                sleep(300);
                 intakeElbow.setState(Intake_Elbow.IntakeElbowState.PICKUP_PREP);
             }
 
@@ -390,8 +249,8 @@ public class Teleop extends LinearOpMode {
                 intakeWrist.setState(Intake_Wrist.IntakeWristState.STOW);
             }
 
-            viper_SlidePID.setSetPoint(setpoint);
-            double power = viper_SlidePID.calculate(scoringSlide.getCurrentPosition());
+            scoringSlidePID.setSetPoint(SCORING_SLIDE_SETPOINT);
+            double power = scoringSlidePID.calculate(scoringSlide.getCurrentPosition());
             scoringSlide.setPower(power);
 
             // Show the elapsed game time and wheel power.
