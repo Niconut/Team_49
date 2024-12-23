@@ -193,23 +193,23 @@ public class Teleop extends LinearOpMode {
             y               --> NOT USED
             x               --> stow arm
             */
-            double wrist_move = gamepad2.right_trigger - gamepad2.left_trigger;
-            double shoulder_move = -gamepad2.left_stick_x;
-            double slide_move = gamepad2.left_stick_y;
 
             /* calculate new wrist position */
+            double wrist_move = gamepad2.right_trigger - gamepad2.left_trigger;
             if (Math.abs(wrist_move) > CONSTANTS.WRIST_MOVE_THRESHOLD) {
                 WRIST_TARGET_POSITION = intakeWrist.getCurrentPosition() + (wrist_move * CONSTANTS.WRIST_MOVE_INCREMENTS);
                 intakeWrist.setPosition(WRIST_TARGET_POSITION);
             }
 
             /* calculate new shoulder position */
+            double shoulder_move = -gamepad2.left_stick_x;
             if (Math.abs(shoulder_move) > CONSTANTS.SHOULDER_MOVE_THRESHOLD) {
                 SHOULDER_TARGET_POSITION = intakeShoulder.getCurrentPosition() + (shoulder_move * CONSTANTS.SHOULDER_MOVE_INCREMENTS);
                 intakeShoulder.setPosition(SHOULDER_TARGET_POSITION);
             }
 
             /* calculate new slide position */
+            double slide_move = gamepad2.left_stick_y;
             if (Math.abs(slide_move) > CONSTANTS.SLIDE_MOVE_THRESHOLD) {
                 SLIDE_TARGGET_POSITION = intakeSlide.getCurrentPosition() + (slide_move * CONSTANTS.SLIDE_MOVE_INCREMENTS);
                 intakeSlide.setPosition(SLIDE_TARGGET_POSITION);
