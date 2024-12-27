@@ -357,7 +357,6 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad2.b){
-                pauseDrive(drive);
                 intakeElbow.setState(Intake_Elbow.IntakeElbowState.PICKUP);
                 sleep(200);
                 intakeGripper.setState(Intake_Gripper.IntakeGripperState.CLOSE);
@@ -380,7 +379,6 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad2.left_bumper) {
-                pauseDrive(drive);
                 intakeElbow.setState(Intake_Elbow.IntakeElbowState.DROP);
                 intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.DROP);
                 intakeWrist.setState(Intake_Wrist.IntakeWristState.DROP);
@@ -393,10 +391,6 @@ public class Teleop extends LinearOpMode {
             }
 
             // Show the elapsed game time and wheel power.
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
             telemetry.addData("intakeGripper: ", intakeGripper.getCurrentPosition());
@@ -414,8 +408,4 @@ public class Teleop extends LinearOpMode {
             }
         }
 
-        private void pauseDrive(SampleMecanumDrive drive){
-            drive.setWeightedDrivePower( new Pose2d(0, 0, 0));
-            drive.update();
-        }
     }
