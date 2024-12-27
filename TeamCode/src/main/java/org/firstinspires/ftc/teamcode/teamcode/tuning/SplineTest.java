@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.teamcode.tuning;
 
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,19 +13,46 @@ import org.firstinspires.ftc.teamcode.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.teamcode.TankDrive;
 
 public final class SplineTest extends LinearOpMode {
+
+    Action TrajectoryHighSpecimenPrep, TrajectoryPickUpSamples1, TrajectoryPickUpSamples2;
     @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d beginPose = new Pose2d(10, 62, Math.toRadians(90));
+        Pose2d beginPose = new Pose2d(10, -63.5, Math.toRadians(90));
+
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
             MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+
+            TrajectoryActionBuilder trajectoryHighSpecimenPrep = drive.actionBuilder(beginPose)
+                    .setReversed(false)
+                    .lineToY(-35);
+            //.splineTo(new Vector2d(0,32), Math.toRadians(90))
+
+            TrajectoryActionBuilder trajectoryPickUpSamples1 = trajectoryHighSpecimenPrep.endTrajectory().fresh()
+                    .setReversed(true)
+                    .lineToY(-52)
+                    .setReversed(false)
+                    .strafeToLinearHeading(new Vector2d(49,-56), Math.toRadians(90));
+
+            TrajectoryActionBuilder trajectoryPickUpSamples2 = trajectoryPickUpSamples1.endTrajectory().fresh()
+                    .setReversed(true)
+                    .strafeTo(new Vector2d(59,-56));
+
+            TrajectoryHighSpecimenPrep = trajectoryHighSpecimenPrep.build();
+            TrajectoryPickUpSamples1 = trajectoryPickUpSamples1.build();
+            TrajectoryPickUpSamples2 = trajectoryPickUpSamples2.build();
+
 
             waitForStart();
 
             Actions.runBlocking(
-                drive.actionBuilder(beginPose)
-                        .splineTo(new Vector2d(30, 30), Math.PI / 2)
-                        .splineTo(new Vector2d(0, 60), Math.PI)
-                        .build());
+                        new SequentialAction(
+                                TrajectoryHighSpecimenPrep,
+                                new SleepAction(0.5),
+                                TrajectoryPickUpSamples1,
+                                new SleepAction(0.5),
+                                TrajectoryPickUpSamples2
+                        )
+                );
         } else if (TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
             TankDrive drive = new TankDrive(hardwareMap, beginPose);
 
