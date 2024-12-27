@@ -33,12 +33,14 @@ package org.firstinspires.ftc.teamcode;
 
 
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.teamcode.MecanumDrive;
 
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Gripper;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Wrist;
@@ -178,9 +180,10 @@ public class Teleop extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
 
         intakeGripper = new Intake_Gripper(hardwareMap);
+
         intakeWrist = new Intake_Wrist(hardwareMap);
         intakeElbow = new Intake_Elbow(hardwareMap);
         intakeShoulder = new Intake_Shoulder(hardwareMap);
@@ -205,7 +208,6 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("scoringArm1: ", scoringArm.getSoringArm1position());
             telemetry.addData("scoringArm2: ", scoringArm.getSoringArm2position());
             telemetry.addData("scoringSlide: ", scoringSlide.getCurrentPosition());
-
             telemetry.update();
         }
         /*
@@ -253,14 +255,14 @@ public class Teleop extends LinearOpMode {
                 RotScale = RotSlowScale;
             }
 
-            drive.setWeightedDrivePower(
-                    new Pose2d(
+
+            drive.setDrivePowers(new PoseVelocity2d(
+                    new Vector2d(
                             -gamepad1.left_stick_y * Math.abs(gamepad1.left_stick_y) * DriveScale,
-                            -gamepad1.left_stick_x * Math.abs(gamepad1.left_stick_x) * StrafeScale,
-                            -gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x) * RotScale
-                    )
-            );
-            drive.update();
+                            -gamepad1.left_stick_x * Math.abs(gamepad1.left_stick_x) * StrafeScale
+                    ),
+                    -gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x) * RotScale
+            ));
 
             //if (gamepad1.right_bumper){ scoringGripper.setState(OPEN); }
 
