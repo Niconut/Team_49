@@ -54,7 +54,7 @@ public class Teleop extends LinearOpMode {
     private static double WRIST_MOVE_INCREMENTS = 0.01;
     private static double WRIST_MOVE_THRESHOLD = 0.25;
 
-    private static double SHOULDER_MOVE_INCREMENTS = 0.01;
+    private static double SHOULDER_MOVE_INCREMENTS = 0.005;
     private static double SHOULDER_MOVE_THRESHOLD = 0.25;
 
     private static double SLIDE_MOVE_INCREMENTS = 0.01;
@@ -90,6 +90,9 @@ public class Teleop extends LinearOpMode {
         intakeElbow.setState(Intake_Elbow.IntakeElbowState.INIT);
         intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.INIT);
         intakeSlide.setState(Intake_Slide.IntakeSlideState.INIT);
+
+        scoringArm.setState(ScoringArmState.INIT);
+        scoringGripper.setState(ScoringGripperState.INIT);
 
 
         while (opModeInInit()){
@@ -195,18 +198,19 @@ public class Teleop extends LinearOpMode {
                 scoringArm.setState(ScoringArmState.WALL_PICKUP);
                 sleep(200);
                 scoringGripper.setState(ScoringGripperState.CLOSED);
-                sleep(300);
-                SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.HIGH_CHAMBER_SCORE_PREP);
-                scoringArm.setState(ScoringArmState.HIGH_CHAMBER_SCORE_PREP);
+                sleep(200);
+                SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.WALL_PICKUP_DONE);
             }
 
             if (gamepad1.y) {
                 //pauseDrive(drive);
-                SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.HIGH_CHAMBER_SCORE);
                 scoringArm.setState(ScoringArmState.HIGH_CHAMBER_SCORE);
+                SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.HIGH_CHAMBER_SCORE);
             }
 
-            if (gamepad1.x){ }
+            if (gamepad1.x){
+                scoringArm.setState(ScoringArmState.HIGH_CHAMBER_SCORE_PREP);
+                SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.HIGH_CHAMBER_SCORE_PREP); }
 
             /* ******** GROUP ALL OPERATOR CONTROLS HERE ******** */
             /*
@@ -228,7 +232,7 @@ public class Teleop extends LinearOpMode {
             */
 
             /* calculate new wrist position */
-            double wrist_move = gamepad2.right_trigger - gamepad2.left_trigger;
+            double wrist_move = gamepad2.left_trigger - gamepad2.right_trigger;
             if (Math.abs(wrist_move) > WRIST_MOVE_THRESHOLD) {
                 WRIST_TARGET_POSITION = intakeWrist.getCurrentPosition() + (wrist_move * WRIST_MOVE_INCREMENTS);
                 intakeWrist.setPosition(WRIST_TARGET_POSITION);
@@ -249,10 +253,13 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad2.a) {
-                intakeElbow.setState(Intake_Elbow.IntakeElbowState.PICKUP_PREP);
+                pauseDrive(drive);
                 intakeSlide.setState(Intake_Slide.IntakeSlideState.PICKUP_PREP);
-                intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.PICKUP_PREP);
                 intakeWrist.setState(Intake_Wrist.IntakeWristState.PICKUP_PREP);
+                sleep(500);
+                intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.PICKUP_PREP);
+                sleep(100);
+                intakeElbow.setState(Intake_Elbow.IntakeElbowState.PICKUP_PREP);
                 intakeGripper.setState(Intake_Gripper.IntakeGripperState.OPEN);
             }
 
@@ -266,11 +273,15 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad2.x) {
-                intakeElbow.setState(Intake_Elbow.IntakeElbowState.STOW);
-                intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.STOW);
-                intakeSlide.setState(Intake_Slide.IntakeSlideState.STOW);
-                intakeWrist.setState(Intake_Wrist.IntakeWristState.STOW);
+                pauseDrive(drive);
                 intakeGripper.setState(Intake_Gripper.IntakeGripperState.CLOSE);
+                intakeWrist.setState(Intake_Wrist.IntakeWristState.STOW);
+                intakeElbow.setState(Intake_Elbow.IntakeElbowState.STOW);
+                intakeSlide.setState(Intake_Slide.IntakeSlideState.PICKUP_PREP);
+                sleep(200);
+                intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.STOW);
+                sleep(750);
+                intakeSlide.setState(Intake_Slide.IntakeSlideState.STOW);
             }
 
             if (gamepad2.right_stick_button){
@@ -280,9 +291,10 @@ public class Teleop extends LinearOpMode {
 
             if (gamepad2.left_bumper) {
                 pauseDrive(drive);
-                intakeElbow.setState(Intake_Elbow.IntakeElbowState.DROP);
-                sleep(200);
                 intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.DROP);
+                sleep(100);
+                intakeElbow.setState(Intake_Elbow.IntakeElbowState.DROP);
+                sleep(100);
                 intakeWrist.setState(Intake_Wrist.IntakeWristState.DROP);
                 sleep(300);
                 intakeGripper.setState(Intake_Gripper.IntakeGripperState.OPEN);

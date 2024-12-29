@@ -6,11 +6,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Shoulder {
     private Servo Intake_Shoulder;
 
-    private static double INIT = 0.2;
-    private static double STOW = 0.2;
+    private static double INIT = 0.16;
+    private static double STOW = 0.16;
     private static double PICKUP_PREP = 0.69;
-    private static double DROP = 0.2;
-    private double SAFE_MIN = 0.2;
+    private static double DROP = 0.25;
+    private double SAFE_MIN = 0.15;
     private double SAFE_MAX = 0.8;
 
     public enum IntakeShoulderState {

@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Elbow {
     private Servo IntakeElbow;
 
-    private  double INIT = 0.5;
-    private  double STOW = 0.55;
+    private  double INIT = 0.625;
+    private  double STOW = 0.625;
     private  double DROP = 0.65;
     private  double PICKUP_PREP = 0.68; //0.555;
     private  double PICKUP = 0.69;

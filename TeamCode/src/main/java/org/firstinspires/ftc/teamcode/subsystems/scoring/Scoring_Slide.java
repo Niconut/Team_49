@@ -14,9 +14,10 @@ public class Scoring_Slide {
     private int STOW = -25;
     private int GROUND_PICKUP = -25;
     private int WALL_PICKUP_PREP = -770;
+    private int WALL_PICKUP_DONE = -1100;
     private int WALL_PICKUP = -770;
-    private int HIGH_CHAMBER_SCORE_PREP = -940;
-    private int HIGH_CHAMBER_SCORE = -1200;
+    private int HIGH_CHAMBER_SCORE_PREP = -810;
+    private int HIGH_CHAMBER_SCORE = -1000;
     private int HIGH_BASKET_SCORE_PREP = -2700;
     private int HIGH_BASKET_SCORE = -2700;
     private int LOW_BASKET_SCORE_PREP = -2500;
@@ -31,6 +32,7 @@ public class Scoring_Slide {
         STOW,
         GROUND_PICKUP,
         WALL_PICKUP_PREP,
+        WALL_PICKUP_DONE,
         WALL_PICKUP,
         HIGH_CHAMBER_SCORE_PREP,
         HIGH_CHAMBER_SCORE,
@@ -85,6 +87,7 @@ public class Scoring_Slide {
             case STOW -> STOW;
             case GROUND_PICKUP -> GROUND_PICKUP;
             case WALL_PICKUP_PREP -> WALL_PICKUP_PREP;
+            case WALL_PICKUP_DONE -> WALL_PICKUP_DONE;
             case WALL_PICKUP -> WALL_PICKUP;
             case HIGH_CHAMBER_SCORE_PREP -> HIGH_CHAMBER_SCORE_PREP;
             case HIGH_CHAMBER_SCORE -> HIGH_CHAMBER_SCORE;
