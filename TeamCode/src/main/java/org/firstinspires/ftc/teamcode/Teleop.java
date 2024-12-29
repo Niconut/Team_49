@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Gripper;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Wrist;
@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.ScoringGripperState;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Arm.ScoringArmState;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState;
+import org.firstinspires.ftc.teamcode.teamcode.MecanumDrive;
 
 @TeleOp(name="Teleop", group="A_DriveCode")
 public class Teleop extends LinearOpMode {
@@ -42,7 +43,7 @@ public class Teleop extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
 
         Intake_Gripper intakeGripper = new Intake_Gripper(hardwareMap);
         Intake_Wrist intakeWrist = new Intake_Wrist(hardwareMap);
@@ -111,14 +112,13 @@ public class Teleop extends LinearOpMode {
                 ROT_SCALE = CONSTANTS.ROT_SLOW_SCALE;
             }
 
-            drive.setWeightedDrivePower(
-                    new Pose2d(
+            drive.setDrivePowers(new PoseVelocity2d(
+                    new Vector2d(
                             -gamepad1.left_stick_y * Math.abs(gamepad1.left_stick_y) * DRIVE_SCALE,
-                            -gamepad1.left_stick_x * Math.abs(gamepad1.left_stick_x) * STRAFE_SCALE,
-                            -gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x) * ROT_SCALE
-                    )
-            );
-            drive.update();
+                            -gamepad1.left_stick_x * Math.abs(gamepad1.left_stick_x) * STRAFE_SCALE
+                    ),
+                    -gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x) * ROT_SCALE
+            ));
 
             //if (gamepad1.right_bumper){ scoringGripper.setState(OPEN); }
 
@@ -264,10 +264,6 @@ public class Teleop extends LinearOpMode {
             scoringSlide.setPower(power);
 
             // Show the elapsed game time and wheel power.
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 
             telemetry.addData("intakeGripper: ", intakeGripper.getCurrentPosition());
@@ -285,8 +281,7 @@ public class Teleop extends LinearOpMode {
             }
         }
 
-        private void pauseDrive(SampleMecanumDrive drive){
-            drive.setWeightedDrivePower( new Pose2d(0, 0, 0));
-            drive.update();
+        private void pauseDrive(MecanumDrive drive){
+            drive.setDrivePowers(new PoseVelocity2d( new Vector2d(0,0), 0));
         }
     }
