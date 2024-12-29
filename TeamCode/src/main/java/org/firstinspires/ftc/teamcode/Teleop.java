@@ -210,6 +210,15 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("scoringSlide: ", scoringSlide.getCurrentPosition());
             telemetry.update();
         }
+
+        intakeGripper.setState(Intake_Gripper.IntakeGripperState.INIT);
+        intakeWrist.setState(Intake_Wrist.IntakeWristState.INIT);
+        intakeElbow.setState(Intake_Elbow.IntakeElbowState.INIT);
+        intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.INIT);
+        intakeSlide.setState(Intake_Slide.IntakeSlideState.INIT);
+
+        scoringArm.setState(ScoringArmState.INIT);
+        scoringGripper.setState(INIT);
         /*
         intake_roller_position = 0;
         intakeShoulder.setPosition(shoulderInit);

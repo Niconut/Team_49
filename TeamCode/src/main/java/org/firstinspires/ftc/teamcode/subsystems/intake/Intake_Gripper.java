@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Gripper {
     private Servo IntakeGripper;
 
-    private double INIT = 0.55;
+    private double INIT = 0.5;
     private static double OPEN = 0.55;
     private static double CLOSE = 0.325;
 

@@ -16,7 +16,7 @@ public class Scoring_Slide {
         viper_SlidePID.setTolerance(10,10);
     }
 
-    private int INIT = 0;
+    private int INIT = 50;
     private int HOME = 25;
     private int STOW = 25;
     private int GROUND_PICKUP = 25;
