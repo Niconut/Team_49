@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
+import org.firstinspires.ftc.teamcode.subsystems.Spin;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Park_Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Wrist;
@@ -80,6 +81,7 @@ public class Teleop extends LinearOpMode {
     private static Arm arm1 = null;
     private static Wrist wrist = null;
     private static Park_Arm Park_Arm = null;
+    private static Spin Spin= null;
     public static double armkP = 0.01;
     public static double armkD = 0.00001;
     public static double armkI = 0.0001;
@@ -102,13 +104,16 @@ public class Teleop extends LinearOpMode {
     private static double wristOrientation = 0;
     @Override
     public void runOpMode() {
-
+        /*
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         Intake = new Intake(hardwareMap);
         arm1 = new Arm(hardwareMap);
         wrist = new Wrist(hardwareMap);
         Park_Arm = new Park_Arm(hardwareMap);
+        */
 
+        Spin = new Spin(hardwareMap);
+        /*
         PIDController armPID = new PIDController(armkP, armkI, armkD);
         armPID.setTolerance(50, 10);
 
@@ -117,14 +122,16 @@ public class Teleop extends LinearOpMode {
         telemetry.update();
 
         intake_roller_position = 0;
-
+        */
 
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            /*
             double max;
+
 
             drive.setWeightedDrivePower(
                     new Pose2d(
@@ -213,6 +220,16 @@ public class Teleop extends LinearOpMode {
             armPower = armPID.calculate(armCurrentPosition);
             //arm1.setPower1(gamepad2.left_stick_y);
 
+
+             */
+
+            Spin.setPowerSpin(1);
+
+            200RPM - 6, 8, 12V
+            435RPM - 12V battery
+            217.5  - 6V
+
+            /*
             arm1.setPower1(armPower);
             // Show the elapsed game time and wheel power.
             Pose2d poseEstimate = drive.getPoseEstimate();
@@ -224,5 +241,7 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("WristOrientation", wristOrientation);
 
             telemetry.update();
+            */
         }
-    }}
+    }
+}
