@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems.scoring;
 
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Scoring_Slide {
@@ -10,17 +10,20 @@ public class Scoring_Slide {
     private DcMotorEx Viper_Slide2;
 
     private int INIT = 0;
-    private int HOME = 25;
-    private int STOW = 25;
-    private int GROUND_PICKUP = 25;
-    private int WALL_PICKUP_PREP = 950;
-    private int WALL_PICKUP = 950;
-    private int HIGH_CHAMBER_SCORE_PREP = 1300;
-    private int HIGH_CHAMBER_SCORE = 1560;
-    private int HIGH_BASKET_SCORE_PREP = 4300;
-    private int HIGH_BASKET_SCORE = 4300;
-    private int LOW_BASKET_SCORE_PREP = 2500;
-    private int LOW_BASKET_SCORE = 2500;
+    private int HOME = -25;
+    private int STOW = -25;
+    private int GROUND_PICKUP = -25;
+    private int WALL_PICKUP_PREP = -770;
+    private int WALL_PICKUP = -770;
+    private int HIGH_CHAMBER_SCORE_PREP = -940;
+    private int HIGH_CHAMBER_SCORE = -1200;
+    private int HIGH_BASKET_SCORE_PREP = -2700;
+    private int HIGH_BASKET_SCORE = -2700;
+    private int LOW_BASKET_SCORE_PREP = -2500;
+    private int LOW_BASKET_SCORE = -2500;
+    private int SAFE_MIN = -2500;
+    private int SAFE_MAX = -25;
+
 
     public enum ScoringSlideState {
         INIT,
@@ -38,8 +41,8 @@ public class Scoring_Slide {
     }
 
     public Scoring_Slide(HardwareMap hardwareMap) {
-        this.Viper_Slide1 = hardwareMap.get(DcMotorEx.class, "ViperSlide 1");
-        this.Viper_Slide2 = hardwareMap.get(DcMotorEx.class, "ViperSlide 2");
+        this.Viper_Slide1 = hardwareMap.get(DcMotorEx.class, "ViperSlide Left");    //  port 0
+        this.Viper_Slide2 = hardwareMap.get(DcMotorEx.class, "ViperSlide Right");   //  port 1
 
         this.Viper_Slide1.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         this.Viper_Slide2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -67,7 +70,11 @@ public class Scoring_Slide {
         Viper_Slide2.setPower(power);
     }
 
-    public int getCurrentPosition() {
+    public int getLeftCurrentPosition() {
+        return Viper_Slide1.getCurrentPosition();
+    }
+
+    public int getRightCurrentPosition() {
         return Viper_Slide2.getCurrentPosition();
     }
 
@@ -86,7 +93,8 @@ public class Scoring_Slide {
             case LOW_BASKET_SCORE_PREP -> LOW_BASKET_SCORE_PREP;
             case LOW_BASKET_SCORE -> LOW_BASKET_SCORE;
         };
-
+        newpos = (newpos > SAFE_MAX)? SAFE_MAX:newpos;
+        newpos = (newpos < SAFE_MIN)? SAFE_MIN:newpos;
         return newpos;
     }
 }

@@ -23,13 +23,15 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Arm.ScoringArmS
 import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState;
 import org.firstinspires.ftc.teamcode.teamcode.MecanumDrive;
 
+import org.firstinspires.ftc.teamcode.subsystems.Constants;
+
 @TeleOp(name="Teleop", group="A_DriveCode")
 public class Teleop extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private static Constants CONSTANTS;
+    //public Constants CONSTANTS;
 
     private static double DRIVE_SCALE = 1;
     private static double STRAFE_SCALE = 1;
@@ -40,6 +42,27 @@ public class Teleop extends LinearOpMode {
     private static double SLIDE_TARGGET_POSITION = 0.5;
     private static double SCORING_ARM_TARGET_POSITION = 0.5;
     private static int SCORING_SLIDE_SETPOINT = 0;
+
+    private static double DRIVE_NORMAL_SCALE = 1;
+    private static double STRAFE_NORMAL_SCALE = 1;
+    private static double ROT_NORMAL_SCALE = 0.5;
+
+    private static double DRIVE_SLOW_SCALE = 0.3;
+    private static double STRAFE_SLOW_SCALE = 0.3;
+    private static double ROT_SLOW_SCALE = 0.3;
+
+    private static double WRIST_MOVE_INCREMENTS = 0.01;
+    private static double WRIST_MOVE_THRESHOLD = 0.25;
+
+    private static double SHOULDER_MOVE_INCREMENTS = 0.01;
+    private static double SHOULDER_MOVE_THRESHOLD = 0.25;
+
+    private static double SLIDE_MOVE_INCREMENTS = 0.01;
+    private static double SLIDE_MOVE_THRESHOLD = 0.25;
+
+    private static double SCORING_ARM_MOVE_INCREMENTS = 0.01;
+    private static double SCORING_ARM_MOVE_THRESHOLD = 0.25;
+
     @Override
     public void runOpMode() {
 
@@ -62,18 +85,28 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        intakeGripper.setState(Intake_Gripper.IntakeGripperState.INIT);
+        intakeWrist.setState(Intake_Wrist.IntakeWristState.INIT);
+        intakeElbow.setState(Intake_Elbow.IntakeElbowState.INIT);
+        intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.INIT);
+        intakeSlide.setState(Intake_Slide.IntakeSlideState.INIT);
+
+
         while (opModeInInit()){
-            int slidepos = scoringSlide.getCurrentPosition();
+            int slideposLeft = scoringSlide.getLeftCurrentPosition();
+            int slideposRight = scoringSlide.getLeftCurrentPosition();
+            double elbowpos = scoringSlide.getLeftCurrentPosition();
             telemetry.addData("intakeGripper: ", intakeGripper.getCurrentPosition());
             telemetry.addData("intakeWrist: ", intakeWrist.getCurrentPosition());
-            telemetry.addData("intakeElbow: ", intakeElbow.getCurrentPosition());
+            telemetry.addData("intakeElbow: ", elbowpos); //intakeElbow.getCurrentPosition());
             telemetry.addData("intakeShoulder: ", intakeShoulder.getCurrentPosition());
             telemetry.addData("intakeSlide: ", intakeSlide.getCurrentPosition());
 
             telemetry.addData("scoringGripper: ", scoringGripper.getCurrentPosition());
             telemetry.addData("scoringArm1: ", scoringArm.getSoringArm1position());
             telemetry.addData("scoringArm2: ", scoringArm.getSoringArm2position());
-            telemetry.addData("scoringSlide: ", slidepos);
+            telemetry.addData("scoringSlideLeft: ", slideposLeft);
+            telemetry.addData("scoringSlideRight: ", slideposRight);
 
             telemetry.update();
         }
@@ -102,14 +135,14 @@ public class Teleop extends LinearOpMode {
             */
 
             if (gamepad1.right_bumper){
-                DRIVE_SCALE = CONSTANTS.DRIVE_NORMAL_SCALE;
-                STRAFE_SCALE = CONSTANTS.STRAFE_NORMAL_SCALE;
-                ROT_SCALE = CONSTANTS.ROT_NORMAL_SCALE;
+                DRIVE_SCALE = DRIVE_NORMAL_SCALE;
+                STRAFE_SCALE = STRAFE_NORMAL_SCALE;
+                ROT_SCALE = ROT_NORMAL_SCALE;
 
             }else{
-                DRIVE_SCALE = CONSTANTS.DRIVE_SLOW_SCALE;
-                STRAFE_SCALE = CONSTANTS.STRAFE_SLOW_SCALE;
-                ROT_SCALE = CONSTANTS.ROT_SLOW_SCALE;
+                DRIVE_SCALE = DRIVE_SLOW_SCALE;
+                STRAFE_SCALE = STRAFE_SLOW_SCALE;
+                ROT_SCALE = ROT_SLOW_SCALE;
             }
 
             drive.setDrivePowers(new PoseVelocity2d(
@@ -124,8 +157,8 @@ public class Teleop extends LinearOpMode {
 
             /* calculate new scoring arm position */
             double scoring_arm_move = gamepad1.right_trigger - gamepad1.left_trigger;
-            if (Math.abs(scoring_arm_move) > CONSTANTS.SCORING_ARM_MOVE_THRESHOLD) {
-                SCORING_ARM_TARGET_POSITION = scoringArm.getSoringArm1position() + (scoring_arm_move * CONSTANTS.SCORING_ARM_MOVE_INCREMENTS);
+            if (Math.abs(scoring_arm_move) > SCORING_ARM_MOVE_THRESHOLD) {
+                SCORING_ARM_TARGET_POSITION = scoringArm.getSoringArm1position() + (scoring_arm_move * SCORING_ARM_MOVE_INCREMENTS);
                 scoringArm.setPosition(SCORING_ARM_TARGET_POSITION);
             }
 
@@ -152,7 +185,7 @@ public class Teleop extends LinearOpMode {
                 //scoringGripper.setState(ScoringGripperState.CLOSED);
                 //sleep(100);
                 scoringArm.setState(ScoringArmState.WALL_PICKUP_PREP);
-                //sleep(200);
+                sleep(500);
                 SCORING_SLIDE_SETPOINT = scoringSlide.setState(ScoringSlideState.WALL_PICKUP_PREP);
                 scoringGripper.setState(ScoringGripperState.OPEN);
             }
@@ -196,22 +229,22 @@ public class Teleop extends LinearOpMode {
 
             /* calculate new wrist position */
             double wrist_move = gamepad2.right_trigger - gamepad2.left_trigger;
-            if (Math.abs(wrist_move) > CONSTANTS.WRIST_MOVE_THRESHOLD) {
-                WRIST_TARGET_POSITION = intakeWrist.getCurrentPosition() + (wrist_move * CONSTANTS.WRIST_MOVE_INCREMENTS);
+            if (Math.abs(wrist_move) > WRIST_MOVE_THRESHOLD) {
+                WRIST_TARGET_POSITION = intakeWrist.getCurrentPosition() + (wrist_move * WRIST_MOVE_INCREMENTS);
                 intakeWrist.setPosition(WRIST_TARGET_POSITION);
             }
 
             /* calculate new shoulder position */
             double shoulder_move = -gamepad2.left_stick_x;
-            if (Math.abs(shoulder_move) > CONSTANTS.SHOULDER_MOVE_THRESHOLD) {
-                SHOULDER_TARGET_POSITION = intakeShoulder.getCurrentPosition() + (shoulder_move * CONSTANTS.SHOULDER_MOVE_INCREMENTS);
+            if (Math.abs(shoulder_move) > SHOULDER_MOVE_THRESHOLD) {
+                SHOULDER_TARGET_POSITION = intakeShoulder.getCurrentPosition() + (shoulder_move * SHOULDER_MOVE_INCREMENTS);
                 intakeShoulder.setPosition(SHOULDER_TARGET_POSITION);
             }
 
             /* calculate new slide position */
-            double slide_move = gamepad2.left_stick_y;
-            if (Math.abs(slide_move) > CONSTANTS.SLIDE_MOVE_THRESHOLD) {
-                SLIDE_TARGGET_POSITION = intakeSlide.getCurrentPosition() + (slide_move * CONSTANTS.SLIDE_MOVE_INCREMENTS);
+            double slide_move = -gamepad2.left_stick_y;
+            if (Math.abs(slide_move) > SLIDE_MOVE_THRESHOLD) {
+                SLIDE_TARGGET_POSITION = intakeSlide.getCurrentPosition() + (slide_move * SLIDE_MOVE_INCREMENTS);
                 intakeSlide.setPosition(SLIDE_TARGGET_POSITION);
             }
 
@@ -229,7 +262,7 @@ public class Teleop extends LinearOpMode {
                 sleep(300);
                 intakeGripper.setState(Intake_Gripper.IntakeGripperState.CLOSE);
                 sleep(300);
-                intakeElbow.setState(Intake_Elbow.IntakeElbowState.PICKUP_PREP);
+                intakeElbow.setState(Intake_Elbow.IntakeElbowState.PICKUP_DONE);
             }
 
             if (gamepad2.x) {
@@ -242,13 +275,13 @@ public class Teleop extends LinearOpMode {
 
             if (gamepad2.right_stick_button){
                 intakeGripper.setState(Intake_Gripper.IntakeGripperState.OPEN);
-                //sleep(200);
-                //intakeElbow.setState(Intake_Elbow.IntakeElbowState.PICKUP_PREP);
+                intakeElbow.setState(Intake_Elbow.IntakeElbowState.PICKUP_PREP);
             }
 
             if (gamepad2.left_bumper) {
                 pauseDrive(drive);
                 intakeElbow.setState(Intake_Elbow.IntakeElbowState.DROP);
+                sleep(200);
                 intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.DROP);
                 intakeWrist.setState(Intake_Wrist.IntakeWristState.DROP);
                 sleep(300);
@@ -260,7 +293,7 @@ public class Teleop extends LinearOpMode {
             }
 
             scoringSlidePID.setSetPoint(SCORING_SLIDE_SETPOINT);
-            double power = scoringSlidePID.calculate(scoringSlide.getCurrentPosition());
+            double power = scoringSlidePID.calculate(scoringSlide.getLeftCurrentPosition());
             scoringSlide.setPower(power);
 
             // Show the elapsed game time and wheel power.
@@ -275,7 +308,7 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("scoringGripper: ", scoringGripper.getCurrentPosition());
             telemetry.addData("scoringArm1: ", scoringArm.getSoringArm1position());
             telemetry.addData("scoringArm2: ", scoringArm.getSoringArm2position());
-            telemetry.addData("scoringSlide: ", scoringSlide.getCurrentPosition());
+            telemetry.addData("scoringSlide: ", scoringSlide.getLeftCurrentPosition());
 
             telemetry.update();
             }

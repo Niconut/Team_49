@@ -6,18 +6,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Elbow {
     private Servo IntakeElbow;
 
-    private  double INIT = 0.47;
-    private  double STOW = 0.47;
-    private  double DROP = 0.54;
-    private  double PICKUP_PREP = 0.555;
-    private  double PICKUP = 0.57;
+    private  double INIT = 0.5;
+    private  double STOW = 0.55;
+    private  double DROP = 0.65;
+    private  double PICKUP_PREP = 0.68; //0.555;
+    private  double PICKUP = 0.69;
+    private double PICKUP_DONE = 0.65;
 
     public enum IntakeElbowState {
         INIT,
         STOW,
         DROP,
         PICKUP_PREP,
-        PICKUP
+        PICKUP,
+        PICKUP_DONE
     }
 
     public Intake_Elbow(HardwareMap hardwareMap) {
@@ -36,6 +38,7 @@ public class Intake_Elbow {
             case PICKUP -> PICKUP;
             case PICKUP_PREP -> PICKUP_PREP;
             case DROP -> DROP;
+            case PICKUP_DONE -> PICKUP_DONE;
         };
         IntakeElbow.setPosition(pos);
     }

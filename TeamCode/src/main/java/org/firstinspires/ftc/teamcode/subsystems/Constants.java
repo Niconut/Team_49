@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 public class Constants {
 
@@ -10,7 +10,7 @@ public class Constants {
     public double STRAFE_SLOW_SCALE = 0.3;
     public double ROT_SLOW_SCALE = 0.3;
 
-    public double WRIST_MOVE_INCREMENTS = 0.025;
+    public double WRIST_MOVE_INCREMENTS = 0.02;
     public double WRIST_MOVE_THRESHOLD = 0.25;
 
     public double SHOULDER_MOVE_INCREMENTS = 0.01;

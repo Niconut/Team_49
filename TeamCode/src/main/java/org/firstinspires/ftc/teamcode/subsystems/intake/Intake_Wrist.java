@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems.intake;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -10,8 +14,8 @@ public class Intake_Wrist {
     private double DROP = 0.5;
     private double PICKUP_PREP = 0.5;
     private double STOW = 0.5;
-    private double SAFE_MAX = 0.65;
-    private double SAFE_MIN = 0.35;
+    private double SAFE_MAX = 0.75;
+    private double SAFE_MIN = 0.25;
 
     public enum IntakeWristState {
         INIT,
@@ -24,16 +28,19 @@ public class Intake_Wrist {
         this.Wrist = hardwareMap.get(Servo.class, "Wrist");
         this.Wrist.setDirection(Servo.Direction.FORWARD);
     }
-    public void setPosition(double position){
+
+    public void setPosition(double position) {
         position = (position > SAFE_MAX) ? SAFE_MAX : position;
-        position = (position < SAFE_MIN) ? SAFE_MIN: position;
+        position = (position < SAFE_MIN) ? SAFE_MIN : position;
         Wrist.setPosition(position);
     }
 
-    public double getCurrentPosition(){return Wrist.getPosition();}
+    public double getCurrentPosition() {
+        return Wrist.getPosition();
+    }
 
-    public void setState(IntakeWristState state){
-        double pos = switch (state){
+    public void setState(IntakeWristState state) {
+        double pos = switch (state) {
             case INIT -> INIT;
             case DROP -> DROP;
             case PICKUP_PREP -> PICKUP_PREP;
@@ -42,3 +49,4 @@ public class Intake_Wrist {
         Wrist.setPosition(pos);
     }
 }
+

@@ -5,12 +5,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Scoring_Arm {
 
-    public double INIT = 0.325;
-    public double HOME = 0.325;
-    public double STOW = 0.325;
-    public double GROUND_PICKUP = 0.14;
-    public double WALL_PICKUP_PREP = 0.175;
-    public double WALL_PICKUP = 0.225;
+    public double INIT = 0.8;
+    public double HOME = 0.8;
+    public double STOW = 0.8;
+    public double GROUND_PICKUP = 0.1;
+    public double WALL_PICKUP_PREP = 0.1;
+    public double WALL_PICKUP = 0.125;
     public double HIGH_CHAMBER_SCORE_PREP = 0.8;
     public double HIGH_CHAMBER_SCORE = 0.75;
     public double HIGH_BASKET_SCORE_PREP = 0.75;
