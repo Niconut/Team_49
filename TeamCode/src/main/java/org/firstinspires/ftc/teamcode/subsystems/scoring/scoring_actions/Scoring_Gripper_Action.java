@@ -14,8 +14,6 @@ public class Scoring_Gripper_Action {
     public double OPEN = 0.55;
     public double INIT = 0.55;
 
-
-
     public Scoring_Gripper_Action(final HardwareMap hardwareMap) {
         this.Scoring_Gripper = hardwareMap.get(Servo.class, "Gripper");
         this.Scoring_Gripper.setDirection(Servo.Direction.FORWARD);

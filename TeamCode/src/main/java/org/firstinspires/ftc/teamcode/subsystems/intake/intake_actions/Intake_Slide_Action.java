@@ -13,6 +13,7 @@ public class Intake_Slide_Action {
     private static double INIT = 0.3;
     private static double STOW = 0.3;
     private static double PICKUP_PREP = 0.725;
+    private static double MID = 0.5;
     private double SAFE_MAX = 0.725;
     private double SAFE_MIN = 0.3;
 
@@ -70,7 +71,21 @@ public class Intake_Slide_Action {
 
     }
 
+    public class IntakeSlidePickUpMid implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                Intake_Slide.setPosition(MID);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
     public Action intakeSlideInit(){return new IntakeSlideInit();}
     public Action intakeSlideStow(){return new IntakeSlideStow();}
     public Action intakeSlidePickUpPrep(){return new IntakeSlidePickUpPrep();}
+    public Action intakeSlidePickUpMid(){return new IntakeSlidePickUpMid();}
 }

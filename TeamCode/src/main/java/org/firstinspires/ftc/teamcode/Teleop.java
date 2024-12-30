@@ -32,6 +32,15 @@ public class Teleop extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     //public Constants CONSTANTS;
+    Intake_Gripper intakeGripper = null;
+    Intake_Wrist intakeWrist = null;
+    Intake_Elbow intakeElbow = null;
+    Intake_Shoulder intakeShoulder = null;
+    Intake_Slide intakeSlide = null;
+
+    Scoring_Gripper scoringGripper = null;
+    Scoring_Arm scoringArm = null;
+    Scoring_Slide scoringSlide = null;
 
     private static double DRIVE_SCALE = 1;
     private static double STRAFE_SCALE = 1;
@@ -68,15 +77,15 @@ public class Teleop extends LinearOpMode {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
 
-        Intake_Gripper intakeGripper = new Intake_Gripper(hardwareMap);
-        Intake_Wrist intakeWrist = new Intake_Wrist(hardwareMap);
-        Intake_Elbow intakeElbow = new Intake_Elbow(hardwareMap);
-        Intake_Shoulder intakeShoulder = new Intake_Shoulder(hardwareMap);
-        Intake_Slide intakeSlide = new Intake_Slide(hardwareMap);
+        intakeGripper = new Intake_Gripper(hardwareMap);
+        intakeWrist = new Intake_Wrist(hardwareMap);
+        intakeElbow = new Intake_Elbow(hardwareMap);
+        intakeShoulder = new Intake_Shoulder(hardwareMap);
+        intakeSlide = new Intake_Slide(hardwareMap);
 
-        Scoring_Gripper scoringGripper = new Scoring_Gripper(hardwareMap);
-        Scoring_Arm scoringArm = new Scoring_Arm(hardwareMap);
-        Scoring_Slide scoringSlide = new Scoring_Slide(hardwareMap);
+        scoringGripper = new Scoring_Gripper(hardwareMap);
+        scoringArm = new Scoring_Arm(hardwareMap);
+        scoringSlide = new Scoring_Slide(hardwareMap);
 
         PIDController scoringSlidePID = new PIDController(0.01, 0, 0);
         scoringSlidePID.setTolerance(10,10);
