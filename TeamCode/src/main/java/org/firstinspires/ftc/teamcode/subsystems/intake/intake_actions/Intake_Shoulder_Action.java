@@ -70,7 +70,21 @@ public class Intake_Shoulder_Action {
 
     }
 
+    public class IntakeShoulderDrop implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                Intake_Shoulder.setPosition(DROP);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
     public Action intakeShoulderStow(){return new IntakeShoulderStow();}
     public Action intakeShoulderPickUpPrep(){return new IntakeShoulderPickUpPrep();}
     public Action intakeShoulderAutoRightPickUp(){return new IntakeShoulderAutoRightPickUp();}
+    public Action intakeShoulderDrop(){return new IntakeShoulderDrop();}
 }

@@ -55,4 +55,7 @@ public class Intake_Slide_Action {
         }
 
     }
+
+    public Action intakeSlideStow(){return new IntakeSlideStow();}
+    public Action intakeSlidePickUpPrep(){return new IntakeSlidePickUpPrep();}
 }
