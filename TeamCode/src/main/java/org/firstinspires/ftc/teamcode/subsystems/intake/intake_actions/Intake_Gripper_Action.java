@@ -52,6 +52,20 @@ public class Intake_Gripper_Action {
 
     }
 
-    public Action intakeGripperOpen(){return new IntakeGripperClose();}
-    public Action intakeGripperClose(){return new IntakeGripperOpen();}
+    public class IntakeGripperInit implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                IntakeGripper.setPosition(INIT);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
+    public Action intakeGripperOpen(){return new IntakeGripperOpen();}
+    public Action intakeGripperClose(){return new IntakeGripperClose();}
+    public Action intakeGripperInit(){return new IntakeGripperInit();}
 }

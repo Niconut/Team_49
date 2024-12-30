@@ -10,11 +10,13 @@ public class Intake_Gripper {
     private double INIT = 0.285;
     private static double OPEN = 0.55;
     private static double CLOSE = 0.285;
+    private double MID = 0.5;
 
     public enum IntakeGripperState {
         INIT,
         OPEN,
-        CLOSE
+        CLOSE,
+        MID
     }
 
     public Intake_Gripper(HardwareMap hardwareMap) {
@@ -33,6 +35,7 @@ public class Intake_Gripper {
             case INIT -> INIT;
             case OPEN -> OPEN;
             case CLOSE -> CLOSE;
+            case MID -> MID;
         };
         IntakeGripper.setPosition(pos);
     }

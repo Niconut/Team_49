@@ -12,6 +12,7 @@ public class Intake_Elbow {
     private  double PICKUP_PREP = 0.68; //0.555;
     private  double PICKUP = 0.69;
     private double PICKUP_DONE = 0.65;
+    private double MID = 0.5;
 
     public enum IntakeElbowState {
         INIT,
@@ -19,7 +20,8 @@ public class Intake_Elbow {
         DROP,
         PICKUP_PREP,
         PICKUP,
-        PICKUP_DONE
+        PICKUP_DONE,
+        MID
     }
 
     public Intake_Elbow(HardwareMap hardwareMap) {
@@ -39,6 +41,7 @@ public class Intake_Elbow {
             case PICKUP_PREP -> PICKUP_PREP;
             case DROP -> DROP;
             case PICKUP_DONE -> PICKUP_DONE;
+            case MID -> MID;
         };
         IntakeElbow.setPosition(pos);
     }

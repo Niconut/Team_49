@@ -16,11 +16,12 @@ public class Scoring_Slide_Action {
     private int HOME = -25;
     private int STOW = -25;
     private int GROUND_PICKUP = -25;
-    private int WALL_PICKUP_PREP = -770;
+    private int WALL_PICKUP_PREP = -670;
     private int WALL_PICKUP_DONE = -1100;
-    private int WALL_PICKUP = -770;
+    private int WALL_PICKUP = -670;
     private int HIGH_CHAMBER_SCORE_PREP = -810;
-    private int HIGH_CHAMBER_SCORE = -1000;
+    private int HIGH_CHAMBER_SCORE_PREP2 = -760;
+    private int HIGH_CHAMBER_SCORE = -1200;
     private int HIGH_BASKET_SCORE_PREP = -2700;
     private int HIGH_BASKET_SCORE = -2700;
     private int LOW_BASKET_SCORE_PREP = -2500;
@@ -67,7 +68,7 @@ public class Scoring_Slide_Action {
         return Viper_Slide2.getCurrentPosition();
     }
 
-    public class ViperScorePrep implements Action {
+    public class ScoringSlideScorePrep implements Action {
         private boolean initialized = false;
 
         @Override
@@ -79,7 +80,8 @@ public class Scoring_Slide_Action {
                 Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide1.setPower(-0.8);
                 Viper_Slide2.setPower(-0.8);
-                initialized = true;
+                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+                //initialized = true;
             }
 
             return false;
@@ -87,7 +89,7 @@ public class Scoring_Slide_Action {
         }
     }
 
-    public class ViperScore implements Action {
+    public class ScoringSlideScore implements Action {
         private boolean initialized = false;
 
         @Override
@@ -99,7 +101,8 @@ public class Scoring_Slide_Action {
                 Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide1.setPower(-0.8);
                 Viper_Slide2.setPower(-0.8);
-                initialized = true;
+                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+                //initialized = true;
             }
 
             return false;
@@ -107,7 +110,7 @@ public class Scoring_Slide_Action {
         }
     }
 
-    public class ViperScoreWallPickUpPrep implements Action {
+    public class ScoringSlideWallPickUpPrep implements Action {
         private boolean initialized = false;
 
         @Override
@@ -119,7 +122,8 @@ public class Scoring_Slide_Action {
                 Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide1.setPower(-0.8);
                 Viper_Slide2.setPower(-0.8);
-                initialized = true;
+                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+                //initialized = true;
             }
 
             return false;
@@ -127,7 +131,7 @@ public class Scoring_Slide_Action {
         }
     }
 
-    public class ViperScoreWallPickUp implements Action {
+    public class ScoringSlideWallPickUp implements Action {
         private boolean initialized = false;
 
         @Override
@@ -139,7 +143,8 @@ public class Scoring_Slide_Action {
                 Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide1.setPower(-0.8);
                 Viper_Slide2.setPower(-0.8);
-                initialized = true;
+                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+                //initialized = true;
             }
 
             return false;
@@ -147,7 +152,7 @@ public class Scoring_Slide_Action {
         }
     }
 
-    public class ViperGroundPickUp implements Action {
+    public class ScoringSlideGroundPickUp implements Action {
         private boolean initialized = false;
 
         @Override
@@ -159,7 +164,8 @@ public class Scoring_Slide_Action {
                 Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide1.setPower(-0.8);
                 Viper_Slide2.setPower(-0.8);
-                initialized = true;
+                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+                //initialized = true;
             }
 
             return false;
@@ -167,7 +173,7 @@ public class Scoring_Slide_Action {
         }
     }
 
-    public class ViperInit implements Action {
+    public class ScoringSlideInit implements Action {
         private boolean initialized = false;
 
         @Override
@@ -179,7 +185,8 @@ public class Scoring_Slide_Action {
                 Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide1.setPower(-0.8);
                 Viper_Slide2.setPower(-0.8);
-                initialized = true;
+                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+                //initialized = true;
             }
 
             return false;
@@ -187,7 +194,7 @@ public class Scoring_Slide_Action {
         }
     }
 
-    public class ViperScoreHighBasketScore implements Action {
+    public class ScoringSlideHighBasketScore implements Action {
         private boolean initialized = false;
 
         @Override
@@ -199,7 +206,8 @@ public class Scoring_Slide_Action {
                 Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide1.setPower(-0.8);
                 Viper_Slide2.setPower(-0.8);
-                initialized = true;
+                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+                //initialized = true;
             }
 
             return false;
@@ -207,12 +215,56 @@ public class Scoring_Slide_Action {
         }
     }
 
-    public Action viperScorePrep(){return new ViperScorePrep();}
-    public Action viperScore(){return new ViperScore();}
-    public Action viperScoreWallPickupPrep(){return new ViperScoreWallPickUpPrep();}
-    public Action viperScoreWallPickUp(){return new ViperScoreWallPickUp();}
-    public Action viperGroundPickUp(){return new ViperGroundPickUp();}
-    public Action viperInit(){return new ViperInit();}
-    public Action viperScoreHighBasketScore(){return new ViperScoreHighBasketScore();}
+    public class ScoringSlideWallPickUpDone implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run (@NonNull TelemetryPacket packet){
+            if(!initialized){
+                Viper_Slide1.setTargetPosition(WALL_PICKUP_DONE);
+                Viper_Slide2.setTargetPosition(WALL_PICKUP_DONE);
+                Viper_Slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide1.setPower(-0.8);
+                Viper_Slide2.setPower(-0.8);
+                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+                //initialized = true;
+            }
+
+            return false;
+
+        }
+    }
+
+    public class ScoringSlideScorePrep2 implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run (@NonNull TelemetryPacket packet){
+            if(!initialized){
+                Viper_Slide1.setTargetPosition(HIGH_CHAMBER_SCORE_PREP2);
+                Viper_Slide2.setTargetPosition(HIGH_CHAMBER_SCORE_PREP2);
+                Viper_Slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide1.setPower(-0.8);
+                Viper_Slide2.setPower(-0.8);
+                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+                //initialized = true;
+            }
+
+            return false;
+
+        }
+    }
+
+    public Action scoringSlideScorePrep(){return new ScoringSlideScorePrep();}
+    public Action scoringSlideScore(){return new ScoringSlideScore();}
+    public Action scoringSlideWallPickupPrep(){return new ScoringSlideWallPickUpPrep();}
+    public Action scoringSlideWallPickUp(){return new ScoringSlideWallPickUp();}
+    public Action scoringSlideGroundPickUp(){return new ScoringSlideGroundPickUp();}
+    public Action scoringSlideInit(){return new ScoringSlideInit();}
+    public Action scoringSlideHighBasketScore(){return new ScoringSlideHighBasketScore();}
+    public Action scoringSlideWallPickUpDone(){return new ScoringSlideWallPickUpDone();}
+    public Action scoringSlideScorePrep2(){return new ScoringSlideScorePrep2();}
 }
 

@@ -16,12 +16,14 @@ public class Intake_Wrist {
     private double STOW = 0.5;
     private double SAFE_MAX = 0.75;
     private double SAFE_MIN = 0.25;
+    private double MID = 0.5;
 
     public enum IntakeWristState {
         INIT,
         DROP,
         PICKUP_PREP,
-        STOW
+        STOW,
+        MID
     }
 
     public Intake_Wrist(HardwareMap hardwareMap) {
@@ -45,6 +47,7 @@ public class Intake_Wrist {
             case DROP -> DROP;
             case PICKUP_PREP -> PICKUP_PREP;
             case STOW -> STOW;
+            case MID -> MID;
         };
         Wrist.setPosition(pos);
     }

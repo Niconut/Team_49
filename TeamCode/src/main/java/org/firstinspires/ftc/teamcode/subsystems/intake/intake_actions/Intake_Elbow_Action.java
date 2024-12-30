@@ -27,6 +27,19 @@ public class Intake_Elbow_Action {
 
     public double getCurrentPosition(){return IntakeElbow.getPosition();}
 
+    public class IntakeElbowInit implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                IntakeElbow.setPosition(INIT);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
     public class IntakeElbowStow implements Action {
         private boolean initialized = false;
         @Override
@@ -92,6 +105,7 @@ public class Intake_Elbow_Action {
 
     }
 
+    public Action intakeElbowInit(){return new IntakeElbowInit();}
     public Action intakeElbowStow(){return new IntakeElbowStow();}
     public Action intakeElbowDrop(){return new IntakeElbowDrop();}
     public Action intakeElbowPickUpPrep(){return new IntakeElbowPickUpPrep();}

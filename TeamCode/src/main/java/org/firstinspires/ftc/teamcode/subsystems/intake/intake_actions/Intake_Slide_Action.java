@@ -30,6 +30,20 @@ public class Intake_Slide_Action {
         Intake_Slide.setPosition(position);
     }
 
+
+    public class IntakeSlideInit implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                Intake_Slide.setPosition(INIT);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
     public class IntakeSlideStow implements Action {
         private boolean initialized = false;
         @Override
@@ -56,6 +70,7 @@ public class Intake_Slide_Action {
 
     }
 
+    public Action intakeSlideInit(){return new IntakeSlideInit();}
     public Action intakeSlideStow(){return new IntakeSlideStow();}
     public Action intakeSlidePickUpPrep(){return new IntakeSlidePickUpPrep();}
 }

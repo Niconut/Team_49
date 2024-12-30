@@ -27,6 +27,19 @@ public class Scoring_Gripper_Action {
 
     public double getCurrentPosition(){return Scoring_Gripper.getPosition();}
 
+    public class ScoringGripperInit implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                Scoring_Gripper.setPosition(INIT);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
     public class ScoringGripperClose implements Action {
         private boolean initialized = false;
         @Override
@@ -53,6 +66,7 @@ public class Scoring_Gripper_Action {
 
     }
 
+    public Action scoringGripperInit(){return new ScoringGripperInit();}
     public Action scoringGripperClose(){return new ScoringGripperClose();}
     public Action scoringGripperOpen(){return new ScoringGripperOpen();}
 }

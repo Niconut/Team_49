@@ -9,12 +9,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Scoring_Arm_Action {
 
-    public double INIT = 0.1;
+    public double INIT = 0.8;
     public double HOME = 0.8;
     public double STOW = 0.8;
     public double GROUND_PICKUP = 0.1;
-    public double WALL_PICKUP_PREP = 0.1;
-    public double WALL_PICKUP = 0.125;
+    public double WALL_PICKUP_PREP = 0.09;
+    public double WALL_PICKUP = 0.12;
     public double HIGH_CHAMBER_SCORE_PREP = 0.8;
     public double HIGH_CHAMBER_SCORE = 0.75;
     public double HIGH_BASKET_SCORE_PREP = 0.75;
@@ -45,6 +45,21 @@ public class Scoring_Arm_Action {
 
     public double getSoringArm2position(){
         return arm2.getPosition();
+    }
+
+
+    public class ScoringArmInit implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                arm1.setPosition(INIT);
+                arm2.setPosition(INIT);
+                initialized = true;
+            }
+            return false;
+        }
+
     }
 
     public class ScoringArmStow implements Action {
@@ -159,6 +174,7 @@ public class Scoring_Arm_Action {
 
     }
 
+    public Action scoringArmInit(){return new ScoringArmInit();}
     public Action scoringArmStow(){return new ScoringArmStow();}
     public Action scoringArmGroundPickUp(){return new ScoringArmGroundPickUp();}
     public Action scoringArmWallPickUpPrep(){return new ScoringArmWallPickUpPrep();}

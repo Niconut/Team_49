@@ -12,12 +12,16 @@ public class Intake_Shoulder {
     private static double DROP = 0.25;
     private double SAFE_MIN = 0.15;
     private double SAFE_MAX = 0.8;
+    private double MID = 0.5;
+    private double PARALLEL = 0.4;
 
     public enum IntakeShoulderState {
         INIT,
         STOW,
         PICKUP_PREP,
-        DROP
+        DROP,
+        MID,
+        PARALLEL
     }
 
     public Intake_Shoulder(HardwareMap hardwareMap) {
@@ -39,6 +43,8 @@ public class Intake_Shoulder {
             case STOW -> STOW;
             case PICKUP_PREP -> PICKUP_PREP;
             case DROP -> DROP;
+            case MID -> MID;
+            case PARALLEL -> PARALLEL;
         };
         Intake_Shoulder.setPosition(pos);
     }

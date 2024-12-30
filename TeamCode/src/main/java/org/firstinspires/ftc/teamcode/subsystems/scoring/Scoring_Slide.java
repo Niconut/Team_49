@@ -13,9 +13,9 @@ public class Scoring_Slide {
     private int HOME = -25;
     private int STOW = -25;
     private int GROUND_PICKUP = -25;
-    private int WALL_PICKUP_PREP = -770;
+    private int WALL_PICKUP_PREP = -670;
     private int WALL_PICKUP_DONE = -1100;
-    private int WALL_PICKUP = -770;
+    private int WALL_PICKUP = -670;
     private int HIGH_CHAMBER_SCORE_PREP = -810;
     private int HIGH_CHAMBER_SCORE = -1000;
     private int HIGH_BASKET_SCORE_PREP = -2700;

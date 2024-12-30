@@ -9,11 +9,13 @@ public class Scoring_Gripper {
     public double CLOSED = 0.3;
     public double OPEN = 0.55;
     public double INIT = 0.55;
+    private double MID = 0.5;
 
     public enum ScoringGripperState {
         INIT,
         CLOSED,
-        OPEN;
+        OPEN,
+        MID
     }
 
     public Scoring_Gripper(final HardwareMap hardwareMap) {
@@ -32,6 +34,7 @@ public class Scoring_Gripper {
             case INIT -> INIT;
             case CLOSED -> CLOSED;
             case OPEN -> OPEN;
+            case MID -> MID;
             default -> INIT;
         };
         Scoring_Gripper.setPosition(pos);

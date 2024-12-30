@@ -156,6 +156,14 @@ public class Teleop extends LinearOpMode {
                     -gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x) * ROT_SCALE
             ));
 
+            if (gamepad1.options){
+                intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.MID);
+                intakeElbow.setState(Intake_Elbow.IntakeElbowState.MID);
+                intakeGripper.setState(Intake_Gripper.IntakeGripperState.MID);
+                intakeWrist.setState(Intake_Wrist.IntakeWristState.MID);
+                scoringGripper.setState(ScoringGripperState.MID);
+            }
+
             //if (gamepad1.right_bumper){ scoringGripper.setState(OPEN); }
 
             /* calculate new scoring arm position */
