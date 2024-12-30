@@ -1,0 +1,58 @@
+package org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions;
+
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
+public class Intake_Slide_Action {
+    private Servo Intake_Slide;
+
+    private static double INIT = 0.3;
+    private static double STOW = 0.3;
+    private static double PICKUP_PREP = 0.725;
+    private double SAFE_MAX = 0.725;
+    private double SAFE_MIN = 0.3;
+
+
+    public Intake_Slide_Action(HardwareMap hardwareMap) {
+        this.Intake_Slide = hardwareMap.get(Servo.class, "Slide");
+        this.Intake_Slide.setDirection(Servo.Direction.FORWARD);
+    }
+
+    public double getCurrentPosition(){return Intake_Slide.getPosition();}
+
+    public void setPosition(double position){
+        position = (position > SAFE_MAX) ? SAFE_MAX : position;
+        position = (position < SAFE_MIN) ? SAFE_MIN: position;
+        Intake_Slide.setPosition(position);
+    }
+
+    public class IntakeSlideStow implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                Intake_Slide.setPosition(STOW);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
+    public class IntakeSlidePickUpPrep implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                Intake_Slide.setPosition(PICKUP_PREP);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+}
