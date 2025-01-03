@@ -433,11 +433,6 @@ public class TeleOp_Command_Based extends LinearOpMode
             }
 
             /* calculate new elbow position */
-            double elbow_move = -gamepad2.right_stick_y;
-            if (Math.abs(elbow_move) > ELBOW_MOVE_THRESHOLD) {
-                ELBOW_TARGET_POSITION = intakeElbow.getCurrentPosition() + (elbow_move * ELBOW_MOVE_INCREMENTS);
-                intakeElbow.setPosition(ELBOW_TARGET_POSITION);
-            }
 
             scoringSlidePID.setSetPoint(SCORING_SLIDE_SETPOINT);
             double power = scoringSlidePID.calculate(scoringSlide.getLeftCurrentPosition());
