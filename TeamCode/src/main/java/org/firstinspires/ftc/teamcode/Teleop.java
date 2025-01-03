@@ -271,7 +271,6 @@ public class Teleop extends LinearOpMode {
 
             if (gamepad2.a) {
                 pauseDrive(drive);
-                intakeSlide.setState(Intake_Slide.IntakeSlideState.PICKUP_PREP);
                 intakeWrist.setState(Intake_Wrist.IntakeWristState.PICKUP_PREP);
                 sleep(500);
                 intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.PICKUP_PREP);

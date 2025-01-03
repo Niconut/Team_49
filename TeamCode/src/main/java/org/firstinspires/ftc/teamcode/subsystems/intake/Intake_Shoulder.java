@@ -11,10 +11,11 @@ public class Intake_Shoulder extends SubsystemBase {
     private static double STOW = 0.18;
     private static double PICKUP_PREP = 0.69;
     private static double DROP = 0.23;
-    private double SAFE_MIN = 0.15;
+    private double SAFE_MIN = 0.02;
     private double SAFE_MAX = 0.8;
     private double MID = 0.5;
     private double PARALLEL = 0.4;
+    private double HAND_OFF = 0.03;
 
     public enum IntakeShoulderState {
         INIT,
@@ -22,7 +23,8 @@ public class Intake_Shoulder extends SubsystemBase {
         PICKUP_PREP,
         DROP,
         MID,
-        PARALLEL
+        PARALLEL,
+        HAND_OFF
     }
 
     public Intake_Shoulder(HardwareMap hardwareMap) {
@@ -46,6 +48,7 @@ public class Intake_Shoulder extends SubsystemBase {
             case DROP -> DROP;
             case MID -> MID;
             case PARALLEL -> PARALLEL;
+            case HAND_OFF -> HAND_OFF;
         };
         Intake_Shoulder.setPosition(pos);
     }

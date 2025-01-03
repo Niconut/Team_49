@@ -13,9 +13,9 @@ public class Scoring_Slide_Action {
     private DcMotorEx Viper_Slide2;
 
     private int INIT = 0;
-    private int HOME = -25;
-    private int STOW = -25;
-    private int GROUND_PICKUP = -25;
+    private int HOME = -20;
+    private int STOW = -20;
+    private int GROUND_PICKUP = -20;
     private int WALL_PICKUP_PREP = -670;
     private int WALL_PICKUP_DONE = -1100;
     private int WALL_PICKUP = -670;
@@ -27,7 +27,7 @@ public class Scoring_Slide_Action {
     private int LOW_BASKET_SCORE_PREP = -2500;
     private int LOW_BASKET_SCORE = -2500;
     private int SAFE_MIN = -2500;
-    private int SAFE_MAX = -25;
+    private int SAFE_MAX = -20;
 
 
     public Scoring_Slide_Action(HardwareMap hardwareMap) {
@@ -158,13 +158,16 @@ public class Scoring_Slide_Action {
         @Override
         public boolean run (@NonNull TelemetryPacket packet){
             if(!initialized){
+                int tolerance = 20;
                 Viper_Slide1.setTargetPosition(GROUND_PICKUP);
                 Viper_Slide2.setTargetPosition(GROUND_PICKUP);
                 Viper_Slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide1.setPower(-0.8);
                 Viper_Slide2.setPower(-0.8);
-                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+
+                initialized = (!(Viper_Slide1.getCurrentPosition() < Math.abs(GROUND_PICKUP-tolerance))
+                        && !(Viper_Slide2.getCurrentPosition() < Math.abs(GROUND_PICKUP-tolerance)));
                 //initialized = true;
             }
 
@@ -200,13 +203,15 @@ public class Scoring_Slide_Action {
         @Override
         public boolean run (@NonNull TelemetryPacket packet){
             if(!initialized){
+                int tolerance = 20;
                 Viper_Slide1.setTargetPosition(HIGH_BASKET_SCORE);
                 Viper_Slide2.setTargetPosition(HIGH_BASKET_SCORE);
                 Viper_Slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide1.setPower(-0.8);
                 Viper_Slide2.setPower(-0.8);
-                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+                initialized = (!(Viper_Slide1.getCurrentPosition() < Math.abs(GROUND_PICKUP-tolerance))
+                        && !(Viper_Slide2.getCurrentPosition() < Math.abs(GROUND_PICKUP-tolerance)));
                 //initialized = true;
             }
 

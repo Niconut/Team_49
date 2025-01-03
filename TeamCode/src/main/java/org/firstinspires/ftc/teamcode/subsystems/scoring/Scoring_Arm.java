@@ -9,7 +9,7 @@ public class Scoring_Arm extends SubsystemBase {
     public double INIT = 0.8;
     public double HOME = 0.8;
     public double STOW = 0.8;
-    public double GROUND_PICKUP = 0.1;
+    public double GROUND_PICKUP = 0.085;
     public double WALL_PICKUP_PREP = 0.1;
     public double WALL_PICKUP = 0.125;
     public double HIGH_CHAMBER_SCORE_PREP = 0.8;
@@ -18,6 +18,8 @@ public class Scoring_Arm extends SubsystemBase {
     public double HIGH_BASKET_SCORE = 0.75;
     public double LOW_BASKET_SCORE_PREP = 0.75;
     public double LOW_BASKET_SCORE = 0.75;
+    public double CLIMB_PREP = 0.1;
+    public double CLIMB_DONE = 0.1;
 
     public enum ScoringArmState {
         INIT,
@@ -31,7 +33,9 @@ public class Scoring_Arm extends SubsystemBase {
         HIGH_BASKET_SCORE_PREP,
         HIGH_BASKET_SCORE,
         LOW_BASKET_SCORE_PREP,
-        LOW_BASKET_SCORE;
+        LOW_BASKET_SCORE,
+        CLIMB_PREP,
+        CLIMB_DONE;
     }
 
     private Servo arm1;
@@ -72,6 +76,8 @@ public class Scoring_Arm extends SubsystemBase {
             case HIGH_BASKET_SCORE -> HIGH_BASKET_SCORE;
             case LOW_BASKET_SCORE_PREP -> LOW_BASKET_SCORE_PREP;
             case LOW_BASKET_SCORE -> LOW_BASKET_SCORE;
+            case CLIMB_PREP -> CLIMB_PREP;
+            case CLIMB_DONE -> CLIMB_DONE;
         };
         arm1.setPosition(pos);
         arm2.setPosition(pos);

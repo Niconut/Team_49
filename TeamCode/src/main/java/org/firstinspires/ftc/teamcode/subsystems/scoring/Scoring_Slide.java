@@ -11,9 +11,10 @@ public class Scoring_Slide extends SubsystemBase {
     private DcMotorEx Viper_Slide2;
 
     private int INIT = 0;
-    private int HOME = -25;
-    private int STOW = -25;
-    private int GROUND_PICKUP = -25;
+    private int HAND_OFF = 0;
+    private int HOME = -20;
+    private int STOW = -20;
+    private int GROUND_PICKUP = -20;
     private int WALL_PICKUP_PREP = -670;
     private int WALL_PICKUP_DONE = -1100;
     private int WALL_PICKUP = -670;
@@ -23,12 +24,15 @@ public class Scoring_Slide extends SubsystemBase {
     private int HIGH_BASKET_SCORE = -2700;
     private int LOW_BASKET_SCORE_PREP = -2500;
     private int LOW_BASKET_SCORE = -2500;
+    private int CLIMB_PREP = -2200;
+    private int CLIMB_DONE = -1500;
     private int SAFE_MIN = -2500;
-    private int SAFE_MAX = -25;
+    private int SAFE_MAX = -20;
 
 
     public enum ScoringSlideState {
         INIT,
+        HAND_OFF,
         HOME,
         STOW,
         GROUND_PICKUP,
@@ -40,7 +44,9 @@ public class Scoring_Slide extends SubsystemBase {
         HIGH_BASKET_SCORE_PREP,
         HIGH_BASKET_SCORE,
         LOW_BASKET_SCORE_PREP,
-        LOW_BASKET_SCORE;
+        LOW_BASKET_SCORE,
+        CLIMB_PREP,
+        CLIMB_DONE;
     }
 
     public Scoring_Slide(HardwareMap hardwareMap) {
@@ -84,6 +90,7 @@ public class Scoring_Slide extends SubsystemBase {
     public int setState(ScoringSlideState  state){
         int newpos = switch (state){
             case INIT -> INIT;
+            case HAND_OFF -> HAND_OFF;
             case HOME -> HOME;
             case STOW -> STOW;
             case GROUND_PICKUP -> GROUND_PICKUP;
@@ -96,6 +103,8 @@ public class Scoring_Slide extends SubsystemBase {
             case HIGH_BASKET_SCORE -> HIGH_BASKET_SCORE;
             case LOW_BASKET_SCORE_PREP -> LOW_BASKET_SCORE_PREP;
             case LOW_BASKET_SCORE -> LOW_BASKET_SCORE;
+            case CLIMB_PREP -> CLIMB_PREP;
+            case CLIMB_DONE -> CLIMB_DONE;
         };
         newpos = (newpos > SAFE_MAX)? SAFE_MAX:newpos;
         newpos = (newpos < SAFE_MIN)? SAFE_MIN:newpos;
@@ -105,6 +114,7 @@ public class Scoring_Slide extends SubsystemBase {
     public void setStateCommand(ScoringSlideState  state){
         int newpos = switch (state){
             case INIT -> INIT;
+            case HAND_OFF -> HAND_OFF;
             case HOME -> HOME;
             case STOW -> STOW;
             case GROUND_PICKUP -> GROUND_PICKUP;
@@ -117,6 +127,8 @@ public class Scoring_Slide extends SubsystemBase {
             case HIGH_BASKET_SCORE -> HIGH_BASKET_SCORE;
             case LOW_BASKET_SCORE_PREP -> LOW_BASKET_SCORE_PREP;
             case LOW_BASKET_SCORE -> LOW_BASKET_SCORE;
+            case CLIMB_PREP -> CLIMB_PREP;
+            case CLIMB_DONE -> CLIMB_DONE;
         };
         newpos = (newpos > SAFE_MAX)? SAFE_MAX:newpos;
         newpos = (newpos < SAFE_MIN)? SAFE_MIN:newpos;

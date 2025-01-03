@@ -14,6 +14,9 @@ public class Intake_Elbow extends SubsystemBase {
     private  double PICKUP = 0.69;
     private double PICKUP_DONE = 0.65;
     private double MID = 0.5;
+    private double SAFE_MAX = 0.69;
+    private double SAFE_MIN = 0.49;
+    private double HAND_OFF = 0.515;
 
     public enum IntakeElbowState {
         INIT,
@@ -22,7 +25,8 @@ public class Intake_Elbow extends SubsystemBase {
         PICKUP_PREP,
         PICKUP,
         PICKUP_DONE,
-        MID
+        MID,
+        HAND_OFF
     }
 
     public Intake_Elbow(HardwareMap hardwareMap) {
@@ -30,6 +34,8 @@ public class Intake_Elbow extends SubsystemBase {
         this.IntakeElbow.setDirection(Servo.Direction.FORWARD);
     }
     public void setPosition(double position){
+        position = (position > SAFE_MAX) ? SAFE_MAX : position;
+        position = (position < SAFE_MIN) ? SAFE_MIN: position;
         IntakeElbow.setPosition(position);}
 
     public double getCurrentPosition(){return IntakeElbow.getPosition();}
@@ -43,6 +49,7 @@ public class Intake_Elbow extends SubsystemBase {
             case DROP -> DROP;
             case PICKUP_DONE -> PICKUP_DONE;
             case MID -> MID;
+            case HAND_OFF -> HAND_OFF;
         };
         IntakeElbow.setPosition(pos);
     }
