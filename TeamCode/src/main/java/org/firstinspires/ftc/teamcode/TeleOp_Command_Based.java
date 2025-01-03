@@ -49,6 +49,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.Button;
@@ -123,21 +124,31 @@ public class TeleOp_Command_Based extends LinearOpMode
     public Command defaultDriveCommand;
     public Command slowModeCommand;
 
-    driveSubsystem drive;
+    driveSubsystem drive = null;
+    Scoring_Gripper scoringGripper = null;
+    Scoring_Arm scoringArm = null;
+    Scoring_Slide scoringSlide = null;
+
+    Intake_Gripper intakeGripper = null;
+    Intake_Wrist intakeWrist = null;
+    Intake_Elbow intakeElbow = null;
+    Intake_Shoulder intakeShoulder = null;
+    Intake_Slide intakeSlide = null;
 
     @Override public void runOpMode()
     {
+
         drive = new driveSubsystem(hardwareMap,new Pose2d(0,0,0));
 
-        Scoring_Gripper scoringGripper = new Scoring_Gripper(hardwareMap);
-        Scoring_Arm scoringArm = new Scoring_Arm(hardwareMap);
-        Scoring_Slide scoringSlide = new Scoring_Slide(hardwareMap);
+        scoringGripper = new Scoring_Gripper(hardwareMap);
+        scoringArm = new Scoring_Arm(hardwareMap);
+        scoringSlide = new Scoring_Slide(hardwareMap);
 
-        Intake_Gripper intakeGripper = new Intake_Gripper(hardwareMap);
-        Intake_Wrist intakeWrist = new Intake_Wrist(hardwareMap);
-        Intake_Elbow intakeElbow = new Intake_Elbow(hardwareMap);
-        Intake_Shoulder intakeShoulder = new Intake_Shoulder(hardwareMap);
-        Intake_Slide intakeSlide = new Intake_Slide(hardwareMap);
+        intakeGripper = new Intake_Gripper(hardwareMap);
+        intakeWrist = new Intake_Wrist(hardwareMap);
+        intakeElbow = new Intake_Elbow(hardwareMap);
+        intakeShoulder = new Intake_Shoulder(hardwareMap);
+        intakeSlide = new Intake_Slide(hardwareMap);
 
         PIDController scoringSlidePID = new PIDController(0.005, 0, 0);
         scoringSlidePID.setTolerance(10,10);
@@ -147,33 +158,26 @@ public class TeleOp_Command_Based extends LinearOpMode
 
         MakeCommands(driver);
 
-        /*
-        Command defaultDriveCommand = new DefaultDriveCommand(drive,
-                driver::getLeftX,
-                driver::getLeftY,
-                driver::getRightX
-        );*/
-
-        //Reset the Singleton CommandScheduler and Robot
         CommandScheduler.getInstance().reset();
 
         /* ******** GROUP ALL DRIVER CONTROLS HERE ******** */
-            /*
-            left stick      --> drive/strafe
-            right stick     --> rotate
-            left bumper     --> scoring gripper OPEN
-            right bumper    --> normal driving speed when pressed
-            left trigger    --> rotate scoring arm
-            right trigger   --> rotate scoring arm
-            dpad up         --> high basket scoring
-            dpad down       --> ground pickup
-            dpad left       --> NOT USED
-            dpad right      --> NOT USED
-            a               --> wall pickup prep
-            b               --> wall pickup then transition to high chamber score prep
-            y               --> score high chamber
-            x               --> not used
-            */
+        /*
+        left stick      --> drive/strafe
+        right stick     --> rotate
+        left bumper     --> scoring gripper OPEN
+        right bumper    --> normal driving speed when pressed
+        left trigger    --> rotate scoring arm
+        right trigger   --> rotate scoring arm
+        dpad up         --> high basket scoring
+        dpad down       --> ground pickup
+        dpad left       --> NOT USED
+        dpad right      --> NOT USED
+        a               --> wall pickup prep
+        b               --> wall pickup then transition to high chamber score prep
+        y               --> score high chamber
+        x               --> not used
+        */
+
         Button wallPickupPrepButton = new GamepadButton(driver, GamepadKeys.Button.A);
         Button wallPickupButton = new GamepadButton(driver, GamepadKeys.Button.B);
         Button highChamberScoreButton = new GamepadButton(driver, GamepadKeys.Button.Y);
@@ -185,24 +189,26 @@ public class TeleOp_Command_Based extends LinearOpMode
         Button highClimbPrep = new GamepadButton(driver, GamepadKeys.Button.DPAD_LEFT);
         Button highClimbDone = new GamepadButton(driver, GamepadKeys.Button.DPAD_RIGHT);
         Button handOffDriver = new GamepadButton(driver, GamepadKeys.Button.BACK);
+
         /* ******** GROUP ALL OPERATOR CONTROLS HERE ******** */
-            /*
-            left stick x    --> move shoulder
-            left stick y    --> move slide
-            R3              --> intake gripper OPEN
-            left bumper     --> drop sample
-            right bumper    --> NOT USED
-            left trigger    --> change wrist orientation - clockwise
-            right trigger   --> change wrist orientation - counter clockwise
-            dpad up         --> NOT USED
-            dpad down       --> NOT USED
-            dpad left       --> NOT USED
-            dpad right      --> NOT USED
-            a               --> pickup prep
-            b               --> pickup sample
-            y               --> NOT USED
-            x               --> stow arm
-            */
+        /*
+        left stick x    --> move shoulder
+        left stick y    --> move slide
+        R3              --> intake gripper OPEN
+        left bumper     --> drop sample
+        right bumper    --> NOT USED
+        left trigger    --> change wrist orientation - clockwise
+        right trigger   --> change wrist orientation - counter clockwise
+        dpad up         --> NOT USED
+        dpad down       --> NOT USED
+        dpad left       --> NOT USED
+        dpad right      --> NOT USED
+        a               --> pickup prep
+        b               --> pickup sample
+        y               --> NOT USED
+        x               --> stow arm
+        */
+
         Button pickUpPrepButton = new GamepadButton(operator, GamepadKeys.Button.A);
         Button pickupButton = new GamepadButton(operator, GamepadKeys.Button.RIGHT_BUMPER);
         //Button pickupButton = new GamepadButton(operator, GamepadKeys.Button.B);
@@ -212,7 +218,6 @@ public class TeleOp_Command_Based extends LinearOpMode
         Button dropSampleButton = new GamepadButton(operator, GamepadKeys.Button.DPAD_LEFT);
         Button handOffButtonOperator = new GamepadButton(operator, GamepadKeys.Button.BACK);
 
-
         waitForStart();
         // start teleop with safe subsystem states
         intakeGripper.setState(Intake_Gripper.IntakeGripperState.CLOSE);
@@ -220,8 +225,10 @@ public class TeleOp_Command_Based extends LinearOpMode
         intakeElbow.setState(Intake_Elbow.IntakeElbowState.INIT);
         intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.INIT);
         intakeSlide.setState(Intake_Slide.IntakeSlideState.INIT);
+
         scoringGripper.setState(CLOSED);
         scoringArm.setState(ScoringArmState.HIGH_CHAMBER_SCORE_PREP);
+        SCORING_SLIDE_SETPOINT = scoringSlide.setState(HOME);
 
         CommandScheduler.getInstance().setDefaultCommand(drive, slowModeCommand);
         CommandScheduler.getInstance().schedule();
@@ -229,7 +236,6 @@ public class TeleOp_Command_Based extends LinearOpMode
         while (opModeIsActive())
         {
             MakeCommands(driver);
-            //Run the Scheduler
             CommandScheduler.getInstance().run();
 
             /* ******** GROUP ALL DRIVER CONTROLS HERE ******** */
@@ -241,192 +247,182 @@ public class TeleOp_Command_Based extends LinearOpMode
 
             wallPickupPrepButton.whenPressed(
                 new SequentialCommandGroup(
-                        new MoveScoringArmCommand(scoringArm, ScoringArmState.WALL_PICKUP_PREP),
-                        new WaitCommand(300),
-                        new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(WALL_PICKUP_PREP);}),
-                    //new MoveScoringSlideCommand(scoringSlide, WALL_PICKUP_PREP),
-
-                    new ActuateScoringGripperCommand(scoringGripper,OPEN))
-                );
+                    new ActuateScoringGripperCommand(scoringGripper,OPEN),
+                    new WaitCommand(50),
+                    new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(WALL_PICKUP_DONE);}),
+                    new WaitCommand(200),
+                    new MoveScoringArmCommand(scoringArm, ScoringArmState.WALL_PICKUP),
+                    new WaitCommand(300),
+                    new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(WALL_PICKUP);})
+                )
+            );
 
             wallPickupButton.whenPressed(
                 new SequentialCommandGroup(
-                        new MoveScoringArmCommand(scoringArm, ScoringArmState.WALL_PICKUP),
-                        new WaitCommand(300),
+                    new MoveScoringArmCommand(scoringArm, ScoringArmState.WALL_PICKUP),
                     new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(WALL_PICKUP);}),
-                        //new MoveScoringSlideCommand(scoringSlide, WALL_PICKUP),
-
-
                     new WaitCommand(100),
                     new ActuateScoringGripperCommand(scoringGripper,CLOSED),
                     new WaitCommand(200),
                     new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(WALL_PICKUP_DONE);})
-                    //    new MoveScoringSlideCommand(scoringSlide, WALL_PICKUP_DONE)
                 )
             );
 
             highChamberScorePrepButton.whenPressed(
                 new SequentialCommandGroup(
-                        new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_CHAMBER_SCORE_PREP),
+                    new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_CHAMBER_SCORE_PREP),
                     new WaitCommand(300),
                     new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(HIGH_CHAMBER_SCORE_PREP);})
-                        //new MoveScoringSlideCommand(scoringSlide, Scoring_Slide.ScoringSlideState.HIGH_CHAMBER_SCORE_PREP),
                 )
             );
 
             highChamberScoreButton.whenPressed(
                 new SequentialCommandGroup(
                     new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(Scoring_Slide.ScoringSlideState.HIGH_CHAMBER_SCORE);}),
-                        //new MoveScoringSlideCommand(scoringSlide, Scoring_Slide.ScoringSlideState.HIGH_CHAMBER_SCORE),
-                        new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_CHAMBER_SCORE)
+                    new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_CHAMBER_SCORE)
                 )
             );
 
             groundPickUpButton.whenPressed(
-                    new SequentialCommandGroup(
-                          new ActuateScoringGripperCommand(scoringGripper, OPEN),
-                            new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(WALL_PICKUP_DONE);}),
-                            new WaitCommand(200),
-                            new MoveScoringArmCommand(scoringArm, ScoringArmState.GROUND_PICKUP),
-                            new WaitCommand(200),
-                            new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(GROUND_PICKUP);})
-                    )
+                new SequentialCommandGroup(
+                    new ActuateScoringGripperCommand(scoringGripper, OPEN),
+                    new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(WALL_PICKUP_DONE);}),
+                    new WaitCommand(200),
+                    new MoveScoringArmCommand(scoringArm, ScoringArmState.GROUND_PICKUP),
+                    new WaitCommand(200),
+                    new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(GROUND_PICKUP);})
+                )
             );
 
             highBasketScoreButton.whenPressed(
-                    new SequentialCommandGroup(
-                            new ActuateScoringGripperCommand(scoringGripper, CLOSED),
-                            new WaitCommand(200),
-                            new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(HIGH_BASKET_SCORE);}),
-                            new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_BASKET_SCORE)
-                    )
+                new SequentialCommandGroup(
+                    new ActuateScoringGripperCommand(scoringGripper, CLOSED),
+                    new WaitCommand(200),
+                    new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(HIGH_BASKET_SCORE);}),
+                    new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_BASKET_SCORE)
+                )
             );
 
             highClimbPrep.whenPressed(
                 new SequentialCommandGroup(
-                        new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(CLIMB_PREP);}),
-                        new MoveScoringArmCommand(scoringArm, ScoringArmState.CLIMB_PREP)
+                    new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(CLIMB_PREP);}),
+                    new MoveScoringArmCommand(scoringArm, ScoringArmState.CLIMB_PREP)
                 )
             );
 
             highClimbDone.whenPressed(
-                    new SequentialCommandGroup(
-                            new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(CLIMB_DONE);}),
-                            new MoveScoringArmCommand(scoringArm, ScoringArmState.CLIMB_PREP)
-                    )
+                new SequentialCommandGroup(
+                    new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(CLIMB_DONE);}),
+                    new MoveScoringArmCommand(scoringArm, ScoringArmState.CLIMB_PREP)
+                )
             );
+
+            /* ************************************************** */
+
             /* ******** GROUP ALL OPERATOR CONTROLS HERE ******** */
             pickUpPrepButton.whenPressed(
-                    new SequentialCommandGroup(
-                            new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.PICKUP_PREP),
-                            new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.PICKUP_PREP),
-                            new WaitCommand(100),
-                            new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP_PREP),
-                            new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN)
-                    ));
+                new SequentialCommandGroup(
+                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP_DONE),
+                    new WaitCommand(50),
+                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.PICKUP_PREP),
+                    new WaitCommand(100),
+                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP_PREP),
+                    new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN)
+                ));
 
             pickupButton.whenPressed(
-                    new SequentialCommandGroup(
-                            new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP),
-                            new WaitCommand(150),
-                            new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.CLOSE),
-                            new WaitCommand(200),
-                            new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP_DONE)
-
-                    ));
+                new SequentialCommandGroup(
+                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP),
+                    new WaitCommand(150),
+                    new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.CLOSE),
+                    new WaitCommand(200),
+                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP_DONE)
+                ));
 
             openIntakeGripperButton.whenPressed(
-                    new SequentialCommandGroup(
-                            new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN),
-                            new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP_PREP)
-
-                    ));
+                new SequentialCommandGroup(
+                    new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN),
+                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP_PREP)
+                ));
 
             stowArmButton.whenPressed(
-                    new SequentialCommandGroup(
-                            new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.CLOSE),
-                            new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.STOW),
-                            new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
-                            new WaitCommand(200),
-                            new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW),
-                            new WaitCommand(100),
-                            new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW)
-
-                    ));
+                new SequentialCommandGroup(
+                    new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.CLOSE),
+                    new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.STOW),
+                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
+                    new WaitCommand(200),
+                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW),
+                    //new WaitCommand(100),
+                    new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW)
+                ));
 
             dropSampleButton.whenPressed(
-                    new SequentialCommandGroup(
-                            new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.DROP),
-                            new WaitCommand(100),
-                            new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.DROP),
-                            new WaitCommand(100),
-                            new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.DROP),
-                            new WaitCommand(300),
-                            new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN),
-                            new WaitCommand(200),
-                            new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW),
-                            new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW),
-                            new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
-                            new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.STOW)
-
-                    ));
+                new SequentialCommandGroup(
+                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.DROP),
+                    //new WaitCommand(100),
+                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.DROP),
+                    //new WaitCommand(100),
+                    new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.DROP),
+                    new WaitCommand(200),
+                    new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN),
+                    new WaitCommand(150),
+                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW),
+                    new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW),
+                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
+                    new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.STOW)
+                ));
 
             handOffButtonOperator.whenPressed(
-                    new SequentialCommandGroup(
-
-                            //
-                            new InstantCommand(() -> {
-                                SCORING_SLIDE_SETPOINT = scoringSlide.setState(HAND_OFF);
-                            }),
-                            new WaitCommand(500),
-                            new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_CHAMBER_SCORE),
-                            new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.HAND_OFF_PREP),
-                            //new WaitCommand(500),
-                            new ActuateScoringGripperCommand(scoringGripper, OPEN),
-                            new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.HAND_OFF),
-                            new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.HAND_OFF),
-                            new WaitCommand(1000),
-                            //new WaitCommand(1000),
-
-                            //new WaitCommand(1000),
-
-                            //new WaitCommand(1000),
-                            new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_CHAMBER_SCORE_PREP),
-                            new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.HAND_OFF),
-
-                            new WaitCommand(200),
-                            new ActuateScoringGripperCommand(scoringGripper, CLOSED),
-                            //new WaitCommand(200),
-                            new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN),
-                            new WaitCommand(200),
-                            new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.PICKUP_PREP),
-                            new WaitCommand(300),
-                            new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
-                            //new WaitCommand(1000),
-                            new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW),
-                            //new WaitCommand(1000),
-                            new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW)
-                    ));
+                new SequentialCommandGroup(
+                    new InstantCommand(() -> {
+                        SCORING_SLIDE_SETPOINT = scoringSlide.setState(HAND_OFF);
+                    }),
+                    new WaitCommand(500),
+                    new ParallelCommandGroup(
+                        new ActuateScoringGripperCommand(scoringGripper, OPEN),
+                        new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_CHAMBER_SCORE),
+                        new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.HAND_OFF_PREP),
+                        new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.HAND_OFF),
+                        new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.HAND_OFF)
+                        ),
+                    new WaitCommand(1000),
+                    new ParallelCommandGroup(
+                        new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_CHAMBER_SCORE_PREP),
+                        new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.HAND_OFF)
+                        ),
+                    new WaitCommand(200),
+                    new ActuateScoringGripperCommand(scoringGripper, CLOSED),
+                    new WaitCommand(50),
+                    new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN),
+                    new WaitCommand(200),
+                    new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.PICKUP_PREP),
+                    new WaitCommand(300),
+                    new ParallelCommandGroup(
+                        new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
+                        new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW),
+                        new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW)
+                    )
+                ));
 
             driveSpeedButton.whenHeld(defaultDriveCommand)
                     .whenReleased(slowModeCommand);
 
             /* calculate new wrist position */
-            double wrist_move = operator.gamepad.left_trigger - operator.gamepad.right_trigger;
+            double wrist_move = (operator.gamepad.left_trigger - operator.gamepad.right_trigger);
             if (Math.abs(wrist_move) > WRIST_MOVE_THRESHOLD) {
                 WRIST_TARGET_POSITION = intakeWrist.getCurrentPosition() + (wrist_move * WRIST_MOVE_INCREMENTS);
                 intakeWrist.setPosition(WRIST_TARGET_POSITION);
             }
 
             /* calculate new shoulder position */
-            double shoulder_move = -gamepad2.right_stick_x;
+            double shoulder_move = (-operator.gamepad.right_stick_x);
             if (Math.abs(shoulder_move) > SHOULDER_MOVE_THRESHOLD) {
                 SHOULDER_TARGET_POSITION = intakeShoulder.getCurrentPosition() + (shoulder_move * SHOULDER_MOVE_INCREMENTS);
                 intakeShoulder.setPosition(SHOULDER_TARGET_POSITION);
             }
 
             /* calculate new slide position */
-            double slide_move = -gamepad2.left_stick_y;
+            double slide_move = (-operator.gamepad.left_stick_y);
             if (Math.abs(slide_move) > SLIDE_MOVE_THRESHOLD) {
                 SLIDE_TARGGET_POSITION = intakeSlide.getCurrentPosition() + (slide_move * SLIDE_MOVE_INCREMENTS);
                 intakeSlide.setPosition(SLIDE_TARGGET_POSITION);
@@ -434,10 +430,10 @@ public class TeleOp_Command_Based extends LinearOpMode
 
             /* calculate new elbow position */
 
+            /* move scoring slide to new setpoint */
             scoringSlidePID.setSetPoint(SCORING_SLIDE_SETPOINT);
             double power = scoringSlidePID.calculate(scoringSlide.getLeftCurrentPosition());
             scoringSlide.setPower(power);
-
 
             telemetry.addData("intakeGripper: ", intakeGripper.getCurrentPosition());
             telemetry.addData("intakeWrist: ", intakeWrist.getCurrentPosition());
@@ -451,7 +447,6 @@ public class TeleOp_Command_Based extends LinearOpMode
             telemetry.addData("scoringSlide: ", scoringSlide.getLeftCurrentPosition());
 
             telemetry.update();
-
         }
     }
     private void MakeCommands(GamepadEx gamepad) {
