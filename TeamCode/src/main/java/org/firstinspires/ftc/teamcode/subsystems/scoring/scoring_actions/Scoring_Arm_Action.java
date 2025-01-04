@@ -13,8 +13,8 @@ public class Scoring_Arm_Action {
     public double HOME = 0.8;
     public double STOW = 0.8;
     public double GROUND_PICKUP = 0.085;
-    public double WALL_PICKUP_PREP = 0.09;
-    public double WALL_PICKUP = 0.12;
+    public double WALL_PICKUP_PREP = 0.1;
+    public double WALL_PICKUP = 0.125;
     public double HIGH_CHAMBER_SCORE_PREP = 0.8;
     public double HIGH_CHAMBER_SCORE = 0.75;
     public double HIGH_BASKET_SCORE_PREP = 0.75;

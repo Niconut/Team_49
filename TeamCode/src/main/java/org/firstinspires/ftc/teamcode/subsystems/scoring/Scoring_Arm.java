@@ -20,6 +20,7 @@ public class Scoring_Arm extends SubsystemBase {
     public double LOW_BASKET_SCORE = 0.75;
     public double CLIMB_PREP = 0.1;
     public double CLIMB_DONE = 0.1;
+    public double HANDOFF = 0.82;
 
     public enum ScoringArmState {
         INIT,
@@ -35,7 +36,8 @@ public class Scoring_Arm extends SubsystemBase {
         LOW_BASKET_SCORE_PREP,
         LOW_BASKET_SCORE,
         CLIMB_PREP,
-        CLIMB_DONE;
+        CLIMB_DONE,
+        HANDOFF;
     }
 
     private Servo arm1;
@@ -78,6 +80,7 @@ public class Scoring_Arm extends SubsystemBase {
             case LOW_BASKET_SCORE -> LOW_BASKET_SCORE;
             case CLIMB_PREP -> CLIMB_PREP;
             case CLIMB_DONE -> CLIMB_DONE;
+            case HANDOFF -> HANDOFF;
         };
         arm1.setPosition(pos);
         arm2.setPosition(pos);

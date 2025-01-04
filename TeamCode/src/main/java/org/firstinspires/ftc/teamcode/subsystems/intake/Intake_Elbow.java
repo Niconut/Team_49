@@ -16,7 +16,7 @@ public class Intake_Elbow extends SubsystemBase {
     private double MID = 0.5;
     private double SAFE_MAX = 0.69;
     private double SAFE_MIN = 0.49;
-    private double HAND_OFF = 0.515;
+    private double HAND_OFF = 0.515;//0.515;
 
     public enum IntakeElbowState {
         INIT,
