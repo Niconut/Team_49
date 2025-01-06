@@ -10,13 +10,14 @@ public class Intake_Elbow extends SubsystemBase {
     private  double INIT = 0.625;
     private  double STOW = 0.625;
     private  double DROP = 0.65;
-    private  double PICKUP_PREP = 0.68; //0.555;
-    private  double PICKUP = 0.69;
+    private  double PICKUP_PREP = 0.66; //0.555;
+    private  double PICKUP = 0.7;
     private double PICKUP_DONE = 0.65;
     private double MID = 0.5;
     private double SAFE_MAX = 0.69;
     private double SAFE_MIN = 0.49;
     private double HAND_OFF = 0.515;//0.515;
+    private double HOVER = 0.685;
 
     public enum IntakeElbowState {
         INIT,
@@ -26,7 +27,8 @@ public class Intake_Elbow extends SubsystemBase {
         PICKUP,
         PICKUP_DONE,
         MID,
-        HAND_OFF
+        HAND_OFF,
+        HOVER
     }
 
     public Intake_Elbow(HardwareMap hardwareMap) {
@@ -50,6 +52,7 @@ public class Intake_Elbow extends SubsystemBase {
             case PICKUP_DONE -> PICKUP_DONE;
             case MID -> MID;
             case HAND_OFF -> HAND_OFF;
+            case HOVER -> HOVER;
         };
         IntakeElbow.setPosition(pos);
     }

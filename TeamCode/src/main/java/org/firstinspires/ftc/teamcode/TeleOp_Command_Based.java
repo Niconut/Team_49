@@ -345,7 +345,11 @@ public class TeleOp_Command_Based extends LinearOpMode
                     new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN)
                 ));
 
-            pickupButton.whenPressed(
+            pickupButton.whenHeld(
+                new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.HOVER)
+            );
+
+            pickupButton.whenReleased(
                 new SequentialCommandGroup(
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP),
                     new WaitCommand(150),
