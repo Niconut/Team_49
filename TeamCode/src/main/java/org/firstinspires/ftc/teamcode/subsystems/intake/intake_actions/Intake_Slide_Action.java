@@ -16,6 +16,8 @@ public class Intake_Slide_Action {
     private static double MID = 0.5;
     private double SAFE_MAX = 0.725;
     private double SAFE_MIN = 0.3;
+    private double HAND_OFF_PREP = 0.67;
+    private double HAND_OFF = 0.566;
 
 
     public Intake_Slide_Action(HardwareMap hardwareMap) {
@@ -84,8 +86,36 @@ public class Intake_Slide_Action {
 
     }
 
+    public class IntakeSlideHandOffPrep implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                Intake_Slide.setPosition(HAND_OFF_PREP);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
+    public class IntakeSlideHandOff implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                Intake_Slide.setPosition(HAND_OFF);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
     public Action intakeSlideInit(){return new IntakeSlideInit();}
     public Action intakeSlideStow(){return new IntakeSlideStow();}
     public Action intakeSlidePickUpPrep(){return new IntakeSlidePickUpPrep();}
     public Action intakeSlidePickUpMid(){return new IntakeSlidePickUpMid();}
+    public Action intakeSlideHandOffPrep(){return new IntakeSlideHandOffPrep();}
+    public Action intakeSlideHandOff(){return new IntakeSlideHandOff();}
 }

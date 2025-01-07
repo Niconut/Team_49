@@ -15,6 +15,7 @@ public class Intake_Wrist_Action {
     private double PICKUP_PREP = 0.5;
     private double STOW = 0.5;
     private double AUTO_RIGHT_PICKUP = 0.65;
+    private double AUTO_LEFT_PICKUP = 0.25;
     private double SAFE_MAX = 0.75;
     private double SAFE_MIN = 0.25;
 
@@ -60,7 +61,21 @@ public class Intake_Wrist_Action {
 
     }
 
+    public class IntakeWristLeftPickUp implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                Wrist.setPosition(AUTO_LEFT_PICKUP);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
     public Action intakeWristInit(){return new IntakeWristINIT();}
     public Action intakeWristRightPickUp(){return new IntakeWristRightPickUp();}
+    public Action intakeWristLeftPickUp(){return new IntakeWristLeftPickUp();}
 }
 

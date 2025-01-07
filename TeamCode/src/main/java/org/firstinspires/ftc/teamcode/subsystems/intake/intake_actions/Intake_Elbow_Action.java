@@ -14,8 +14,9 @@ public class Intake_Elbow_Action {
     private  double STOW = 0.625;
     private  double DROP = 0.65;
     private  double PICKUP_PREP = 0.68; //0.555;
-    private  double PICKUP = 0.69;
+    private  double PICKUP = 0.7;
     private double PICKUP_DONE = 0.65;
+    private double HAND_OFF = 0.515;
 
 
     public Intake_Elbow_Action(HardwareMap hardwareMap) {
@@ -105,10 +106,24 @@ public class Intake_Elbow_Action {
 
     }
 
+    public class IntakeElbowHandOff implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                IntakeElbow.setPosition(HAND_OFF);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
     public Action intakeElbowInit(){return new IntakeElbowInit();}
     public Action intakeElbowStow(){return new IntakeElbowStow();}
     public Action intakeElbowDrop(){return new IntakeElbowDrop();}
     public Action intakeElbowPickUpPrep(){return new IntakeElbowPickUpPrep();}
     public Action intakeElbowPickUp(){return new IntakeElbowPickUp();}
     public Action intakeElbowPickUpDone(){return new IntakeElbowPickUpDone();}
+    public Action intakeElbowHandOff(){return new IntakeElbowHandOff();}
 }

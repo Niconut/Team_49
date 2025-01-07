@@ -14,10 +14,12 @@ public class Intake_Shoulder_Action {
     private static double STOW = 0.16;
     private static double PICKUP_PREP = 0.7;
     private static double AutoRightPickUp = 0.5;
+    private static double AutoLeftPickUp = 0.15;
     private static double DROP = 0.25;
     private double SAFE_MIN = 0.15;
     private double SAFE_MAX = 0.8;
     private double PARALLEL = 0.4;
+    private double HAND_OFF = 0.03;
 
     public Intake_Shoulder_Action(HardwareMap hardwareMap) {
         this.Intake_Shoulder = hardwareMap.get(Servo.class, "Shoulder");
@@ -111,10 +113,37 @@ public class Intake_Shoulder_Action {
 
     }
 
+    public class IntakeShoulderHandOff implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                Intake_Shoulder.setPosition(HAND_OFF);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+    public class IntakeShoulderAutoLeftPickUp implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                Intake_Shoulder.setPosition(AutoLeftPickUp);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
     public Action intakeShoulderInit(){return new IntakeShoulderInit();}
     public Action intakeShoulderStow(){return new IntakeShoulderStow();}
     public Action intakeShoulderPickUpPrep(){return new IntakeShoulderPickUpPrep();}
     public Action intakeShoulderAutoRightPickUp(){return new IntakeShoulderAutoRightPickUp();}
     public Action intakeShoulderDrop(){return new IntakeShoulderDrop();}
     public Action intakeShoulderParallel(){return new IntakeShoulderParallel();}
+    public Action intakeShoulderHandOff(){return new IntakeShoulderHandOff();}
+    public Action intakeShoulderAutoLeftPickUp(){return new IntakeShoulderAutoLeftPickUp();}
 }

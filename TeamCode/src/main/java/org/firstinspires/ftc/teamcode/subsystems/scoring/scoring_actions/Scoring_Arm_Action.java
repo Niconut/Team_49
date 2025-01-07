@@ -21,6 +21,7 @@ public class Scoring_Arm_Action {
     public double HIGH_BASKET_SCORE = 0.75;
     public double LOW_BASKET_SCORE_PREP = 0.75;
     public double LOW_BASKET_SCORE = 0.75;
+    public double HAND_OFF = 0.82;
 
 
     private Servo arm1;
@@ -174,6 +175,22 @@ public class Scoring_Arm_Action {
 
     }
 
+    public class ScoringArmHandOff implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                arm1.setPosition(HAND_OFF);
+                arm2.setPosition(HAND_OFF);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
+
+
     public Action scoringArmInit(){return new ScoringArmInit();}
     public Action scoringArmStow(){return new ScoringArmStow();}
     public Action scoringArmGroundPickUp(){return new ScoringArmGroundPickUp();}
@@ -183,4 +200,5 @@ public class Scoring_Arm_Action {
     public Action scoringArmHighChamberScore(){return new ScoringArmHighChamberScore();}
     public Action scoringArmHighBasketScorePrep(){return new ScoringArmHighBasketScorePrep();}
     public Action scoringArmHighBasketScore(){return new ScoringArmHighBasketScore();}
+    public Action scoringArmHandOff(){return new ScoringArmHandOff();}
 }
