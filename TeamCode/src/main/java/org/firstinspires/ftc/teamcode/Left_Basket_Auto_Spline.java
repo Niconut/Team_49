@@ -80,7 +80,8 @@ public final class Left_Basket_Auto_Spline extends LinearOpMode {
                     scoreSample2(TrajectoryScoreSamples2, scoringSlide, scoringArm, scoringGripper),
                     pickupSample3(intakeGripper, intakeWrist, intakeElbow, intakeShoulder, intakeSlide),
                     HandOff(scoringSlide,scoringArm,scoringGripper,intakeGripper,intakeWrist,intakeElbow,intakeShoulder,intakeSlide),
-                    scoreSample3(TrajectoryScoreSamples3, scoringSlide, scoringArm, scoringGripper)
+                    scoreSample3(TrajectoryScoreSamples3, scoringSlide, scoringArm, scoringGripper),
+                    park(TrajectoryPark, scoringArm, scoringSlide)
                     )
                 );
 
@@ -129,7 +130,8 @@ public final class Left_Basket_Auto_Spline extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(-135));
 
         TrajectoryActionBuilder trajectoryPark = trajectoryScoreSamples2.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(48, -62), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-52, -10), Math.toRadians(180))
+                .lineToX(-25);
 
         TrajectoryScorePreload = trajectoryHighSpecimenPreload.build();
         TrajectoryPickUpSamples1 = trajectoryPickUpSamples1.build();
@@ -256,8 +258,8 @@ public final class Left_Basket_Auto_Spline extends LinearOpMode {
                           Intake_Slide_Action intakeSlide){
         return new SequentialAction(
             new ParallelAction(
+                    intakeWrist.intakeWristInit(),
                     scoringGripper.scoringGripperOpen(),
-
                     intakeSlide.intakeSlideHandOffPrep(),
                     intakeElbow.intakeElbowHandOff(),
                     intakeShoulder.intakeShoulderHandOff()
@@ -347,14 +349,17 @@ public final class Left_Basket_Auto_Spline extends LinearOpMode {
 
 
 
-    public Action park(Action targetTrajectory, Scoring_Gripper_Action scoringGripper, Scoring_Arm_Action scoringArm, Scoring_Slide_Action scoringSlide) {
+    public Action park(Action targetTrajectory,
+                       Scoring_Arm_Action scoringArm,
+                       Scoring_Slide_Action scoringSlide) {
         return new SequentialAction(
                 new ParallelAction(
                         targetTrajectory,
                         scoringSlide.scoringSlideInit(),
-                        scoringArm.scoringArmStow()
+                        scoringArm.scoringArmLevel1Ascent()
                 ),
                 new SleepAction(0.3)
+
         );
     }
 

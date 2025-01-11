@@ -399,10 +399,12 @@ public class TeleOp_Command_Based extends LinearOpMode
                         }),
                         new WaitCommand(500),
                         new ParallelCommandGroup(
+
                             new ActuateScoringGripperCommand(scoringGripper, OPEN),
                             new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_BASKET_SCORE),
                             new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.HAND_OFF_PREP),
                             new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.HAND_OFF),
+                            new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.INIT),
                             new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.HAND_OFF)
                             ),
                         new WaitCommand(1000),
