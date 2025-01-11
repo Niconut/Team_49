@@ -22,6 +22,7 @@ public class Scoring_Arm_Action {
     public double LOW_BASKET_SCORE_PREP = 0.75;
     public double LOW_BASKET_SCORE = 0.75;
     public double HAND_OFF = 0.82;
+    public double ARM_LEVEL_1_CLIMB = 0.65;
 
 
     private Servo arm1;
@@ -182,6 +183,20 @@ public class Scoring_Arm_Action {
             if (!initialized) {
                 arm1.setPosition(HAND_OFF);
                 arm2.setPosition(HAND_OFF);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
+    public class ScoringArmLevel1Ascent implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                arm1.setPosition(ARM_LEVEL_1_CLIMB);
+                arm2.setPosition(ARM_LEVEL_1_CLIMB);
                 initialized = true;
             }
             return false;
