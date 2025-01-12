@@ -199,6 +199,7 @@ public class TeleOp_Command_Based extends LinearOpMode
         Button highClimbPrep = new GamepadButton(driver, GamepadKeys.Button.DPAD_LEFT);
         Button highClimbDone = new GamepadButton(driver, GamepadKeys.Button.DPAD_RIGHT);
         Button handOffDriver = new GamepadButton(driver, GamepadKeys.Button.BACK);
+        Button resetAll = new GamepadButton(driver, GamepadKeys.Button.START);
 
         /* ******** GROUP ALL OPERATOR CONTROLS HERE ******** */
         /*
@@ -331,7 +332,15 @@ public class TeleOp_Command_Based extends LinearOpMode
                     new MoveScoringArmCommand(scoringArm, ScoringArmState.CLIMB_PREP)
                 )
             );
-
+            resetAll.whenPressed(
+                    new SequentialCommandGroup(
+                            new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.MID),
+                            new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.MID),
+                            new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP),
+                            new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.PICKUP_PREP),
+                            new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW)
+                    )
+            );
             /* ************************************************** */
 
             /* ******** GROUP ALL OPERATOR CONTROLS HERE ******** */

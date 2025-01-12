@@ -14,7 +14,7 @@ public class Intake_Shoulder_Action {
     private static double STOW = 0.16;
     private static double PICKUP_PREP = 0.7;
     private static double AutoRightPickUp = 0.5;
-    private static double AutoLeftPickUp = 0.15;
+    private static double AutoLeftPickUp = 0.89;
     private static double DROP = 0.25;
     private double SAFE_MIN = 0.15;
     private double SAFE_MAX = 0.8;

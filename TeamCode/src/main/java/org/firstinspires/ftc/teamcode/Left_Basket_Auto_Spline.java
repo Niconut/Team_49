@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Gr
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Shoulder_Action;
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Slide_Action;
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Wrist_Action;
+import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_actions.Scoring_Arm_Action;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_actions.Scoring_Gripper_Action;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_actions.Scoring_Slide_Action;
@@ -35,6 +36,7 @@ public final class Left_Basket_Auto_Spline extends LinearOpMode {
             TrajectoryPickUpSamples3,
             TrajectoryScorePrep3,
             TrajectoryScoreSamples3,
+            TrajectoryParkPrep,
             TrajectoryPark;
 
     @Override
@@ -78,7 +80,7 @@ public final class Left_Basket_Auto_Spline extends LinearOpMode {
                     pickupSample2(scoringSlide, scoringArm, scoringGripper, intakeGripper, intakeWrist, intakeElbow, intakeShoulder, intakeSlide),
                     HandOff(scoringSlide,scoringArm,scoringGripper,intakeGripper,intakeWrist,intakeElbow,intakeShoulder,intakeSlide),
                     scoreSample2(TrajectoryScoreSamples2, scoringSlide, scoringArm, scoringGripper),
-                    pickupSample3(intakeGripper, intakeWrist, intakeElbow, intakeShoulder, intakeSlide),
+                    pickupSample3(scoringSlide, scoringArm, scoringGripper, intakeGripper, intakeWrist, intakeElbow, intakeShoulder, intakeSlide),
                     HandOff(scoringSlide,scoringArm,scoringGripper,intakeGripper,intakeWrist,intakeElbow,intakeShoulder,intakeSlide),
                     scoreSample3(TrajectoryScoreSamples3, scoringSlide, scoringArm, scoringGripper),
                     park(TrajectoryPark, scoringArm, scoringSlide)
@@ -96,7 +98,7 @@ public final class Left_Basket_Auto_Spline extends LinearOpMode {
                 .setReversed(true)
                 //.strafeToLinearHeading((new Vector2d(-49.5, -48)), Math.toRadians(-90))
                 //.strafeToLinearHeading((new Vector2d(-49.5, -38.5)), Math.toRadians(-90));
-                .splineToConstantHeading((new Vector2d(-47.5, -46)), Math.toRadians(-90));
+                .splineToConstantHeading((new Vector2d(-48.5, -45)), Math.toRadians(-90));
 
         TrajectoryActionBuilder trajectoryScoreSamplesPrep1 = trajectoryPickUpSamples1.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(-50,-50), Math.toRadians(-135));
@@ -121,7 +123,7 @@ public final class Left_Basket_Auto_Spline extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(-135));
 
         TrajectoryActionBuilder trajectoryPickUpSamples3 = trajectoryScoreSamples2.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-60, -50), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-64, -43), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryScoreSamplesPrep3 = trajectoryPickUpSamples3.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(-50,-50), Math.toRadians(-135));
@@ -129,9 +131,12 @@ public final class Left_Basket_Auto_Spline extends LinearOpMode {
         TrajectoryActionBuilder trajectoryScoreSamples3 = trajectoryScoreSamplesPrep3.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(-52, -52), Math.toRadians(-135));
 
+        TrajectoryActionBuilder trajectoryParkPrep = trajectoryScoreSamples2.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(-50, -50), Math. toRadians(-135));
+
         TrajectoryActionBuilder trajectoryPark = trajectoryScoreSamples2.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(-52, -10), Math.toRadians(180))
-                .lineToX(-25);
+                .strafeToLinearHeading(new Vector2d(-25, -10), Math.toRadians(180));
 
         TrajectoryScorePreload = trajectoryHighSpecimenPreload.build();
         TrajectoryPickUpSamples1 = trajectoryPickUpSamples1.build();
@@ -143,6 +148,7 @@ public final class Left_Basket_Auto_Spline extends LinearOpMode {
         TrajectoryPickUpSamples3 = trajectoryPickUpSamples3.build();
         TrajectoryScorePrep3 = trajectoryScoreSamplesPrep3.build();
         TrajectoryScoreSamples3 = trajectoryScoreSamples3.build();
+        TrajectoryParkPrep = trajectoryParkPrep.build();
         TrajectoryPark = trajectoryPark.build();
     }
 
@@ -210,7 +216,6 @@ public final class Left_Basket_Auto_Spline extends LinearOpMode {
                         intakeGripper.intakeGripperOpen(),
                         intakeWrist.intakeWristInit(),
                         scoringSlide.scoringSlideGroundPickUp(),
-                        scoringArm.scoringArmHandOff(),
                         scoringGripper.scoringGripperOpen()
                 ),
                 new SleepAction(0.75),
@@ -222,24 +227,33 @@ public final class Left_Basket_Auto_Spline extends LinearOpMode {
         );
     }
 
-    public Action pickupSample3(Intake_Gripper_Action intakeGripper,
+    public Action pickupSample3(Scoring_Slide_Action scoringSlide,
+                                Scoring_Arm_Action scoringArm,
+                                Scoring_Gripper_Action scoringGripper,
+                                Intake_Gripper_Action intakeGripper,
                                 Intake_Wrist_Action intakeWrist,
                                 Intake_Elbow_Action intakeElbow,
                                 Intake_Shoulder_Action intakeShoulder,
-                                Intake_Slide_Action intakeSlide) {
+                                Intake_Slide_Action intakeSlide){
         return new SequentialAction(
-                intakeShoulder.intakeShoulderPickUpPrep(),
-                //new SleepAction(.5),
                 new ParallelAction(
-                        TrajectoryPickUpSamples3,
-                        new SequentialAction(
-                                intakeShoulder.intakeShoulderAutoLeftPickUp(),
-                                intakeSlide.intakeSlidePickUpPrep(),
-                                intakeWrist.intakeWristLeftPickUp(),
-                                intakeElbow.intakeElbowPickUpPrep()
-                        )
+                        intakeElbow.intakeElbowStow(),
+                        intakeShoulder.intakeShoulderStow(),
+                        intakeSlide.intakeSlideStow(),
+                        scoringSlide.scoringSlideGroundPickUp()
                 ),
-                //new SleepAction(0.5),
+                TrajectoryPickUpSamples3,
+                new ParallelAction(
+                        intakeSlide.intakeSlideStow(),
+                        intakeShoulder.intakeShoulderAutoLeftPickUp(),
+                        intakeGripper.intakeGripperOpen(),
+                        intakeElbow.intakeElbowPickUpPrep(),
+                        intakeWrist.intakeWristLeftPickUp(),
+
+                        scoringGripper.scoringGripperOpen()
+                ),
+
+                new SleepAction(0.75),
                 intakeElbow.intakeElbowPickUp(),
                 new SleepAction(0.2),
                 intakeGripper.intakeGripperClose(),
@@ -264,7 +278,7 @@ public final class Left_Basket_Auto_Spline extends LinearOpMode {
                     intakeElbow.intakeElbowHandOff(),
                     intakeShoulder.intakeShoulderHandOff()
             ),
-            new SleepAction(0.3),
+            new SleepAction(0.5),
             scoringArm.scoringArmHandOff(),
             new SleepAction(1),
             new ParallelAction(
@@ -354,11 +368,11 @@ public final class Left_Basket_Auto_Spline extends LinearOpMode {
                        Scoring_Slide_Action scoringSlide) {
         return new SequentialAction(
                 new ParallelAction(
-                        targetTrajectory,
+                        TrajectoryParkPrep,
                         scoringSlide.scoringSlideInit(),
-                        scoringArm.scoringArmLevel1Ascent()
+                        scoringArm.scoringArmGroundPickUp()
                 ),
-                new SleepAction(0.3)
+                new SleepAction(0.5)
 
         );
     }
