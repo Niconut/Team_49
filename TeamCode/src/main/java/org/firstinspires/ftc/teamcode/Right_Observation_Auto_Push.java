@@ -76,7 +76,7 @@ public final class Right_Observation_Auto_Push extends LinearOpMode {
             Actions.runBlocking(
                 new SequentialAction(
                     scorePreload(scoringGripper, scoringArm, scoringSlide),
-                    pickupSample1Spline(intakeGripper, intakeWrist, intakeElbow, intakeShoulder,intakeSlide),
+                    pickupSample1Push(intakeGripper, intakeWrist, intakeElbow, intakeShoulder,intakeSlide),
                     dropSample(TrajectoryDropSamples1, intakeGripper, intakeWrist, intakeElbow, intakeShoulder,intakeSlide),
                     //dropSample1(intakeGripper, intakeWrist, intakeElbow, intakeShoulder,intakeSlide),
                     pickupSample2(intakeGripper, intakeWrist, intakeElbow, intakeShoulder,intakeSlide),
@@ -106,8 +106,8 @@ public final class Right_Observation_Auto_Push extends LinearOpMode {
         TrajectoryActionBuilder trajectoryPickUpSamples1 = trajectoryHighSpecimenPreload.endTrajectory().fresh()
                 .setReversed(true)
                 .strafeToLinearHeading(new Vector2d(30,-41), Math.toRadians(90))
-                .splineTo(new Vector2d(42.5,-12), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(42.5,-60), Math.toRadians(90));
+                .splineTo(new Vector2d(42.5,-12), Math.toRadians(90));
+
 
         TrajectoryActionBuilder trajectoryPickUpSamples1_1 = trajectoryHighSpecimenPreload.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(30, -53), Math.toRadians(90));
@@ -118,26 +118,23 @@ public final class Right_Observation_Auto_Push extends LinearOpMode {
 
 
         TrajectoryActionBuilder trajectoryDropSamples1 = trajectoryPickUpSamples1_2.endTrajectory().fresh()
-                .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(46, -58), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(42.5,-60), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryPickUpSamples2 = trajectoryDropSamples1.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(42.5,-12), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(52.5,-12), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(52.5,-60), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(52.5,-12), Math.toRadians(90));
+
         TrajectoryActionBuilder trajectoryDropSamples2 = trajectoryPickUpSamples2.endTrajectory().fresh()
-                .setReversed(true)
-                .strafeToLinearHeading(new Vector2d(52.5,-12), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(61.75,-12), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(61.75,-60), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(52.5,-60), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryPickUpSamples3 = trajectoryDropSamples2.endTrajectory().fresh()
                 //.splineToConstantHeading((new Vector2d(62, -48)), Math.toRadians(90));
-                .strafeToLinearHeading(new Vector2d(50, -50), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(60, -49), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(52.5,-12), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(61.75,-12), Math.toRadians(90));
+
 
         TrajectoryActionBuilder trajectoryDropSamples3 = trajectoryPickUpSamples3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(42, -58), Math.toRadians(45));
+                .strafeToLinearHeading(new Vector2d(61.75,-60), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryWallPickupSpecimen1 = trajectoryDropSamples3.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(40,-61), Math.toRadians(90));
@@ -249,29 +246,23 @@ public final class Right_Observation_Auto_Push extends LinearOpMode {
         );
     }
 
+    public Action pickupSample1Push(Intake_Gripper_Action intakeGripper,
+                                      Intake_Wrist_Action intakeWrist,
+                                      Intake_Elbow_Action intakeElbow,
+                                      Intake_Shoulder_Action intakeShoulder,
+                                      Intake_Slide_Action intakeSlide){
+        return new SequentialAction(
+                        TrajectoryPickUpSamples1
+        );
+    }
+
     public Action pickupSample2(Intake_Gripper_Action intakeGripper,
                               Intake_Wrist_Action intakeWrist,
                               Intake_Elbow_Action intakeElbow,
                               Intake_Shoulder_Action intakeShoulder,
                               Intake_Slide_Action intakeSlide) {
         return new SequentialAction(
-                new ParallelAction(
-                        TrajectoryPickUpSamples2,
-                        new SequentialAction(
-                                intakeSlide.intakeSlideStow(),
-                                intakeShoulder.intakeShoulderPickUpPrep(),
-                                intakeElbow.intakeElbowPickUpPrep(),
-                                intakeGripper.intakeGripperOpen(),
-                                intakeWrist.intakeWristInit()
-                        )
-
-                ),
-                new SleepAction(0.35),
-                intakeElbow.intakeElbowPickUp(),
-                new SleepAction(0.2),
-                intakeGripper.intakeGripperClose(),
-                new SleepAction(0.1),
-                intakeElbow.intakeElbowPickUpDone()
+                        TrajectoryPickUpSamples2
         );
     }
 
@@ -281,23 +272,8 @@ public final class Right_Observation_Auto_Push extends LinearOpMode {
                                 Intake_Shoulder_Action intakeShoulder,
                                 Intake_Slide_Action intakeSlide) {
         return new SequentialAction(
-                intakeShoulder.intakeShoulderPickUpPrep(),
                 //new SleepAction(.5),
-                new ParallelAction(
-                        TrajectoryPickUpSamples3,
-                        new SequentialAction(
-                                intakeShoulder.intakeShoulderAutoRightPickUp(),
-                                intakeSlide.intakeSlidePickUpPrep(),
-                                intakeWrist.intakeWristRightPickUp(),
-                                intakeElbow.intakeElbowPickUpPrep()
-                        )
-                ),
-                //new SleepAction(0.5),
-                intakeElbow.intakeElbowPickUp(),
-                new SleepAction(0.2),
-                intakeGripper.intakeGripperClose(),
-                new SleepAction(0.1),
-                intakeElbow.intakeElbowPickUpDone()
+                TrajectoryPickUpSamples3
         );
     }
 
@@ -308,14 +284,7 @@ public final class Right_Observation_Auto_Push extends LinearOpMode {
                               Intake_Shoulder_Action intakeShoulder,
                               Intake_Slide_Action intakeSlide) {
         return new SequentialAction(
-                new ParallelAction(
-                        targetTrajectory,
-                        intakeWrist.intakeWristInit(),
-                        intakeSlide.intakeSlideStow(),
-                        intakeShoulder.intakeShoulderDrop(),
-                        intakeElbow.intakeElbowDrop()
-                ),
-                intakeGripper.intakeGripperOpen()
+                        targetTrajectory
         );
     }
 
