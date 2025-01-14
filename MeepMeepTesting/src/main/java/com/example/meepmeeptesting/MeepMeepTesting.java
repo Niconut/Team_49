@@ -134,6 +134,30 @@ public class MeepMeepTesting {
                 .strafeToLinearHeading(new Vector2d(-36,60), Math.toRadians(-90))
                 .build());
 
+        RoadRunnerBotEntity mySeventhBot = new DefaultBotBuilder(meepMeep)
+                // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setColorScheme(new ColorSchemeBlueLight())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .build();
+
+        mySeventhBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(10, -63.5, Math.toRadians(90)))
+                .lineToY(-34)
+                .setReversed(true)
+                .strafeToLinearHeading(new Vector2d(30,-41), Math.toRadians(90))
+                .splineTo(new Vector2d(42.5,-12), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(42.5,-60), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(42.5,-12), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(52.5,-12), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(52.5,-60), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(40,-61), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(0,-35), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(40,-61), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(0,-35), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(40,-61), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(0,-35), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(40,-61), Math.toRadians(90))
+                .build());
+
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
@@ -143,6 +167,7 @@ public class MeepMeepTesting {
                 .addEntity(myFourthBot)
                 .addEntity(myFifthBot)
                 .addEntity(mySixthBot)
+                .addEntity(mySeventhBot)
                 .start();
 
 
