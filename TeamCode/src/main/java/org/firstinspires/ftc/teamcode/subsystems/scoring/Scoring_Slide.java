@@ -25,7 +25,7 @@ public class Scoring_Slide extends SubsystemBase {
     private int LOW_BASKET_SCORE_PREP = -2500;
     private int LOW_BASKET_SCORE = -2500;
     private int CLIMB_PREP = -2200;
-    private int CLIMB_DONE = -1500;
+    private int CLIMB_DONE = -1200;
     private int SAFE_MIN = -2500;
     private int SAFE_MAX = -20;
 
@@ -77,6 +77,13 @@ public class Scoring_Slide extends SubsystemBase {
     public void setPower(double power) {
         Viper_Slide1.setPower(power);
         Viper_Slide2.setPower(power);
+    }
+
+    public void stopAndResetEncoder(){
+        Viper_Slide1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Viper_Slide2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Viper_Slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Viper_Slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public int getLeftCurrentPosition() {

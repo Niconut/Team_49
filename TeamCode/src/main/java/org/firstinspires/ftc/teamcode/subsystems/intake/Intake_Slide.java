@@ -12,8 +12,8 @@ public class Intake_Slide extends SubsystemBase {
     private static double PICKUP_PREP = 0.725;
     private double SAFE_MAX = 0.725;
     private double SAFE_MIN = 0.3;
-    private double HAND_OFF_PREP = 0.67;
-    private double HAND_OFF = 0.566;
+    private double HAND_OFF_PREP = 0.725;
+    private double HAND_OFF = 0.642;
 
     public enum IntakeSlideState {
         INIT,

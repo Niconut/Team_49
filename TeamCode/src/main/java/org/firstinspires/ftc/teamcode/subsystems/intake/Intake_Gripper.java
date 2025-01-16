@@ -11,12 +11,14 @@ public class Intake_Gripper extends SubsystemBase {
     private double INIT = 0.285;
     private static double OPEN = 0.55;
     private static double CLOSE = 0.285;
+    private static double HAND_OFF_PREP = 0.315;
     private double MID = 0.5;
 
     public enum IntakeGripperState {
         INIT,
         OPEN,
         CLOSE,
+        HAND_OFF_PREP,
         MID
     }
 
@@ -36,6 +38,7 @@ public class Intake_Gripper extends SubsystemBase {
             case INIT -> INIT;
             case OPEN -> OPEN;
             case CLOSE -> CLOSE;
+            case HAND_OFF_PREP -> HAND_OFF_PREP;
             case MID -> MID;
         };
         IntakeGripper.setPosition(pos);

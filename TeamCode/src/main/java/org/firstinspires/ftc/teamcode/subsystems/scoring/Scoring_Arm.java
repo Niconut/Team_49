@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Scoring_Arm extends SubsystemBase {
 
-    public double INIT = 0.8;
+    public double INIT = 0.85;
     public double HOME = 0.8;
     public double STOW = 0.8;
     public double GROUND_PICKUP = 0.085;
@@ -20,7 +20,7 @@ public class Scoring_Arm extends SubsystemBase {
     public double LOW_BASKET_SCORE = 0.75;
     public double CLIMB_PREP = 0.1;
     public double CLIMB_DONE = 0.1;
-    public double HANDOFF = 0.82;
+    public double HANDOFF = 0.85;
 
     public enum ScoringArmState {
         INIT,
