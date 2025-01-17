@@ -13,6 +13,7 @@ public class Scoring_Gripper_Action {
     public double CLOSED = 0.3;
     public double OPEN = 0.55;
     public double INIT = 0.55;
+    public double AUTO_SCORE = 0.305;
 
     public Scoring_Gripper_Action(final HardwareMap hardwareMap) {
         this.Scoring_Gripper = hardwareMap.get(Servo.class, "Gripper");
@@ -64,7 +65,21 @@ public class Scoring_Gripper_Action {
 
     }
 
+    public class ScoringGripperAutoScore implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                Scoring_Gripper.setPosition(AUTO_SCORE);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
     public Action scoringGripperInit(){return new ScoringGripperInit();}
     public Action scoringGripperClose(){return new ScoringGripperClose();}
     public Action scoringGripperOpen(){return new ScoringGripperOpen();}
+    public Action scoringGripperAutoScore(){return new ScoringGripperAutoScore();}
 }

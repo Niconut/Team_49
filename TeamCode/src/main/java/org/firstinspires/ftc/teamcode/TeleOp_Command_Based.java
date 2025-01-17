@@ -492,11 +492,11 @@ public class TeleOp_Command_Based extends LinearOpMode
                 SCORING_SLIDE_SETPOINT = 0;
             }
             /* calculate new elbow position */
-            double elbow_move = (-operator.gamepad.right_stick_y);
+           /* double elbow_move = (-operator.gamepad.right_stick_y);
             if (Math.abs(elbow_move) > ELBOW_MOVE_THRESHOLD) {
                 ELBOW_TARGET_POSITION = intakeElbow.getCurrentPosition() + (elbow_move * ELBOW_MOVE_INCREMENTS);
                 intakeElbow.setPosition(ELBOW_TARGET_POSITION);
-            }
+            }*/
 
             /* move scoring slide to new setpoint */
             scoringSlidePID.setSetPoint(SCORING_SLIDE_SETPOINT);
