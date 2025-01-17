@@ -115,25 +115,25 @@ public final class Right_Observation_Auto_Push_Opt extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(56,-62), Math.toRadians(-90));
 
         TrajectoryActionBuilder trajectoryScoreSpecimen1 = trajectoryPushSamples.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(10,-33), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(8,-33), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryPickUpWallSpecimen2 = trajectoryScoreSpecimen1.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(37,-63), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryScoreSpecimen2 = trajectoryPickUpWallSpecimen2.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(10,-32), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(8,-32), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryPickUpSpecimen3 = trajectoryScoreSpecimen2.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(37,-63), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryScoreSpecimen3 = trajectoryPickUpSpecimen3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(10,-32), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(8,-32), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryPickUpSpecimen4 = trajectoryScoreSpecimen3.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(37,-63), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryScoreSpecimen4 = trajectoryPickUpSpecimen3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(10,-32), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(8,-32), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryPark = trajectoryScoreSpecimen4.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(46,-63), Math.toRadians(90));
