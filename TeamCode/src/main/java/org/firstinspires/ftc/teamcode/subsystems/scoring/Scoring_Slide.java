@@ -140,7 +140,6 @@ public class Scoring_Slide extends SubsystemBase {
         newpos = (newpos > SAFE_MAX)? SAFE_MAX:newpos;
         newpos = (newpos < SAFE_MIN)? SAFE_MIN:newpos;
 
-
         Viper_Slide1.setTargetPosition(newpos);
         Viper_Slide2.setTargetPosition(newpos);
 

@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Elbow_Action;
@@ -21,6 +22,7 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_actions.Scoring
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_actions.Scoring_Slide_Action;
 import org.firstinspires.ftc.teamcode.teamcode.MecanumDrive;
 
+@Disabled
 @Autonomous
 public final class Right_Observation_Auto_Spline extends LinearOpMode {
 

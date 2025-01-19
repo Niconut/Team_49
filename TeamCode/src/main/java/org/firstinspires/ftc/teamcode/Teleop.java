@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -24,7 +25,7 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSl
 import org.firstinspires.ftc.teamcode.teamcode.MecanumDrive;
 
 import org.firstinspires.ftc.teamcode.subsystems.Constants;
-
+@Disabled
 @TeleOp(name="Teleop", group="A_DriveCode")
 public class Teleop extends LinearOpMode {
 
@@ -73,6 +74,7 @@ public class Teleop extends LinearOpMode {
     private static double SCORING_ARM_MOVE_THRESHOLD = 0.25;
 
     @Override
+
     public void runOpMode() {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));

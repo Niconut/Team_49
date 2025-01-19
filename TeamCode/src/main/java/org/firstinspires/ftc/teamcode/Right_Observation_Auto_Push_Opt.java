@@ -106,31 +106,31 @@ public final class Right_Observation_Auto_Push_Opt extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(46,-40, Math.toRadians(90)), Math.toRadians(-90))
                 .splineToLinearHeading(new Pose2d(44,-52, Math.toRadians(90)), Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(40,-30), Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(46,-14, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(46,-11, Math.toRadians(90)), Math.toRadians(0))
                 .splineToLinearHeading(new Pose2d(52,-40, Math.toRadians(90)), Math.toRadians(-90))
                 .splineToLinearHeading(new Pose2d(50,-52, Math.toRadians(90)), Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(44,-30), Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(52,-14, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(52,-11, Math.toRadians(90)), Math.toRadians(0))
                 .splineToLinearHeading(new Pose2d(62,-40, Math.toRadians(90)), Math.toRadians(-90))
-                .splineToConstantHeading(new Vector2d(56,-62), Math.toRadians(-90));
+                .splineToConstantHeading(new Vector2d(56,-63.5), Math.toRadians(-90));
 
         TrajectoryActionBuilder trajectoryScoreSpecimen1 = trajectoryPushSamples.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(8,-33), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryPickUpWallSpecimen2 = trajectoryScoreSpecimen1.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(37,-63), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(37,-64.5), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryScoreSpecimen2 = trajectoryPickUpWallSpecimen2.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(8,-32), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryPickUpSpecimen3 = trajectoryScoreSpecimen2.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(37,-63), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(37,-64.5), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryScoreSpecimen3 = trajectoryPickUpSpecimen3.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(8,-32), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryPickUpSpecimen4 = trajectoryScoreSpecimen3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(37,-63), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(37,-64.5), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryScoreSpecimen4 = trajectoryPickUpSpecimen3.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(8,-32), Math.toRadians(90));

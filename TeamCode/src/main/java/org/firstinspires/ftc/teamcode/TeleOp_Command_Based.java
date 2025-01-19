@@ -79,7 +79,7 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.MoveSc
 import org.firstinspires.ftc.teamcode.subsystems.gyro.gyroSubsystem;
 
 //@Disabled
-@TeleOp(name="TeleOp_Command_Based", group="A_DriveCode")
+@TeleOp(name="TeleOp_Command_Based", group="AA_DriveCode")
 public class TeleOp_Command_Based extends LinearOpMode
 {
     //Scoring_Gripper scoringGripper = null;
