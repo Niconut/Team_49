@@ -16,12 +16,12 @@ public class Scoring_Slide_Action {
     private int HOME = -20;
     private int STOW = -20;
     private int GROUND_PICKUP = -20;
-    private int WALL_PICKUP_PREP = -700;
+    private int WALL_PICKUP_PREP = -675; //-700;
     private int WALL_PICKUP_DONE = -1100;
-    private int WALL_PICKUP = -735;
-    private int HIGH_CHAMBER_SCORE_PREP = -810;
-    private int HIGH_CHAMBER_SCORE_PREP2 = -820;
-    private int HIGH_CHAMBER_SCORE = -1200;
+    private int WALL_PICKUP = -675; //-735;
+    private int HIGH_CHAMBER_SCORE_PREP = -850;//-810;
+    private int HIGH_CHAMBER_SCORE_PREP2 = -850;//-820;
+    private int HIGH_CHAMBER_SCORE = -1250;//-1200;
     private int HIGH_BASKET_SCORE_PREP = -2700;
     private int HIGH_BASKET_SCORE = -2700;
     private int LOW_BASKET_SCORE_PREP = -2500;
