@@ -21,7 +21,7 @@ public class Scoring_Slide_Action {
     private int WALL_PICKUP = -675; //-735;
     private int HIGH_CHAMBER_SCORE_PREP = -850;//-810;
     private int HIGH_CHAMBER_SCORE_PREP2 = -850;//-820;
-    private int HIGH_CHAMBER_SCORE = -1250;//-1200;
+    private int HIGH_CHAMBER_SCORE = -1300;//-1200;
     private int HIGH_BASKET_SCORE_PREP = -2700;
     private int HIGH_BASKET_SCORE = -2700;
     private int LOW_BASKET_SCORE_PREP = -2500;
