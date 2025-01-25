@@ -54,13 +54,13 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.util.Timing;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.drive.driveCommands.DefaultDriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.drive.driveCommands.SlowModeCommand;
 import org.firstinspires.ftc.teamcode.subsystems.drive.driveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.gyro.gyroSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Elbow;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Gripper;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Shoulder;
@@ -76,11 +76,10 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.ActuateScoringGripperCommand;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.MoveScoringArmCommand;
-import org.firstinspires.ftc.teamcode.subsystems.gyro.gyroSubsystem;
 
 //@Disabled
-@TeleOp(name="Main", group="AA_DriveCode")
-public class Main_Teleop extends LinearOpMode
+@TeleOp(name="Intake_Subsystem_Test", group="AA_DriveCode")
+public class Intake_Subsytem_Test extends LinearOpMode
 {
     //Scoring_Gripper scoringGripper = null;
 
@@ -110,10 +109,10 @@ public class Main_Teleop extends LinearOpMode
     private static double WRIST_MOVE_INCREMENTS = 0.01;
     private static double WRIST_MOVE_THRESHOLD = 0.25;
 
-    private static double SHOULDER_MOVE_INCREMENTS = 0.00125;
+    private static double SHOULDER_MOVE_INCREMENTS = 0.005;
     private static double SHOULDER_MOVE_THRESHOLD = 0.25;
 
-    private static double SLIDE_MOVE_INCREMENTS = 0.02;
+    private static double SLIDE_MOVE_INCREMENTS = 0.01;
     private static double SLIDE_MOVE_THRESHOLD = 0.25;
 
     private static double ELBOW_MOVE_INCREMENTS = 0.005;
@@ -346,9 +345,7 @@ public class Main_Teleop extends LinearOpMode
             /* ******** GROUP ALL OPERATOR CONTROLS HERE ******** */
             pickUpPrepButton.whenPressed(
                 new SequentialCommandGroup(
-                    new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW),
-                    new WaitCommand(50),
-                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
+                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP_DONE),
                     new WaitCommand(50),
                     new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.PICKUP_PREP),
                     new WaitCommand(100),
@@ -381,35 +378,29 @@ public class Main_Teleop extends LinearOpMode
             stowArmButton.whenPressed(
                 new SequentialCommandGroup(
                     new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.CLOSE),
-                    new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW),
-                    new WaitCommand(400),
                     new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.STOW),
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
-                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW)
+                    new WaitCommand(200),
+                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW),
                     //new WaitCommand(100),
-
+                    new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW)
                 ));
 
-            dropSampleButton.whenHeld(
+            dropSampleButton.whenPressed(
                 new SequentialCommandGroup(
                     new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.DROP),
                     //new WaitCommand(100),
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.DROP),
                     //new WaitCommand(100),
                     new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.DROP),
-                    new WaitCommand(200)
-            ));
-
-            dropSampleButton.whenReleased(
-                new SequentialCommandGroup(
+                    new WaitCommand(200),
                     new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN),
-                    new WaitCommand(300),
+                    new WaitCommand(150),
                     new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW),
                     new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW),
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
                     new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.STOW)
                 ));
-
 
             handOffOperator.whenPressed(
             //    .and(handOffDriver.whenPressed(
@@ -484,7 +475,7 @@ public class Main_Teleop extends LinearOpMode
             }
 
             /* calculate new slide position */
-            double slide_move = (operator.gamepad.left_stick_y);
+            double slide_move = (-operator.gamepad.left_stick_y);
             if (Math.abs(slide_move) > SLIDE_MOVE_THRESHOLD) {
                 SLIDE_TARGGET_POSITION = intakeSlide.getCurrentPositionLeft() + (slide_move * SLIDE_MOVE_INCREMENTS);
                 intakeSlide.setPosition(SLIDE_TARGGET_POSITION);
@@ -499,11 +490,11 @@ public class Main_Teleop extends LinearOpMode
                 SCORING_SLIDE_SETPOINT = 0;
             }
             /* calculate new elbow position */
-           /* double elbow_move = (-operator.gamepad.right_stick_y);
+            double elbow_move = (-operator.gamepad.right_stick_y);
             if (Math.abs(elbow_move) > ELBOW_MOVE_THRESHOLD) {
                 ELBOW_TARGET_POSITION = intakeElbow.getCurrentPosition() + (elbow_move * ELBOW_MOVE_INCREMENTS);
                 intakeElbow.setPosition(ELBOW_TARGET_POSITION);
-            }*/
+            }
 
             /* move scoring slide to new setpoint */
             scoringSlidePID.setSetPoint(SCORING_SLIDE_SETPOINT);
@@ -514,7 +505,8 @@ public class Main_Teleop extends LinearOpMode
             telemetry.addData("intakeWrist: ", intakeWrist.getCurrentPosition());
             telemetry.addData("intakeElbow: ", intakeElbow.getCurrentPosition());
             telemetry.addData("intakeShoulder: ", intakeShoulder.getCurrentPosition());
-            telemetry.addData("intakeSlide: ", intakeSlide.getCurrentPositionLeft());
+            telemetry.addData("intakeSlideRight: ", intakeSlide.getCurrentPositionRight());
+            telemetry.addData("IntakeSlideLeft:", intakeSlide.getCurrentPositionLeft());
 
             telemetry.addData("scoringGripper: ", scoringGripper.getCurrentPosition());
             telemetry.addData("scoringArm1: ", scoringArm.getSoringArm1position());

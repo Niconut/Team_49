@@ -482,7 +482,7 @@ public class Scoring_Subsystem_Test extends LinearOpMode
             /* calculate new slide position */
             double slide_move = (-operator.gamepad.left_stick_y);
             if (Math.abs(slide_move) > SLIDE_MOVE_THRESHOLD) {
-                SLIDE_TARGGET_POSITION = intakeSlide.getCurrentPosition() + (slide_move * SLIDE_MOVE_INCREMENTS);
+                SLIDE_TARGGET_POSITION = intakeSlide.getCurrentPositionLeft() + (slide_move * SLIDE_MOVE_INCREMENTS);
                 intakeSlide.setPosition(SLIDE_TARGGET_POSITION);
             }
 
@@ -521,7 +521,7 @@ public class Scoring_Subsystem_Test extends LinearOpMode
             telemetry.addData("intakeWrist: ", intakeWrist.getCurrentPosition());
             telemetry.addData("intakeElbow: ", intakeElbow.getCurrentPosition());
             telemetry.addData("intakeShoulder: ", intakeShoulder.getCurrentPosition());
-            telemetry.addData("intakeSlide: ", intakeSlide.getCurrentPosition());
+            telemetry.addData("intakeSlide: ", intakeSlide.getCurrentPositionLeft());
 
             telemetry.addData("scoringGripper: ", scoringGripper.getCurrentPosition());
             telemetry.addData("scoringArm1: ", scoringArm.getSoringArm1position());
