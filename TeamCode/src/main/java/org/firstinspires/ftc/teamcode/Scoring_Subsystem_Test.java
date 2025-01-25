@@ -94,6 +94,7 @@ public class Scoring_Subsystem_Test extends LinearOpMode
     private static double WRIST_TARGET_POSITION = 0.5;
     private static double SHOULDER_TARGET_POSITION = 0.5;
     private static double SLIDE_TARGGET_POSITION = 0.5;
+    private static double ARM_TARGGET_POSITION = 0.5;
     private static double ELBOW_TARGET_POSITION = 0.5;
     private static double SCORING_ARM_TARGET_POSITION = 0.5;
     private static int SCORING_SLIDE_SETPOINT = 0;
@@ -111,6 +112,9 @@ public class Scoring_Subsystem_Test extends LinearOpMode
 
     private static double SHOULDER_MOVE_INCREMENTS = 0.005;
     private static double SHOULDER_MOVE_THRESHOLD = 0.25;
+
+    private static double ARM_MOVE_INCREMENTS = 0.005;
+    private static double ARM_MOVE_THRESHOLD = 0.25;
 
     private static double SLIDE_MOVE_INCREMENTS = 0.01;
     private static double SLIDE_MOVE_THRESHOLD = 0.25;
@@ -240,12 +244,12 @@ public class Scoring_Subsystem_Test extends LinearOpMode
         scoringArm.setState(ScoringArmState.INIT);
         SCORING_SLIDE_SETPOINT = scoringSlide.setState(HOME);
 
-        CommandScheduler.getInstance().setDefaultCommand(drive, slowModeCommand);
+      //  CommandScheduler.getInstance().setDefaultCommand(drive, slowModeCommand);
         CommandScheduler.getInstance().schedule();
 
         while (opModeIsActive())
         {
-            MakeCommands(driver);
+            //MakeCommands(driver);
             CommandScheduler.getInstance().run();
 
             /* ******** GROUP ALL DRIVER CONTROLS HERE ******** */
@@ -457,9 +461,9 @@ public class Scoring_Subsystem_Test extends LinearOpMode
 
             */
 
-            driveSpeedButton
+            /*driveSpeedButton
                     .whenHeld(defaultDriveCommand)
-                    .whenReleased(slowModeCommand);
+                    .whenReleased(slowModeCommand);*/
 
             /* calculate new wrist position */
             double wrist_move = (operator.gamepad.left_trigger - operator.gamepad.right_trigger);
@@ -484,6 +488,17 @@ public class Scoring_Subsystem_Test extends LinearOpMode
 
             if (gamepad1.left_trigger > 0.5 && gamepad1.right_trigger > 0.5) {
                 SCORING_SLIDE_SETPOINT = SCORING_SLIDE_SETPOINT + 25;
+            }
+
+            double scoringSlide_move = (-driver.gamepad.right_stick_y);
+            if (scoringSlide_move != 0){
+                SCORING_SLIDE_SETPOINT = SCORING_SLIDE_SETPOINT + (25 * (int)scoringSlide_move);
+            }
+
+            double arm_move = (driver.gamepad.left_stick_y);
+            if (Math.abs(arm_move) > ARM_MOVE_THRESHOLD) {
+                ARM_TARGGET_POSITION = scoringArm.getSoringArm1position() + (arm_move * ARM_MOVE_INCREMENTS);
+                scoringArm.setPosition(ARM_TARGGET_POSITION);
             }
 
             if (gamepad1.start && gamepad1.back){
