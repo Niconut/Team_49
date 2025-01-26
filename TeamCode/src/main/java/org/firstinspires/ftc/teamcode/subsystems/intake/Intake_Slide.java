@@ -8,11 +8,11 @@ public class Intake_Slide extends SubsystemBase {
     private Servo Intake_SlideLeft;
     private Servo Intake_SlideRight;
 
-    private static double INIT = 0.850;
-    private static double STOW = 0.850;
-    private static double PICKUP_PREP = 0.850;
-    private double SAFE_MAX = 0.850;
-    private double SAFE_MIN = 0.32;
+    private static double INIT = 0.5;
+    private static double STOW = 0.25;
+    private static double PICKUP_PREP = 0.5;
+    private double SAFE_MAX = 0.725;
+    private double SAFE_MIN = 0.25;
     private double HAND_OFF_PREP = 0.5;
     private double HAND_OFF = 0.5;
 

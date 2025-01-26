@@ -337,7 +337,7 @@ public class Intake_Subsytem_Test extends LinearOpMode
                             new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.MID),
                             new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP),
                             new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.PICKUP_PREP),
-                            new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW)
+                            new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.INIT)
                     )
             );
             /* ************************************************** */
