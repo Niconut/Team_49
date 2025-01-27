@@ -43,7 +43,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.Sc
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.WALL_PICKUP_PREP;
 
 import com.acmerobotics.roadrunner.Pose2d;
-
+import com.acmerobotics.roadrunner.SleepAction;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -55,15 +55,17 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-
+import com.arcrobotics.ftclib.util.Timing;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.Sensors.Light_Indicator;
+import org.firstinspires.ftc.teamcode.subsystems.Sensors.Sensor_Commands.ActuateLightIndicatorCommand;
 import org.firstinspires.ftc.teamcode.subsystems.drive.driveCommands.DefaultDriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.drive.driveCommands.SlowModeCommand;
 import org.firstinspires.ftc.teamcode.subsystems.drive.driveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.gyro.gyroSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Elbow;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Gripper;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Shoulder;
@@ -79,14 +81,15 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.ActuateScoringGripperCommand;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.MoveScoringArmCommand;
-import org.firstinspires.ftc.teamcode.subsystems.gyro.gyroSubsystem;
+
+import java.util.TimerTask;
 
 //@Disabled
-@TeleOp(name="Main", group="AA_DriveCode")
-public class Main_Teleop extends LinearOpMode
+@TeleOp(name="LightSensor_Test", group="AA_DriveCode")
+public class LightSensor_Test extends LinearOpMode
 {
     private ElapsedTime runtime = new ElapsedTime();
-    private static int gametime = 120;
+    private static double gametime = 120;
     //Scoring_Gripper scoringGripper = null;
 
     private static double DRIVE_COMMAND = 1;
@@ -112,22 +115,22 @@ public class Main_Teleop extends LinearOpMode
     private static double STRAFE_SLOW_SCALE = 0.3;
     private static double ROT_SLOW_SCALE = 0.3;
 
-    private static double WRIST_MOVE_INCREMENTS = 0.015;
-    private static double WRIST_MOVE_THRESHOLD = 0.05;
+    private static double WRIST_MOVE_INCREMENTS = 0.01;
+    private static double WRIST_MOVE_THRESHOLD = 0.25;
 
-    private static double SHOULDER_MOVE_INCREMENTS = 0.002;
-    private static double SHOULDER_MOVE_THRESHOLD = 0.05;
-    private static double SHOULDER_MOVE_LIMIT = 0.425;
+    private static double SHOULDER_MOVE_INCREMENTS = 0.005;
+    private static double SHOULDER_MOVE_THRESHOLD = 0.25;
 
-    private static double SLIDE_MOVE_INCREMENTS = 0.025;
-    private static double SLIDE_MOVE_THRESHOLD = 0.05;
+    private static double SLIDE_MOVE_INCREMENTS = 0.01;
+    private static double SLIDE_MOVE_THRESHOLD = 0.25;
 
     private static double ELBOW_MOVE_INCREMENTS = 0.005;
     private static double ELBOW_MOVE_THRESHOLD = 0.25;
 
     private static double DRIVE_THRESHOLD = 0.5;
 
-    public static ElapsedTime teleopTimer;
+    private static double LIGHT_COLOR = 0.0;
+    private static double LIGHT_COLOR_INCREMENTS = 0.01;
 
     public Command defaultDriveCommand;
     public Command slowModeCommand;
@@ -165,7 +168,6 @@ public class Main_Teleop extends LinearOpMode
         intakeShoulder = new Intake_Shoulder(hardwareMap);
         intakeSlide = new Intake_Slide(hardwareMap);
 
-        teleopTimer = new ElapsedTime();
 
         PIDController scoringSlidePID = new PIDController(0.005, 0, 0);
         scoringSlidePID.setTolerance(10,10);
@@ -213,6 +215,7 @@ public class Main_Teleop extends LinearOpMode
         Button highClimbDone = new GamepadButton(driver, GamepadKeys.Button.DPAD_RIGHT);
         Button handOffDriver = new GamepadButton(driver, GamepadKeys.Button.BACK);
 
+
         /* ******** GROUP ALL OPERATOR CONTROLS HERE ******** */
         /*
         left stick x    --> move shoulder
@@ -240,9 +243,8 @@ public class Main_Teleop extends LinearOpMode
         //Button dropSampleButton = new GamepadButton(operator, GamepadKeys.Button.LEFT_BUMPER);
         Button dropSampleButton = new GamepadButton(operator, GamepadKeys.Button.DPAD_LEFT);
         Button handOffOperator = new GamepadButton(operator, GamepadKeys.Button.BACK);
-        Button syscheckButton = new GamepadButton(operator, GamepadKeys.Button.START);
+        Button resetAll = new GamepadButton(operator, GamepadKeys.Button.START);
         waitForStart();
-
         // start teleop with safe subsystem states
         intakeGripper.setState(Intake_Gripper.IntakeGripperState.INIT);
         intakeWrist.setState(Intake_Wrist.IntakeWristState.INIT);
@@ -257,14 +259,25 @@ public class Main_Teleop extends LinearOpMode
         CommandScheduler.getInstance().setDefaultCommand(drive, slowModeCommand);
         CommandScheduler.getInstance().schedule();
 
-        teleopTimer.reset();
-
         while (opModeIsActive())
         {
-
             MakeCommands(driver);
             CommandScheduler.getInstance().run();
-            lightIndication(teleopTimer.seconds());
+            gametime = 120 - runtime.seconds();
+
+            /*
+            if (gametime > 70){
+                lightIndicator.setState(Light_Indicator.LightIndicatorState.BLUE);
+            } else if(gametime > 60){
+                lightIndicator.setState(Light_Indicator.LightIndicatorState.AZURE);
+            }else if (gametime > 30){
+                lightIndicator.setState(Light_Indicator.LightIndicatorState.GREEN);
+            } else if (gametime > 10){
+                lightIndicator.setState(Light_Indicator.LightIndicatorState.YELLOW);
+            } else {
+                lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+            }
+             */
 
             /* ******** GROUP ALL DRIVER CONTROLS HERE ******** */
             openScoringGripperButton.whenPressed(
@@ -282,11 +295,6 @@ public class Main_Teleop extends LinearOpMode
                     new MoveScoringArmCommand(scoringArm, ScoringArmState.WALL_PICKUP),
                     new WaitCommand(300),
                     new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(WALL_PICKUP_PREP);})
-                )
-            )
-            .whenReleased(
-                new SequentialCommandGroup(
-                    new InstantCommand(() -> {lightIndication(gametime);})
                 )
             );
 
@@ -355,14 +363,13 @@ public class Main_Teleop extends LinearOpMode
                     new MoveScoringArmCommand(scoringArm, ScoringArmState.CLIMB_PREP)
                 )
             );
-
-            syscheckButton.whenPressed(
+            resetAll.whenPressed(
                     new SequentialCommandGroup(
                             new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.MID),
                             new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.MID),
                             new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP),
                             new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.PICKUP_PREP),
-                            new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.SYSCHECK)
+                            new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.INIT)
                     )
             );
             /* ************************************************** */
@@ -370,29 +377,27 @@ public class Main_Teleop extends LinearOpMode
             /* ******** GROUP ALL OPERATOR CONTROLS HERE ******** */
             pickUpPrepButton.whenPressed(
                 new SequentialCommandGroup(
-                    new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW),
-                    new WaitCommand(50),
-                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
+                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP_DONE),
                     new WaitCommand(50),
                     new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.PICKUP_PREP),
-                    new WaitCommand(200),
+                    new WaitCommand(100),
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP_PREP),
                     new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN)
                 ));
             
             pickupButton.whenHeld(
                 new SequentialCommandGroup(
-                    new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN),
-                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.HOVER)
+                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.HOVER),
+                    new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN)
                 )
             );
 
             pickupButton.whenReleased(
                 new SequentialCommandGroup(
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP),
-                    //new WaitCommand(50),
+                    new WaitCommand(50),
                     new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.CLOSE),
-                    new WaitCommand(150),
+                    new WaitCommand(100),
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP_DONE)
                 ));
 
@@ -405,34 +410,30 @@ public class Main_Teleop extends LinearOpMode
             stowArmButton.whenPressed(
                 new SequentialCommandGroup(
                     new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.CLOSE),
-                    new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW),
-                    //new WaitCommand(400),
                     new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.STOW),
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
-                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW)
+                    new WaitCommand(200),
+                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW),
                     //new WaitCommand(100),
-
+                    new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW)
                 ));
 
-            dropSampleButton.whenHeld(
+            dropSampleButton.whenPressed(
                 new SequentialCommandGroup(
                     new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.DROP),
+                    //new WaitCommand(100),
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.DROP),
+                    //new WaitCommand(100),
                     new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.DROP),
-                    new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.DROP)
-            ));
-
-            dropSampleButton.whenReleased(
-                new SequentialCommandGroup(
+                    new WaitCommand(200),
                     new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN),
-                    new WaitCommand(300),
-                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
+                    new WaitCommand(150),
+                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW),
                     new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW),
-                    new WaitCommand(100),
-                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW)
+                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
+                    new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.STOW)
                 ));
 
-            /*
             handOffOperator.whenPressed(
             //    .and(handOffDriver.whenPressed(
                     new SequentialCommandGroup(
@@ -474,7 +475,6 @@ public class Main_Teleop extends LinearOpMode
                     )
             //    )
             );
-            */
 
             /*
             handOffDriver
@@ -495,22 +495,21 @@ public class Main_Teleop extends LinearOpMode
             /* calculate new wrist position */
             double wrist_move = (operator.gamepad.left_trigger - operator.gamepad.right_trigger);
             if (Math.abs(wrist_move) > WRIST_MOVE_THRESHOLD) {
-                WRIST_TARGET_POSITION = intakeWrist.getCurrentPosition() + (wrist_move * Math.abs(wrist_move) * WRIST_MOVE_INCREMENTS);
+                WRIST_TARGET_POSITION = intakeWrist.getCurrentPosition() + (wrist_move * WRIST_MOVE_INCREMENTS);
                 intakeWrist.setPosition(WRIST_TARGET_POSITION);
             }
 
             /* calculate new shoulder position */
             double shoulder_move = (-operator.gamepad.right_stick_x);
             if (Math.abs(shoulder_move) > SHOULDER_MOVE_THRESHOLD) {
-                SHOULDER_TARGET_POSITION = intakeShoulder.getCurrentPosition() + (shoulder_move * Math.abs(shoulder_move) * SHOULDER_MOVE_INCREMENTS);
-                SHOULDER_TARGET_POSITION = (SHOULDER_TARGET_POSITION < SHOULDER_MOVE_LIMIT )? SHOULDER_MOVE_LIMIT : SHOULDER_TARGET_POSITION;
+                SHOULDER_TARGET_POSITION = intakeShoulder.getCurrentPosition() + (shoulder_move * SHOULDER_MOVE_INCREMENTS);
                 intakeShoulder.setPosition(SHOULDER_TARGET_POSITION);
             }
 
             /* calculate new slide position */
             double slide_move = (-operator.gamepad.left_stick_y);
             if (Math.abs(slide_move) > SLIDE_MOVE_THRESHOLD) {
-                SLIDE_TARGGET_POSITION = intakeSlide.getCurrentPositionLeft() + (slide_move * Math.abs(slide_move) * SLIDE_MOVE_INCREMENTS);
+                SLIDE_TARGGET_POSITION = intakeSlide.getCurrentPositionLeft() + (slide_move * SLIDE_MOVE_INCREMENTS);
                 intakeSlide.setPosition(SLIDE_TARGGET_POSITION);
             }
 
@@ -523,10 +522,15 @@ public class Main_Teleop extends LinearOpMode
                 SCORING_SLIDE_SETPOINT = 0;
             }
             /* calculate new elbow position */
-           /* double elbow_move = (-operator.gamepad.right_stick_y);
+            double elbow_move = (-operator.gamepad.right_stick_y);
+            LIGHT_COLOR = LIGHT_COLOR + LIGHT_COLOR_INCREMENTS * elbow_move;
+            lightIndicator.setPosition(LIGHT_COLOR);
+
+            /*
             if (Math.abs(elbow_move) > ELBOW_MOVE_THRESHOLD) {
                 ELBOW_TARGET_POSITION = intakeElbow.getCurrentPosition() + (elbow_move * ELBOW_MOVE_INCREMENTS);
-                intakeElbow.setPosition(ELBOW_TARGET_POSITION);
+                //intakeElbow.setPosition(ELBOW_TARGET_POSITION);
+
             }*/
 
             /* move scoring slide to new setpoint */
@@ -538,15 +542,17 @@ public class Main_Teleop extends LinearOpMode
             telemetry.addData("intakeWrist: ", intakeWrist.getCurrentPosition());
             telemetry.addData("intakeElbow: ", intakeElbow.getCurrentPosition());
             telemetry.addData("intakeShoulder: ", intakeShoulder.getCurrentPosition());
-            telemetry.addData("intakeSlide: ", intakeSlide.getCurrentPositionLeft());
+            telemetry.addData("intakeSlideRight: ", intakeSlide.getCurrentPositionRight());
+            telemetry.addData("IntakeSlideLeft:", intakeSlide.getCurrentPositionLeft());
 
             telemetry.addData("scoringGripper: ", scoringGripper.getCurrentPosition());
             telemetry.addData("scoringArm1: ", scoringArm.getSoringArm1position());
             telemetry.addData("scoringArm2: ", scoringArm.getSoringArm2position());
             telemetry.addData("scoringSlide: ", scoringSlide.getLeftCurrentPosition());
 
-            telemetry.addData("GameTime: ", 120 - teleopTimer.seconds());
+            telemetry.addData("GameTime: ", gametime);
             telemetry.addData("Runtime", runtime.seconds());
+            telemetry.addData("Color", LIGHT_COLOR);
 
             telemetry.update();
         }
@@ -563,60 +569,5 @@ public class Main_Teleop extends LinearOpMode
                 gamepad::getLeftY,
                 gamepad::getRightX
         );
-    }
-
-    public void lightIndication(double timer){
-        double remainingTime = 120 - timer;
-        if (remainingTime > 70){
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.BLUE);
-        }else if(remainingTime > 69) {
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.PURPLE);
-        }else if(remainingTime > 68) {
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
-        }else if(remainingTime > 67) {
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.PURPLE);
-        }else if(remainingTime > 66) {
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
-        }else if(remainingTime > 65) {
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.PURPLE);
-        }else if(remainingTime > 64) {
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
-        }else if(remainingTime > 63) {
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.GREEN);
-        }else if(remainingTime > 62) {
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
-        }else if(remainingTime > 61) {
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.GREEN);
-        }else if(remainingTime > 60) {
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
-        }  else if (remainingTime > 35){
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.GREEN);
-        }else if (remainingTime > 34){
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
-        }else if (remainingTime > 33){
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.GREEN);
-        }else if (remainingTime > 32){
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
-        }else if (remainingTime > 31){
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.YELLOW);
-        } else if(remainingTime > 30) {
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
-        } else if (remainingTime > 10){
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.YELLOW);
-        } else if (remainingTime > 9){
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
-        } else if (remainingTime > 8){
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.YELLOW);
-        } else if (remainingTime > 7){
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
-        } else if (remainingTime > 6){
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.YELLOW);
-        } else if (remainingTime > 5){
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
-        }else if (remainingTime > 4){
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.YELLOW);
-        }  else {
-            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
-        }
     }
 }

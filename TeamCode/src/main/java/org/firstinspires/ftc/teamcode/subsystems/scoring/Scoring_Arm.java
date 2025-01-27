@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Scoring_Arm extends SubsystemBase {
 
-    public double INIT = 0.85;
+    public double INIT = 0.75;
     public double HOME = 0.8;
     public double STOW = 0.8;
     public double GROUND_PICKUP = 0.085;
