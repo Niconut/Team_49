@@ -115,9 +115,9 @@ public class Main_Teleop extends LinearOpMode
     private static double WRIST_MOVE_INCREMENTS = 0.015;
     private static double WRIST_MOVE_THRESHOLD = 0.05;
 
-    private static double SHOULDER_MOVE_INCREMENTS = 0.002;
+    private static double SHOULDER_MOVE_INCREMENTS = 0.005;
     private static double SHOULDER_MOVE_THRESHOLD = 0.05;
-    private static double SHOULDER_MOVE_LIMIT = 0.425;
+    private static double SHOULDER_MOVE_LIMIT = 0.695;
 
     private static double SLIDE_MOVE_INCREMENTS = 0.025;
     private static double SLIDE_MOVE_THRESHOLD = 0.05;
@@ -375,7 +375,7 @@ public class Main_Teleop extends LinearOpMode
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
                     new WaitCommand(50),
                     new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.PICKUP_PREP),
-                    new WaitCommand(200),
+                    new WaitCommand(100),
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP_PREP),
                     new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN)
                 ));
@@ -406,9 +406,9 @@ public class Main_Teleop extends LinearOpMode
                 new SequentialCommandGroup(
                     new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.CLOSE),
                     new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW),
-                    //new WaitCommand(400),
-                    new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.STOW),
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
+                    new WaitCommand(250),
+                    new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.STOW),
                     new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW)
                     //new WaitCommand(100),
 
@@ -416,12 +416,12 @@ public class Main_Teleop extends LinearOpMode
 
             dropSampleButton.whenHeld(
                 new SequentialCommandGroup(
-                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.DROP),
-                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.DROP),
                     new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.DROP),
+                    new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.DROP),
+                    //new WaitCommand(200),
+                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.DROP),
                     new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.DROP)
             ));
-
             dropSampleButton.whenReleased(
                 new SequentialCommandGroup(
                     new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN),
@@ -500,10 +500,10 @@ public class Main_Teleop extends LinearOpMode
             }
 
             /* calculate new shoulder position */
-            double shoulder_move = (-operator.gamepad.right_stick_x);
+            double shoulder_move = (operator.gamepad.right_stick_x);
             if (Math.abs(shoulder_move) > SHOULDER_MOVE_THRESHOLD) {
                 SHOULDER_TARGET_POSITION = intakeShoulder.getCurrentPosition() + (shoulder_move * Math.abs(shoulder_move) * SHOULDER_MOVE_INCREMENTS);
-                SHOULDER_TARGET_POSITION = (SHOULDER_TARGET_POSITION < SHOULDER_MOVE_LIMIT )? SHOULDER_MOVE_LIMIT : SHOULDER_TARGET_POSITION;
+                SHOULDER_TARGET_POSITION = (SHOULDER_TARGET_POSITION > SHOULDER_MOVE_LIMIT )? SHOULDER_MOVE_LIMIT : SHOULDER_TARGET_POSITION;
                 intakeShoulder.setPosition(SHOULDER_TARGET_POSITION);
             }
 
