@@ -10,7 +10,9 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.subsystems.Sensors.Light_Indicator;
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Elbow_Action;
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Gripper_Action;
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Shoulder_Action;
@@ -23,6 +25,12 @@ import org.firstinspires.ftc.teamcode.teamcode.MecanumDrive;
 
 @Autonomous
 public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
+    private ElapsedTime runtime = new ElapsedTime();
+    private static int gametime = 120;
+    public static ElapsedTime teleopTimer;
+
+    Light_Indicator lightIndicator = null;
+
 
     Action  TrajectoryScorePreload,
             TrajectoryPushSamples,
@@ -49,6 +57,9 @@ public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
         Pose2d beginPose = new Pose2d(8.5, -63, Math.toRadians(90));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+
+        Light_Indicator lightIndicator = new Light_Indicator(hardwareMap);
+
         Intake_Gripper_Action intakeGripper = new Intake_Gripper_Action(hardwareMap);
         Intake_Wrist_Action intakeWrist = new Intake_Wrist_Action(hardwareMap);
         Intake_Elbow_Action intakeElbow = new Intake_Elbow_Action(hardwareMap);
@@ -76,6 +87,7 @@ public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
         );
 
         waitForStart();
+        teleopTimer.reset();
             Actions.runBlocking(
                 new SequentialAction(
                     scorePreload(scoringGripper, scoringArm, scoringSlide),
@@ -322,6 +334,71 @@ public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
                 ),
                 new SleepAction(0.3)
         );
+    }
+
+    public void lightIndication(double timer){
+        double remainingTime = 30 - timer;
+         if (remainingTime > 29){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        } else if (remainingTime > 28){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
+        } else if (remainingTime > 27){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        } else if (remainingTime > 26){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
+        } else if (remainingTime > 25){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        } else if (remainingTime > 24){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
+        }else if (remainingTime > 23){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        }else if (remainingTime > 22){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
+        } else if (remainingTime > 21){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        } else if (remainingTime > 20){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
+        } else if (remainingTime > 19){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        } else if (remainingTime > 18){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
+        } else if (remainingTime > 17){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        }else if (remainingTime > 16){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
+        }else if (remainingTime > 15){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        } else if (remainingTime > 14){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
+        } else if (remainingTime > 13){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        } else if (remainingTime > 12){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
+        } else if (remainingTime > 11){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        } else if (remainingTime > 10){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
+        }else if (remainingTime > 9){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        }else if (remainingTime > 8){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
+        } else if (remainingTime > 7){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        } else if (remainingTime > 6){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
+        } else if (remainingTime > 5){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        } else if (remainingTime > 4){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
+        } else if (remainingTime > 3){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        }else if (remainingTime > 2){
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.WHITE);
+        }else if (remainingTime > 1){
+             lightIndicator.setState(Light_Indicator.LightIndicatorState.YELLOW);
+         } else {
+            lightIndicator.setState(Light_Indicator.LightIndicatorState.RED);
+        }
     }
 
 }
