@@ -416,7 +416,7 @@ public class Main_Teleop extends LinearOpMode
 
                 ));
 
-            dropSampleButton.whenHeld(
+            dropSampleButton.whenPressed(
                 new SequentialCommandGroup(
                     new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.DROP),
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.DROP),
@@ -429,9 +429,9 @@ public class Main_Teleop extends LinearOpMode
                     new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN),
                     new WaitCommand(300),
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
-                    new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW),
-                    new WaitCommand(100),
-                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW)
+                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW),
+                    new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW)
+
                 ));
 
             /*
