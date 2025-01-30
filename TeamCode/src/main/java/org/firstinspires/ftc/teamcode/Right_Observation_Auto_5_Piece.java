@@ -71,6 +71,7 @@ public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
             new SequentialAction(
                 scoringGripper.scoringGripperClose(),
                 scoringArm.scoringArmInit(),
+                new SleepAction(1),
 
                 intakeGripper.intakeGripperInit(),
                 intakeWrist.intakeWristInit(),
@@ -111,11 +112,11 @@ public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
             .splineToLinearHeading(new Pose2d(46,-40, Math.toRadians(90)), Math.toRadians(-90))
             .splineToLinearHeading(new Pose2d(44,-50, Math.toRadians(90)), Math.toRadians(180))
             .splineToConstantHeading(new Vector2d(40,-30), Math.toRadians(90))
-            .splineToLinearHeading(new Pose2d(46,-12, Math.toRadians(90)), Math.toRadians(0))
+            .splineToLinearHeading(new Pose2d(46,-11, Math.toRadians(90)), Math.toRadians(0))
             .splineToLinearHeading(new Pose2d(52,-40, Math.toRadians(90)), Math.toRadians(-90))
             .splineToLinearHeading(new Pose2d(50,-51, Math.toRadians(90)), Math.toRadians(180))
             .splineToConstantHeading(new Vector2d(44,-30), Math.toRadians(90))
-            .splineToLinearHeading(new Pose2d(52,-12, Math.toRadians(90)), Math.toRadians(0))
+            .splineToLinearHeading(new Pose2d(52,-11, Math.toRadians(90)), Math.toRadians(0))
             .splineToLinearHeading(new Pose2d(62,-36, Math.toRadians(90)), Math.toRadians(-90))
             .splineToLinearHeading(new Pose2d(58,-60, Math.toRadians(90)), Math.toRadians(-90))
             //.waitSeconds(0.01)
@@ -211,7 +212,7 @@ public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
                 intakeShoulder.intakeShoulderPickUpPrep()
             ),
 
-            new SleepAction(.5),
+            new SleepAction(0.5),
             intakeElbow.intakeElbowPickUp(),
             new SleepAction(0.2),
             intakeGripper.intakeGripperClose(),
@@ -289,10 +290,11 @@ public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
         return new SequentialAction(
                 new ParallelAction(
                         targetTrajectory,
-                        scoringSlide.scoringSlideWallPickUp(),
+                        scoringSlide.scoringSlideWallPickupPrep(),
                         scoringArm.scoringArmWallPickUpPrep()
                 ),
                 scoringArm.scoringArmWallPickUp(),
+                scoringSlide.scoringSlideWallPickUp(),
                 //new SleepAction(0.1),
                 scoringGripper.scoringGripperAutoScore(),
                 new SleepAction(0.1),

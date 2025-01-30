@@ -20,7 +20,7 @@ public class Intake_Slide extends SubsystemBase {
     // if required for expansion limits : 0.73
     // for max extension if passes inspection : 0.85
     // approximately 1.5" delta
-    private double SAFE_MAX = 0.75;
+    private double SAFE_MAX = 0.8;
 
     public enum IntakeSlideState {
         INIT,

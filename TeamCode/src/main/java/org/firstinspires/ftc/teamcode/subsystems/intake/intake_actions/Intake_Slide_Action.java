@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Slide_Action {
     private Servo Intake_Slide;
 
-    private static double INIT = 0.425;
+    private static double INIT = 0.35;
     private static double STOW = 0.425;
     private static double PICKUP_PREP = 0.5;
     private static double MID = 0.5;

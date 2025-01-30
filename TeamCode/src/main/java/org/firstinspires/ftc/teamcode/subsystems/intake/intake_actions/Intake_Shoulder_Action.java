@@ -10,15 +10,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Shoulder_Action {
     private Servo Intake_Shoulder;
 
-    private static double INIT = 0.352;
-    private static double STOW = 0.352;
+    private static double INIT = 0.84;
+    private static double STOW = 0.85;
     private static double PICKUP_PREP = 0.5;
     private static double AutoRightPickUp = 0.5;
     private static double AutoLeftPickUp = 0.5;
-    private static double DROP = 0.352;
-    private double SAFE_MIN = 0.33;
-    private double SAFE_MAX = 0.541;
-    private double PARALLEL = 0.5;
+    private static double DROP = 0.975;
+    private double SAFE_MIN = 0.365;
+    private double SAFE_MAX = 0.98;
+    private double PARALLEL = 0.84;
     private double HAND_OFF = 0.5;
 
     public Intake_Shoulder_Action(HardwareMap hardwareMap) {

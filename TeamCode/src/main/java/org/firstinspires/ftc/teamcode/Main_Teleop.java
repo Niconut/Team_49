@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Arm.ScoringArmState;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.ScoringGripperState.CLOSED;
+import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.ScoringGripperState.INIT;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.ScoringGripperState.MID;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.ScoringGripperState.OPEN;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.CLIMB_DONE;
@@ -251,7 +252,7 @@ public class Main_Teleop extends LinearOpMode
         intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.INIT);
         intakeSlide.setState(Intake_Slide.IntakeSlideState.INIT);
 
-        scoringGripper.setState(OPEN);
+        scoringGripper.setState(CLOSED);
         scoringArm.setState(ScoringArmState.INIT);
         SCORING_SLIDE_SETPOINT = scoringSlide.setState(HOME);
 
