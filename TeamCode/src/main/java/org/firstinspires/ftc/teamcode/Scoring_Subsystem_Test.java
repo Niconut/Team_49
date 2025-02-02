@@ -338,11 +338,7 @@ public class Scoring_Subsystem_Test extends LinearOpMode
             );
             resetAll.whenPressed(
                     new SequentialCommandGroup(
-                            new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.MID),
-                            new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.MID),
-                            new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP),
-                            new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.PICKUP_PREP),
-                            new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW)
+                            new MoveScoringArmCommand(scoringArm, ScoringArmState.INIT)
                     )
             );
             /* ************************************************** */
