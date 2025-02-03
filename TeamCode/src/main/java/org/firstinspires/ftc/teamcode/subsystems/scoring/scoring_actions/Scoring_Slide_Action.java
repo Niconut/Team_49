@@ -12,7 +12,7 @@ public class Scoring_Slide_Action {
     private DcMotorEx Viper_Slide1;
     private DcMotorEx Viper_Slide2;
 
-    private int INIT = 0;
+   /* private int INIT = 0;
     private int HOME = -20;
     private int STOW = -20;
     private int GROUND_PICKUP = -20;
@@ -27,7 +27,27 @@ public class Scoring_Slide_Action {
     private int LOW_BASKET_SCORE_PREP = -2500;
     private int LOW_BASKET_SCORE = -2500;
     private int SAFE_MIN = -2500;
-    private int SAFE_MAX = -20;
+    private int SAFE_MAX = -20;*/
+
+    private int INIT = 0;
+    private int HAND_OFF = 0;
+    private int HOME = -30;
+    private int STOW = -30;
+    private int GROUND_PICKUP = -30;
+    private int WALL_PICKUP_PREP = -1000;
+    private int WALL_PICKUP_DONE = -1200;
+    private int WALL_PICKUP = -1000;
+    private int HIGH_CHAMBER_SCORE_PREP = -1150;
+    private int HIGH_CHAMBER_SCORE_PREP2 = -1200;//860;
+    private int HIGH_CHAMBER_SCORE = -1650;
+    private int HIGH_BASKET_SCORE_PREP = -3765;
+    private int HIGH_BASKET_SCORE = -3485;
+    private int LOW_BASKET_SCORE_PREP = -3485;
+    private int LOW_BASKET_SCORE = -3485;
+    private int CLIMB_PREP = -3075;
+    private int CLIMB_DONE = -1675;
+    private int SAFE_MIN = -3485;
+    private int SAFE_MAX = -30;
 
 
     public Scoring_Slide_Action(HardwareMap hardwareMap) {

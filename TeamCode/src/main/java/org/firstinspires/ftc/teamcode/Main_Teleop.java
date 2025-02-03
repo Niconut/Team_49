@@ -253,8 +253,8 @@ public class Main_Teleop extends LinearOpMode
         intakeSlide.setState(Intake_Slide.IntakeSlideState.INIT);
 
         scoringGripper.setState(CLOSED);
-        scoringArm.setState(ScoringArmState.INIT);
-        SCORING_SLIDE_SETPOINT = scoringSlide.setState(HOME);
+        scoringArm.setState(ScoringArmState.WALL_PICKUP_PREP);
+        SCORING_SLIDE_SETPOINT = scoringSlide.setState(WALL_PICKUP_PREP);
 
         CommandScheduler.getInstance().setDefaultCommand(drive, slowModeCommand);
         CommandScheduler.getInstance().schedule();

@@ -116,7 +116,7 @@ public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
             .splineToLinearHeading(new Pose2d(52,-40, Math.toRadians(90)), Math.toRadians(-90))
             .splineToLinearHeading(new Pose2d(50,-51, Math.toRadians(90)), Math.toRadians(180))
             .splineToConstantHeading(new Vector2d(44,-30), Math.toRadians(90))
-            .splineToLinearHeading(new Pose2d(52,-11, Math.toRadians(90)), Math.toRadians(0))
+            .splineToLinearHeading(new Pose2d(54,-11, Math.toRadians(90)), Math.toRadians(0))
             .splineToLinearHeading(new Pose2d(62,-36, Math.toRadians(90)), Math.toRadians(-90))
             .splineToLinearHeading(new Pose2d(58,-60, Math.toRadians(90)), Math.toRadians(-90))
             //.waitSeconds(0.01)
@@ -184,7 +184,7 @@ public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
                 scoringSlide.scoringSlideScore(),
                 scoringArm.scoringArmHighChamberScore()
             ),
-            new SleepAction(0.225),
+            new SleepAction(0.150),
             scoringGripper.scoringGripperOpen(),
             scoringSlide.scoringSlideWallPickupPrep(),
             scoringArm.scoringArmWallPickUpPrep()
@@ -297,7 +297,7 @@ public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
                 scoringSlide.scoringSlideWallPickUp(),
                 //new SleepAction(0.1),
                 scoringGripper.scoringGripperAutoScore(),
-                new SleepAction(0.1),
+                //new SleepAction(0.1),
                 scoringSlide.scoringSlideWallPickUpDone()
         );
     }
@@ -312,9 +312,9 @@ public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
                 //new SleepAction(0.2),
                 scoringArm.scoringArmHighChamberScore(),
                 scoringSlide.scoringSlideScore(),
-                new SleepAction(0.2),
+                new SleepAction(0.1),
                 scoringGripper.scoringGripperOpen(),
-                new SleepAction(0.1)
+                new SleepAction(0.05)
         );
     }
 
