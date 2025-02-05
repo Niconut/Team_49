@@ -32,14 +32,14 @@ public class Scoring_Slide_Action {
     private int INIT = 0;
     private int HAND_OFF = 0;
     private int HOME = -30;
-    private int STOW = -30;
+    private int PARK = -10;
     private int GROUND_PICKUP = -30;
     private int WALL_PICKUP_PREP = -1000;
     private int WALL_PICKUP_DONE = -1200;
     private int WALL_PICKUP = -1000;
     private int HIGH_CHAMBER_SCORE_PREP = -1150;
     private int HIGH_CHAMBER_SCORE_PREP2 = -1200;//860;
-    private int HIGH_CHAMBER_SCORE = -1650;
+    private int HIGH_CHAMBER_SCORE = -1750;
     private int HIGH_BASKET_SCORE_PREP = -3765;
     private int HIGH_BASKET_SCORE = -3485;
     private int LOW_BASKET_SCORE_PREP = -3485;
@@ -140,8 +140,8 @@ public class Scoring_Slide_Action {
                 Viper_Slide2.setTargetPosition(WALL_PICKUP_PREP);
                 Viper_Slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                Viper_Slide1.setPower(-0.8);
-                Viper_Slide2.setPower(-0.8);
+                Viper_Slide1.setPower(-0.5);
+                Viper_Slide2.setPower(-0.5);
                 initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
                 //initialized = true;
             }
@@ -161,8 +161,8 @@ public class Scoring_Slide_Action {
                 Viper_Slide2.setTargetPosition(WALL_PICKUP);
                 Viper_Slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                Viper_Slide1.setPower(-0.8);
-                Viper_Slide2.setPower(-0.8);
+                Viper_Slide1.setPower(-0.5);
+                Viper_Slide2.setPower(-0.5);
                 initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
                 //initialized = true;
             }
@@ -183,8 +183,8 @@ public class Scoring_Slide_Action {
                 Viper_Slide2.setTargetPosition(GROUND_PICKUP);
                 Viper_Slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                Viper_Slide1.setPower(-0.8);
-                Viper_Slide2.setPower(-0.8);
+                Viper_Slide1.setPower(-0.3);
+                Viper_Slide2.setPower(-0.3);
 
                 initialized = (!(Viper_Slide1.getCurrentPosition() < Math.abs(GROUND_PICKUP-tolerance))
                         && !(Viper_Slide2.getCurrentPosition() < Math.abs(GROUND_PICKUP-tolerance)));
@@ -206,8 +206,8 @@ public class Scoring_Slide_Action {
                 Viper_Slide2.setTargetPosition(INIT);
                 Viper_Slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                Viper_Slide1.setPower(-0.8);
-                Viper_Slide2.setPower(-0.8);
+                Viper_Slide1.setPower(-0.3);
+                Viper_Slide2.setPower(-0.3);
                 initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
                 //initialized = true;
             }
@@ -250,8 +250,8 @@ public class Scoring_Slide_Action {
                 Viper_Slide2.setTargetPosition(WALL_PICKUP_DONE);
                 Viper_Slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                Viper_Slide1.setPower(-0.8);
-                Viper_Slide2.setPower(-0.8);
+                Viper_Slide1.setPower(-0.5);
+                Viper_Slide2.setPower(-0.5);
                 initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
                 //initialized = true;
             }
@@ -282,6 +282,27 @@ public class Scoring_Slide_Action {
         }
     }
 
+    public class ScoringSlidePark implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run (@NonNull TelemetryPacket packet){
+            if(!initialized){
+                Viper_Slide1.setTargetPosition(PARK);
+                Viper_Slide2.setTargetPosition(PARK);
+                Viper_Slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide1.setPower(-0.3);
+                Viper_Slide2.setPower(-0.3);
+                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+                //initialized = true;
+            }
+
+            return false;
+
+        }
+    }
+
     public Action scoringSlideScorePrep(){return new ScoringSlideScorePrep();}
     public Action scoringSlideScore(){return new ScoringSlideScore();}
     public Action scoringSlideWallPickupPrep(){return new ScoringSlideWallPickUpPrep();}
@@ -291,5 +312,6 @@ public class Scoring_Slide_Action {
     public Action scoringSlideHighBasketScore(){return new ScoringSlideHighBasketScore();}
     public Action scoringSlideWallPickUpDone(){return new ScoringSlideWallPickUpDone();}
     public Action scoringSlideScorePrep2(){return new ScoringSlideScorePrep2();}
+    public Action scoringSlidePark(){return new ScoringSlidePark();}
 }
 

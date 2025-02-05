@@ -320,11 +320,11 @@ public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
 
     public Action park(Action targetTrajectory, Scoring_Gripper_Action scoringGripper, Scoring_Arm_Action scoringArm, Scoring_Slide_Action scoringSlide) {
         return new SequentialAction(
-                scoringSlide.scoringSlideInit(),
+                scoringSlide.scoringSlidePark(),
                 new SleepAction(0.75),
                 new ParallelAction(
                         targetTrajectory,
-                        scoringSlide.scoringSlideInit(),
+                        scoringSlide.scoringSlidePark(),
                         scoringArm.scoringArmStow()
                 ),
                 new SleepAction(0.3)
