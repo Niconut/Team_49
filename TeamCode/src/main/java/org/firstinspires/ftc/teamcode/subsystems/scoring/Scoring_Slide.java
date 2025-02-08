@@ -18,8 +18,8 @@ public class Scoring_Slide extends SubsystemBase {
     private int WALL_PICKUP_PREP = -700;
     private int WALL_PICKUP_DONE = -1000;
     private int WALL_PICKUP = -700;
-    private int HIGH_CHAMBER_SCORE_PREP = -850; //860;
-    private int HIGH_CHAMBER_SCORE = -1250;
+    private int HIGH_CHAMBER_SCORE_PREP = -900; //860;
+    private int HIGH_CHAMBER_SCORE = -1200;
     private int HIGH_BASKET_SCORE_PREP = -2700;
     private int HIGH_BASKET_SCORE = -2700;
     private int LOW_BASKET_SCORE_PREP = -2500;
