@@ -10,13 +10,26 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Elbow_Action {
     private Servo IntakeElbow;
 
-    private  double INIT = 0.3;
+    /*private  double INIT = 0.3;
     private  double STOW = 0.285;
     private  double DROP = 0.725;
     private  double PICKUP_PREP = 0.75; //0.555;
     private  double PICKUP = 0.865;
     private double PICKUP_DONE = 0.7;
-    private double HAND_OFF = 0.5;
+    private double HAND_OFF = 0.5; */
+
+    private  double INIT = 0.75;
+    private  double STOW = 0.75;
+    private  double DROP = 0.275;
+    private  double PICKUP_PREP = 0.18; //0.555;
+    private  double PICKUP = 0.09;
+    private double PICKUP_DONE = 0.18;
+    private double MID = 0.5;
+    private double SAFE_MAX = 0.76;
+    private double SAFE_MIN = 0.08;
+    private double HAND_OFF = 0.5;//0.515;
+    private double HOVER = 0.13;
+
 
     public Intake_Elbow_Action(HardwareMap hardwareMap) {
         this.IntakeElbow = hardwareMap.get(Servo.class, "Elbow");

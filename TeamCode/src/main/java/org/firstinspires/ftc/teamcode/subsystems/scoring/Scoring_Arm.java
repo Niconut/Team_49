@@ -7,21 +7,23 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Scoring_Arm extends SubsystemBase {
 
     public double INIT = 0.75;
-    public double HOME = 0.8;
-    public double STOW = 0.8;
+    public double HOME = 0.09;
+    public double STOW = 0.09;
     public double GROUND_PICKUP = 0.085;
-    public double WALL_PICKUP_PREP = 0.115;
-    public double WALL_PICKUP = 0.115;
-    public double HIGH_CHAMBER_SCORE_PREP = 0.780;
-    public double HIGH_CHAMBER_SCORE = 0.755;
-    public double HIGH_BASKET_SCORE_PREP = 0.75;
-    public double HIGH_BASKET_SCORE = 0.75;
-    public double LOW_BASKET_SCORE_PREP = 0.75;
-    public double LOW_BASKET_SCORE = 0.75;
-    public double CLIMB_PREP = 0.1;
-    public double CLIMB_DONE = 0.1;
-    public double HANDOFF = 0.85;
+    public double WALL_PICKUP_PREP = 0.085;
+    public double WALL_PICKUP = 0.09;
+    public double HIGH_CHAMBER_SCORE_PREP = 0.81;
+    public double HIGH_CHAMBER_SCORE = 0.79;
+    public double HIGH_BASKET_SCORE_PREP = 0.85;
+    public double HIGH_BASKET_SCORE = 0.85;
+    public double LOW_BASKET_SCORE_PREP = 0.85;
+    public double LOW_BASKET_SCORE = 0.85;
+    public double CLIMB_PREP = 0.75;
+    public double CLIMB_DONE = 0.75;
+    public double HANDOFF = 0.75;
     public double MID = 0.5;
+    public double SAFE_MAX = 0.9;
+    public double SAFE_MIN = 0.08;
 
     public enum ScoringArmState {
         INIT,
@@ -54,6 +56,8 @@ public class Scoring_Arm extends SubsystemBase {
     }
 
     public void setPosition(double position) {
+        position = (position > SAFE_MAX) ? SAFE_MAX : position;
+        position = (position < SAFE_MIN) ? SAFE_MIN: position;
         arm1.setPosition(position);
         arm2.setPosition(position);
     }

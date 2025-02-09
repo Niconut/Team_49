@@ -124,40 +124,41 @@ public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
 
         TrajectoryActionBuilder trajectoryScoreSpecimen1 = trajectoryPushSamples.endTrajectory().fresh()
             .setReversed(false)
-            .strafeToSplineHeading(new Vector2d(28,-49), Math.toRadians(90))
+            .strafeToSplineHeading(new Vector2d(12,-42), Math.toRadians(90))
             .splineToConstantHeading(new Vector2d(4,-34), Math.toRadians(90));
-            //.splineToConstantHeading(new Vector2d(6,-35), Math.toRadians(180))
 
         TrajectoryActionBuilder trajectoryPickUpWallSpecimen2 = trajectoryScoreSpecimen1.endTrajectory().fresh()
             .setReversed(true)
-            .strafeToSplineHeading(new Vector2d(24,-44), Math.toRadians(90))
+            .splineToLinearHeading(new Pose2d(12, -42, Math.toRadians(90)), Math.toRadians(-30))
+            .splineToLinearHeading(new Pose2d(33, -52, Math.toRadians(90)), Math.toRadians(-45))
             .splineToConstantHeading(new Vector2d(37,-63), Math.toRadians(-90));
 
         TrajectoryActionBuilder trajectoryScoreSpecimen2 = trajectoryPickUpWallSpecimen2.endTrajectory().fresh()
             .setReversed(false)
-            .strafeToSplineHeading(new Vector2d(20,-49), Math.toRadians(90))
+            .strafeToSplineHeading(new Vector2d(12,-42), Math.toRadians(90))
             .splineToConstantHeading(new Vector2d(6,-34), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryPickUpSpecimen3 = trajectoryScoreSpecimen2.endTrajectory().fresh()
             .setReversed(true)
-            .strafeToSplineHeading(new Vector2d(24,-44), Math.toRadians(90))
+            .splineToLinearHeading(new Pose2d(12, -42, Math.toRadians(90)), Math.toRadians(-30))
+            .splineToLinearHeading(new Pose2d(33, -52, Math.toRadians(90)), Math.toRadians(-45))
             .splineToConstantHeading(new Vector2d(37,-63), Math.toRadians(-90));
 
         TrajectoryActionBuilder trajectoryScoreSpecimen3 = trajectoryPickUpSpecimen3.endTrajectory().fresh()
             .setReversed(false)
-            .strafeToSplineHeading(new Vector2d(20,-49), Math.toRadians(90))
+            .strafeToSplineHeading(new Vector2d(15,-42), Math.toRadians(90))
             .splineToConstantHeading(new Vector2d(11,-34), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryPickUpSpecimen4 = trajectoryScoreSpecimen3.endTrajectory().fresh()
             .setReversed(true)
-            .strafeToSplineHeading(new Vector2d(24,-44), Math.toRadians(90))
+            .splineToLinearHeading(new Pose2d(16, -42, Math.toRadians(90)), Math.toRadians(-30))
+            .splineToLinearHeading(new Pose2d(33, -52, Math.toRadians(90)), Math.toRadians(-45))
             .splineToConstantHeading(new Vector2d(37,-63), Math.toRadians(-90));
 
         TrajectoryActionBuilder trajectoryScoreSpecimen4 = trajectoryPickUpSpecimen3.endTrajectory().fresh()
             .setReversed(false)
-            .strafeToSplineHeading(new Vector2d(20,-49), Math.toRadians(90))
+            .strafeToSplineHeading(new Vector2d(9,-42), Math.toRadians(90))
             .splineToConstantHeading(new Vector2d(2,-34), Math.toRadians(90));
-            //.splineToConstantHeading(new Vector2d(6,-35), Math.toRadians(180));
 
         TrajectoryActionBuilder trajectoryPark = trajectoryScoreSpecimen4.endTrajectory().fresh()
             .strafeToLinearHeading(new Vector2d(-8,-35), Math.toRadians(90));
@@ -321,7 +322,7 @@ public final class Right_Observation_Auto_5_Piece extends LinearOpMode {
     public Action park(Action targetTrajectory, Scoring_Gripper_Action scoringGripper, Scoring_Arm_Action scoringArm, Scoring_Slide_Action scoringSlide) {
         return new SequentialAction(
                 scoringSlide.scoringSlideInit(),
-                new SleepAction(0.75),
+                new SleepAction(1),
                 new ParallelAction(
                         targetTrajectory,
                         scoringSlide.scoringSlideInit(),

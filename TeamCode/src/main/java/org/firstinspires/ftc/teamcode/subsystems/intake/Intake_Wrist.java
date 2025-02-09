@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems.intake;
 
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -12,11 +8,11 @@ public class Intake_Wrist extends SubsystemBase {
     private Servo Wrist;
 
     private double INIT = 0.5;
-    private double DROP = 0.5;
+    private double DROP = 0.1;
     private double PICKUP_PREP = 0.5;
-    private double STOW = 0.5;
-    private double SAFE_MAX = 0.75;
-    private double SAFE_MIN = 0.25;
+    private double STOW = 0.1;
+    private double SAFE_MAX = 0.9;
+    private double SAFE_MIN = 0.1;
     private double MID = 0.5;
 
     public enum IntakeWristState {

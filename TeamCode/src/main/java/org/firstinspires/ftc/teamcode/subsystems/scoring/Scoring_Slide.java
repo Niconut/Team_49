@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.subsystems.scoring;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Scoring_Slide extends SubsystemBase {
@@ -12,22 +11,22 @@ public class Scoring_Slide extends SubsystemBase {
 
     private int INIT = 0;
     private int HAND_OFF = 0;
-    private int HOME = -20;
-    private int STOW = -20;
-    private int GROUND_PICKUP = -20;
-    private int WALL_PICKUP_PREP = -700;
-    private int WALL_PICKUP_DONE = -1000;
-    private int WALL_PICKUP = -700;
-    private int HIGH_CHAMBER_SCORE_PREP = -900; //860;
-    private int HIGH_CHAMBER_SCORE = -1200;
-    private int HIGH_BASKET_SCORE_PREP = -2700;
-    private int HIGH_BASKET_SCORE = -2700;
-    private int LOW_BASKET_SCORE_PREP = -2500;
-    private int LOW_BASKET_SCORE = -2500;
-    private int CLIMB_PREP = -2200;
-    private int CLIMB_DONE = -1200;
-    private int SAFE_MIN = -2500;
-    private int SAFE_MAX = -20;
+    private int HOME = -30;
+    private int STOW = -30;
+    private int GROUND_PICKUP = -30;
+    private int WALL_PICKUP_PREP = -1000;
+    private int WALL_PICKUP_DONE = -1200;
+    private int WALL_PICKUP = -1000;
+    private int HIGH_CHAMBER_SCORE_PREP = -1150; //860;
+    private int HIGH_CHAMBER_SCORE = -1550;
+    private int HIGH_BASKET_SCORE_PREP = -3765;
+    private int HIGH_BASKET_SCORE = -3485;
+    private int LOW_BASKET_SCORE_PREP = -3485;
+    private int LOW_BASKET_SCORE = -3485;
+    private int CLIMB_PREP = -3075;
+    private int CLIMB_DONE = -1675;
+    private int SAFE_MIN = -3485;
+    private int SAFE_MAX = -30;
 
 
     public enum ScoringSlideState {

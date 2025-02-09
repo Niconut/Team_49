@@ -10,10 +10,17 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Scoring_Gripper_Action {
     private Servo Scoring_Gripper;
 
-    public double CLOSED = 0.3;
+    /*public double CLOSED = 0.3;
     public double OPEN = 0.55;
     public double INIT = 0.55;
-    public double AUTO_SCORE = 0.310;
+    public double AUTO_SCORE = 0.310;*/
+
+    public double CLOSED = 0.715;
+    public double OPEN = 0.45;
+    public double INIT = 0.5;
+    private double MID = 0.5;
+    public double AUTO_SCORE = 0.715;
+
 
     public Scoring_Gripper_Action(final HardwareMap hardwareMap) {
         this.Scoring_Gripper = hardwareMap.get(Servo.class, "Gripper");

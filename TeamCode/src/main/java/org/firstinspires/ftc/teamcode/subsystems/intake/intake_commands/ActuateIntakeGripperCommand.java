@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.subsystems.intake.intake_commands;
 import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Gripper;
-import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper;
 
 public class ActuateIntakeGripperCommand extends CommandBase {
         private final Intake_Gripper intakeGripperSubsystem;
