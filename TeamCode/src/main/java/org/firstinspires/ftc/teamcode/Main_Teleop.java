@@ -410,7 +410,7 @@ public class Main_Teleop extends LinearOpMode
                     new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.CLOSE),
                     new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW),
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
-                    new WaitCommand(250),
+                    new WaitCommand(125),
                     new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.STOW),
                     new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW)
                     //new WaitCommand(100),

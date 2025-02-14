@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Scoring_Arm_Action {
 
-    public double INIT = 0.8;
+    public double INIT = 0.81;
     public double HOME = 0.8;
     public double STOW = 0.8;
     public double GROUND_PICKUP = 0.085;

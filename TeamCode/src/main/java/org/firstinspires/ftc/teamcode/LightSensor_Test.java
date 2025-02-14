@@ -56,6 +56,7 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.util.Timing;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -84,7 +85,7 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.MoveSc
 
 import java.util.TimerTask;
 
-//@Disabled
+@Disabled
 @TeleOp(name="LightSensor_Test", group="AA_DriveCode")
 public class LightSensor_Test extends LinearOpMode
 {

@@ -54,6 +54,7 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -77,7 +78,7 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.ActuateScoringGripperCommand;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.MoveScoringArmCommand;
 
-//@Disabled
+@Disabled
 @TeleOp(name="Intake_Subsystem_Test", group="AA_DriveCode")
 public class Intake_Subsytem_Test extends LinearOpMode
 {
