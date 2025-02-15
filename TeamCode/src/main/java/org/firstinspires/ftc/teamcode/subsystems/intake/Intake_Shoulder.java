@@ -10,7 +10,7 @@ public class Intake_Shoulder extends SubsystemBase {
     private static double INIT = 0.840;
     private static double STOW = 0.85;
     private static double PICKUP_PREP = 0.5;
-    private static double DROP = 0.975;
+    private static double DROP = 0.925;
     private double SAFE_MIN = 0.365;//0.02;
     private double SAFE_MAX = 0.98;//0.8;//0.5411
     private double MID = 0.5;

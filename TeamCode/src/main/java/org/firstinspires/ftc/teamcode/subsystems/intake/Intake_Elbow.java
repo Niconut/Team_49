@@ -8,8 +8,8 @@ public class Intake_Elbow extends SubsystemBase {
     private Servo IntakeElbow;
 
     private  double INIT = 0.3;
-    private  double STOW = 0.285;
-    private  double DROP = 0.725;
+    private  double STOW = 0.27;
+    private  double DROP = 0.800;
     private  double PICKUP_PREP = 0.75; //0.555;
     private  double PICKUP = 0.865;
     private double PICKUP_DONE = 0.7;
@@ -18,6 +18,8 @@ public class Intake_Elbow extends SubsystemBase {
     private double SAFE_MIN = 0.275;
     private double HAND_OFF = 0.5;//0.515;
     private double HOVER = 0.825;
+
+
 
     public enum IntakeElbowState {
         INIT,

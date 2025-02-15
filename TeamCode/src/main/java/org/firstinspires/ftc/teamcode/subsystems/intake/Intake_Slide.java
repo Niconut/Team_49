@@ -10,9 +10,9 @@ public class Intake_Slide extends SubsystemBase {
 
     private static double INIT = 0.425;
     private static double STOW = 0.425;
-    private static double DROP = 0.25;
+    private static double DROP = 0.330;
     private static double PICKUP_PREP = 0.5;
-    private double SAFE_MIN = 0.25;
+    private double SAFE_MIN = 0.3;
     private double HAND_OFF_PREP = 0.5;
     private double HAND_OFF = 0.5;
     private double SYSCHECK = 0.5;
