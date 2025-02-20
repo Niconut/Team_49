@@ -1,0 +1,455 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Elbow_Action;
+import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Gripper_Action;
+import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Shoulder_Action;
+import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Slide_Action;
+import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Wrist_Action;
+import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_actions.Scoring_Arm_Action;
+import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_actions.Scoring_Gripper_Action;
+import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_actions.Scoring_Slide_Action;
+import org.firstinspires.ftc.teamcode.teamcode.MecanumDrive;
+
+@Autonomous
+public final class Right_Observation_Auto_6_Piece extends LinearOpMode {
+
+
+
+    Action  TrajectoryScorePreload,
+            TrajectoryDrop,
+            TrajectoryPushSamples,
+            TrajectoryPickUpSamples1,
+            TrajectoryPickUpSamples1_1,
+            TrajectoryPickUpSamples1_2,
+            TrajectoryPickUpSamples2,
+            TrajectoryPickUpSamples3,
+            TrajectoryDropSamples1,
+            TrajectoryDropSamples2,
+            TrajectoryDropSamples3,
+            TrajectoryPickUpWallSpecimen1,
+            TrajectoryPickUpWallSpecimen2,
+            TrajectoryPickUpWallSpecimen3,
+            TrajectoryPickUpWallSpecimen4,
+            TrajectoryPickUpWallSpecimen5,
+            TrajectoryScoreSpecimen1,
+            TrajectoryScoreSpecimen2,
+            TrajectoryScoreSpecimen3,
+            TrajectoryScoreSpecimen4,
+            TrajectoryScoreSpecimen5,
+            TrajectoryPark;
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        Pose2d beginPose = new Pose2d(8.5, -63, Math.toRadians(90));
+
+        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+
+        Intake_Gripper_Action intakeGripper = new Intake_Gripper_Action(hardwareMap);
+        Intake_Wrist_Action intakeWrist = new Intake_Wrist_Action(hardwareMap);
+        Intake_Elbow_Action intakeElbow = new Intake_Elbow_Action(hardwareMap);
+        Intake_Shoulder_Action intakeShoulder = new Intake_Shoulder_Action(hardwareMap);
+        Intake_Slide_Action intakeSlide = new Intake_Slide_Action(hardwareMap);
+
+        Scoring_Gripper_Action scoringGripper = new Scoring_Gripper_Action(hardwareMap);
+        Scoring_Arm_Action scoringArm = new Scoring_Arm_Action(hardwareMap);
+        Scoring_Slide_Action scoringSlide = new Scoring_Slide_Action(hardwareMap);
+
+        buildTrajectories(drive, beginPose);
+
+        // initialize subsystems
+        Actions.runBlocking(
+            new SequentialAction(
+                scoringGripper.scoringGripperClose(),
+                scoringArm.scoringArmInit(),
+                new SleepAction(1),
+
+                intakeGripper.intakeGripperInit(),
+                intakeWrist.intakeWristInit(),
+                intakeElbow.intakeElbowInit(),
+                intakeShoulder.intakeShoulderInit(),
+                intakeSlide.intakeSlideInit()
+                )
+        );
+
+        waitForStart();
+            Actions.runBlocking(
+                new SequentialAction(
+                    scorePreload(scoringGripper, scoringArm, scoringSlide, intakeGripper, intakeWrist, intakeElbow, intakeShoulder, intakeSlide),
+                    dropPickUp(scoringGripper, scoringArm, scoringSlide, intakeGripper, intakeWrist, intakeElbow, intakeShoulder, intakeSlide),
+                    scoreSpecimen(TrajectoryScoreSpecimen1, scoringGripper, scoringArm, scoringSlide),
+                    //wallPickup(TrajectoryPickUpWallSpecimen2, scoringGripper, scoringArm, scoringSlide),
+                    wallPickup(TrajectoryPushSamples, scoringGripper, scoringArm, scoringSlide),
+                    scoreSpecimen(TrajectoryScoreSpecimen2, scoringGripper, scoringArm, scoringSlide),
+                    wallPickup(TrajectoryPickUpWallSpecimen3, scoringGripper, scoringArm, scoringSlide),
+                    scoreSpecimen(TrajectoryScoreSpecimen3, scoringGripper, scoringArm, scoringSlide),
+                    wallPickup(TrajectoryPickUpWallSpecimen4, scoringGripper, scoringArm, scoringSlide),
+                    scoreSpecimen(TrajectoryScoreSpecimen4, scoringGripper, scoringArm, scoringSlide),
+                    wallPickup(TrajectoryPickUpWallSpecimen5, scoringGripper, scoringArm, scoringSlide),
+                    scoreSpecimen(TrajectoryScoreSpecimen5, scoringGripper, scoringArm, scoringSlide),
+                    park(TrajectoryPark, scoringGripper, scoringArm, scoringSlide)
+                    )
+                );
+
+    }
+
+    public void buildTrajectories(MecanumDrive drive, Pose2d beginPose) {
+        TrajectoryActionBuilder trajectoryHighSpecimenPreload = drive.actionBuilder(beginPose)
+            .setReversed(false)
+            .lineToY(-33.5);
+
+        TrajectoryActionBuilder trajectoryDrop = trajectoryHighSpecimenPreload.endTrajectory().fresh()
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(12, -42, Math.toRadians(90)), Math.toRadians(-30))
+                .splineToLinearHeading(new Pose2d(33, -52, Math.toRadians(90)), Math.toRadians(-45))
+                .splineToConstantHeading(new Vector2d(37,-63), Math.toRadians(-90));
+
+
+
+        /*TrajectoryActionBuilder trajectoryScoreSpecimen1 = trajectoryPushSamples.endTrajectory().fresh()
+            .setReversed(false)
+            .strafeToSplineHeading(new Vector2d(28,-49), Math.toRadians(90))
+            .splineToConstantHeading(new Vector2d(4,-34), Math.toRadians(90));
+            //.splineToConstantHeading(new Vector2d(6,-35), Math.toRadians(180))
+
+        TrajectoryActionBuilder trajectoryPickUpWallSpecimen2 = trajectoryScoreSpecimen1.endTrajectory().fresh()
+            .setReversed(true)
+            .strafeToSplineHeading(new Vector2d(24,-44), Math.toRadians(90))
+            .splineToConstantHeading(new Vector2d(37,-63), Math.toRadians(-90));
+
+        TrajectoryActionBuilder trajectoryScoreSpecimen2 = trajectoryPickUpWallSpecimen2.endTrajectory().fresh()
+            .setReversed(false)
+            .strafeToSplineHeading(new Vector2d(20,-49), Math.toRadians(90))
+            .splineToConstantHeading(new Vector2d(6,-34), Math.toRadians(90));
+
+        TrajectoryActionBuilder trajectoryPickUpSpecimen3 = trajectoryScoreSpecimen2.endTrajectory().fresh()
+            .setReversed(true)
+            .strafeToSplineHeading(new Vector2d(24,-44), Math.toRadians(90))
+            .splineToConstantHeading(new Vector2d(37,-63), Math.toRadians(-90));
+
+        TrajectoryActionBuilder trajectoryScoreSpecimen3 = trajectoryPickUpSpecimen3.endTrajectory().fresh()
+            .setReversed(false)
+            .strafeToSplineHeading(new Vector2d(20,-49), Math.toRadians(90))
+            .splineToConstantHeading(new Vector2d(11,-34), Math.toRadians(90));
+
+        TrajectoryActionBuilder trajectoryPickUpSpecimen4 = trajectoryScoreSpecimen3.endTrajectory().fresh()
+            .setReversed(true)
+            .strafeToSplineHeading(new Vector2d(24,-44), Math.toRadians(90))
+            .splineToConstantHeading(new Vector2d(37,-63), Math.toRadians(-90));
+
+        TrajectoryActionBuilder trajectoryScoreSpecimen4 = trajectoryPickUpSpecimen3.endTrajectory().fresh()
+            .setReversed(false)
+            .strafeToSplineHeading(new Vector2d(20,-49), Math.toRadians(90))
+            .splineToConstantHeading(new Vector2d(2,-34), Math.toRadians(90));
+            //.splineToConstantHeading(new Vector2d(6,-35), Math.toRadians(180));
+
+        TrajectoryActionBuilder trajectoryPark = trajectoryScoreSpecimen4.endTrajectory().fresh()
+            .strafeToLinearHeading(new Vector2d(-8,-35), Math.toRadians(90));*/
+
+        TrajectoryActionBuilder trajectoryScoreSpecimen1 = trajectoryDrop.endTrajectory().fresh()
+                .setReversed(false)
+                //.strafeToSplineHeading(new Vector2d(12,-44), Math.toRadians(90))
+                //.splineToConstantHeading(new Vector2d(8,-36), Math.toRadians(90));
+                .strafeToSplineHeading(new Vector2d(2,-36), Math.toRadians(90));
+
+        TrajectoryActionBuilder trajectoryPushSamples = trajectoryScoreSpecimen1.endTrajectory().fresh()
+                .setReversed(true)
+                .setTangent(0)
+                .splineToConstantHeading(new Vector2d(34,-30), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(38,-15), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(46,-40, Math.toRadians(90)), Math.toRadians(-90))
+                .splineToLinearHeading(new Pose2d(44,-50, Math.toRadians(90)), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(40,-30), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(46,-11, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(52,-40, Math.toRadians(90)), Math.toRadians(-90))
+                .splineToLinearHeading(new Pose2d(50,-51, Math.toRadians(90)), Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(44,-30), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(52,-11, Math.toRadians(90)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(62,-36, Math.toRadians(90)), Math.toRadians(-90))
+                .splineToLinearHeading(new Pose2d(58,-60, Math.toRadians(90)), Math.toRadians(-90))
+                //.waitSeconds(0.01)
+                .lineToY(-63);
+
+/*        TrajectoryActionBuilder trajectoryPickUpWallSpecimen2 = trajectoryPushSamples.endTrajectory().fresh()
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(12, -42, Math.toRadians(90)), Math.toRadians(-30))
+                .splineToLinearHeading(new Pose2d(33, -52, Math.toRadians(90)), Math.toRadians(-45))
+                .splineToConstantHeading(new Vector2d(37,-63), Math.toRadians(-90));*/
+
+        TrajectoryActionBuilder trajectoryScoreSpecimen2 = trajectoryPushSamples.endTrajectory().fresh()
+                .setReversed(false)
+                .strafeToSplineHeading(new Vector2d(12,-48), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(10,-36), Math.toRadians(90));
+                //.strafeToSplineHeading(new Vector2d(2,-36), Math.toRadians(90));
+
+        TrajectoryActionBuilder trajectoryPickUpSpecimen3 = trajectoryScoreSpecimen2.endTrajectory().fresh()
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(12, -42, Math.toRadians(90)), Math.toRadians(-30))
+                .splineToLinearHeading(new Pose2d(33, -52, Math.toRadians(90)), Math.toRadians(-45))
+                .splineToConstantHeading(new Vector2d(37,-63), Math.toRadians(-90));
+
+        TrajectoryActionBuilder trajectoryScoreSpecimen3 = trajectoryPickUpSpecimen3.endTrajectory().fresh()
+                .setReversed(false)
+                //.strafeToSplineHeading(new Vector2d(12,-44), Math.toRadians(90))
+                //.splineToConstantHeading(new Vector2d(8,-36), Math.toRadians(90));
+                .strafeToSplineHeading(new Vector2d(2,-36), Math.toRadians(90));
+
+        TrajectoryActionBuilder trajectoryPickUpSpecimen4 = trajectoryScoreSpecimen3.endTrajectory().fresh()
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(16, -42, Math.toRadians(90)), Math.toRadians(-30))
+                .splineToLinearHeading(new Pose2d(33, -52, Math.toRadians(90)), Math.toRadians(-45))
+                .splineToConstantHeading(new Vector2d(37,-63), Math.toRadians(-90));
+
+        TrajectoryActionBuilder trajectoryScoreSpecimen4 = trajectoryPickUpSpecimen3.endTrajectory().fresh()
+                .setReversed(false)
+                //.strafeToSplineHeading(new Vector2d(12,-44), Math.toRadians(90))
+                //.splineToConstantHeading(new Vector2d(8,-36), Math.toRadians(90));
+                .strafeToSplineHeading(new Vector2d(2,-36), Math.toRadians(90));
+
+        TrajectoryActionBuilder trajectoryPickUpSpecimen5 = trajectoryScoreSpecimen4.endTrajectory().fresh()
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(16, -42, Math.toRadians(90)), Math.toRadians(-30))
+                .splineToLinearHeading(new Pose2d(33, -52, Math.toRadians(90)), Math.toRadians(-45))
+                .splineToConstantHeading(new Vector2d(37,-63), Math.toRadians(-90));
+
+        TrajectoryActionBuilder trajectoryScoreSpecimen5 = trajectoryPickUpSpecimen5.endTrajectory().fresh()
+                .setReversed(false)
+                //.strafeToSplineHeading(new Vector2d(18.5,-42), Math.toRadians(90))
+                //.splineToConstantHeading(new Vector2d(6,-36), Math.toRadians(90));
+                .strafeToSplineHeading(new Vector2d(2,-36), Math.toRadians(90));
+
+        TrajectoryActionBuilder trajectoryPark = trajectoryScoreSpecimen5.endTrajectory().fresh()
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(16, -42, Math.toRadians(90)), Math.toRadians(-30))
+                .splineToLinearHeading(new Pose2d(33, -52, Math.toRadians(90)), Math.toRadians(-45))
+                .splineToConstantHeading(new Vector2d(37,-63), Math.toRadians(-90));
+
+        TrajectoryScorePreload = trajectoryHighSpecimenPreload.build();
+        TrajectoryDrop = trajectoryDrop.build();
+        TrajectoryPushSamples = trajectoryPushSamples.build();
+        //TrajectoryPickUpWallSpecimen2 = trajectoryPickUpWallSpecimen2.build();
+        TrajectoryPickUpWallSpecimen3 = trajectoryPickUpSpecimen3.build();
+        TrajectoryPickUpWallSpecimen4 = trajectoryPickUpSpecimen4.build();
+        TrajectoryPickUpWallSpecimen5 = trajectoryPickUpSpecimen5.build();
+        TrajectoryScoreSpecimen1 = trajectoryScoreSpecimen1.build();
+        TrajectoryScoreSpecimen2 = trajectoryScoreSpecimen2.build();
+        TrajectoryScoreSpecimen3 = trajectoryScoreSpecimen3.build();
+        TrajectoryScoreSpecimen4 = trajectoryScoreSpecimen4.build();
+        TrajectoryScoreSpecimen5 = trajectoryScoreSpecimen5.build();
+        TrajectoryPark = trajectoryPark.build();
+    }
+
+    public Action scorePreload(Scoring_Gripper_Action scoringGripper, Scoring_Arm_Action scoringArm, Scoring_Slide_Action scoringSlide, Intake_Gripper_Action intakeGripper,
+                               Intake_Wrist_Action intakeWrist,
+                               Intake_Elbow_Action intakeElbow,
+                               Intake_Shoulder_Action intakeShoulder,
+                               Intake_Slide_Action intakeSlide){
+        return new SequentialAction(
+            intakeWrist.intakeWristInit(),
+            intakeGripper.intakeGripperOpen(),
+            scoringGripper.scoringGripperClose(),
+            //scoringArm.scoringArmDirectScore(),
+            //scoringSlide.scoringSlideDirectScore(),
+            scoringArm.scoringArmHighChamberScorePrep(),
+            scoringSlide.scoringSlideScorePrep(),
+            intakeElbow.intakeElbowPickUpPrep(),
+            intakeSlide.intakeSlidePickUpPrep(),
+            intakeShoulder.intakeShoulderPickUpPrep(),
+            new SleepAction(0.3),
+            TrajectoryScorePreload,
+            new ParallelAction(
+                    scoringSlide.scoringSlideScore(),
+                    scoringArm.scoringArmHighChamberScore()
+            ),
+            intakeElbow.intakeElbowPickUp(),
+            new SleepAction(0.3),
+            intakeGripper.intakeGripperClose(),
+            new SleepAction(0.3),
+            intakeElbow.intakeElbowStow(),
+            scoringGripper.scoringGripperOpen(),
+            scoringSlide.scoringSlideWallPickupPrep(),
+            scoringArm.scoringArmWallPickUpPrep()
+        );
+    }
+
+    public Action dropPickUp(Scoring_Gripper_Action scoringGripper, Scoring_Arm_Action scoringArm, Scoring_Slide_Action scoringSlide, Intake_Gripper_Action intakeGripper,
+                               Intake_Wrist_Action intakeWrist,
+                               Intake_Elbow_Action intakeElbow,
+                               Intake_Shoulder_Action intakeShoulder,
+                               Intake_Slide_Action intakeSlide){
+        return new SequentialAction(
+                intakeElbow.intakeElbowStow(),
+                intakeShoulder.intakeShoulderStow(),
+                intakeSlide.intakeSlideStow(),
+                scoringArm.scoringArmWallPickUpPrep(),
+                scoringSlide.scoringSlideWallPickupPrep(),
+                TrajectoryDrop,
+                new ParallelAction(
+                        intakeElbow.intakeElbowDrop(),
+                        intakeShoulder.intakeShoulderDrop(),
+                        new SleepAction(0.1),
+                        intakeGripper.intakeGripperOpen(),
+                        scoringSlide.scoringSlideScore(),
+                        scoringArm.scoringArmHighChamberScore(),
+                        scoringGripper.scoringGripperAutoScore()
+                ),
+                new SleepAction(0.1),
+                new ParallelAction(
+                scoringSlide.scoringSlideWallPickUpDone(),
+                scoringArm.scoringArmDirectScore(),
+                intakeElbow.intakeElbowStow(),
+                intakeShoulder.intakeShoulderStow(),
+                intakeGripper.intakeGripperClose()
+                )
+        );
+    }
+
+
+
+    public Action pickupSample1(Intake_Gripper_Action intakeGripper,
+                                Intake_Wrist_Action intakeWrist,
+                                Intake_Elbow_Action intakeElbow,
+                                Intake_Shoulder_Action intakeShoulder,
+                                Intake_Slide_Action intakeSlide){
+        return new SequentialAction(
+            new ParallelAction(
+                TrajectoryPickUpSamples1_1,
+                intakeSlide.intakeSlidePickUpPrep(),
+                intakeShoulder.intakeShoulderParallel(),
+                intakeElbow.intakeElbowPickUpDone(),
+                intakeGripper.intakeGripperOpen(),
+                intakeWrist.intakeWristInit()
+            ),
+            new ParallelAction(
+                TrajectoryPickUpSamples1_2,
+                //new SleepAction(0.5),
+                intakeElbow.intakeElbowPickUpPrep(),
+                intakeShoulder.intakeShoulderPickUpPrep()
+            ),
+
+            new SleepAction(0.5),
+            intakeElbow.intakeElbowPickUp(),
+            new SleepAction(0.2),
+            intakeGripper.intakeGripperClose(),
+            new SleepAction(0.1),
+            intakeElbow.intakeElbowPickUpDone()
+        );
+    }
+
+    public Action pickupSample1Spline(Intake_Gripper_Action intakeGripper,
+                                Intake_Wrist_Action intakeWrist,
+                                Intake_Elbow_Action intakeElbow,
+                                Intake_Shoulder_Action intakeShoulder,
+                                Intake_Slide_Action intakeSlide){
+        return new SequentialAction(
+                new ParallelAction(
+                        TrajectoryPickUpSamples1,
+                        intakeSlide.intakeSlideStow(),
+                        intakeShoulder.intakeShoulderPickUpPrep(),
+                        intakeElbow.intakeElbowPickUpPrep(),
+                        intakeGripper.intakeGripperOpen(),
+                        intakeWrist.intakeWristInit()
+                ),
+                new SleepAction(0.35),
+                intakeElbow.intakeElbowPickUp(),
+                new SleepAction(0.2),
+                intakeGripper.intakeGripperClose(),
+                new SleepAction(0.1),
+                intakeElbow.intakeElbowPickUpDone()
+        );
+    }
+
+    public Action pickupSample1Push(Intake_Gripper_Action intakeGripper,
+                                      Intake_Wrist_Action intakeWrist,
+                                      Intake_Elbow_Action intakeElbow,
+                                      Intake_Shoulder_Action intakeShoulder,
+                                      Intake_Slide_Action intakeSlide){
+        return new SequentialAction(
+                        TrajectoryPickUpSamples1
+        );
+    }
+
+    public Action pickupSample2(Intake_Gripper_Action intakeGripper,
+                              Intake_Wrist_Action intakeWrist,
+                              Intake_Elbow_Action intakeElbow,
+                              Intake_Shoulder_Action intakeShoulder,
+                              Intake_Slide_Action intakeSlide) {
+        return new SequentialAction(
+                        TrajectoryPickUpSamples2
+        );
+    }
+
+    public Action pickupSample3(Intake_Gripper_Action intakeGripper,
+                                Intake_Wrist_Action intakeWrist,
+                                Intake_Elbow_Action intakeElbow,
+                                Intake_Shoulder_Action intakeShoulder,
+                                Intake_Slide_Action intakeSlide) {
+        return new SequentialAction(
+                //new SleepAction(.5),
+                TrajectoryPickUpSamples3
+        );
+    }
+
+    public Action dropSample(Action targetTrajectory,
+                             Intake_Gripper_Action intakeGripper,
+                              Intake_Wrist_Action intakeWrist,
+                              Intake_Elbow_Action intakeElbow,
+                              Intake_Shoulder_Action intakeShoulder,
+                              Intake_Slide_Action intakeSlide) {
+        return new SequentialAction(
+                        targetTrajectory
+        );
+    }
+
+    public Action wallPickup(Action targetTrajectory, Scoring_Gripper_Action scoringGripper, Scoring_Arm_Action scoringArm, Scoring_Slide_Action scoringSlide) {
+        return new SequentialAction(
+                new ParallelAction(
+                        targetTrajectory,
+                        scoringSlide.scoringSlideWallPickupPrep(),
+                        scoringArm.scoringArmWallPickUpPrep()
+                ),
+                scoringArm.scoringArmWallPickUp(),
+                scoringSlide.scoringSlideWallPickUp(),
+                //new SleepAction(0.1),
+                scoringGripper.scoringGripperAutoScore(),
+                new SleepAction(0.1),
+                scoringSlide.scoringSlideWallPickUpDone()
+        );
+    }
+
+    public Action scoreSpecimen(Action targetTrajectory, Scoring_Gripper_Action scoringGripper, Scoring_Arm_Action scoringArm, Scoring_Slide_Action scoringSlide) {
+        return new SequentialAction(
+                new ParallelAction(
+                    targetTrajectory,
+                    scoringArm.scoringArmDirectScore(),
+                    scoringSlide.scoringSlideDirectScore()
+                ),
+               new SleepAction(0.1),
+                scoringGripper.scoringGripperOpen()
+        );
+    }
+
+    public Action park(Action targetTrajectory, Scoring_Gripper_Action scoringGripper, Scoring_Arm_Action scoringArm, Scoring_Slide_Action scoringSlide) {
+        return new SequentialAction(
+                scoringSlide.scoringSlideInit(),
+                new SleepAction(0.75),
+                new ParallelAction(
+                        targetTrajectory,
+                        scoringSlide.scoringSlideInit(),
+                        scoringArm.scoringArmStow()
+                ),
+                new SleepAction(0.3)
+        );
+    }
+
+}

@@ -10,20 +10,23 @@ public class Scoring_Arm extends SubsystemBase {
     public double HOME = 0.09;
     public double STOW = 0.09;
     public double GROUND_PICKUP = 0.085;
-    public double WALL_PICKUP_PREP = 0.085;
-    public double WALL_PICKUP = 0.09;
+    public double WALL_PICKUP_PREP = 0; //0.085;
+    public double WALL_PICKUP = 0; //0.09;
     public double HIGH_CHAMBER_SCORE_PREP = 0.81;
     public double HIGH_CHAMBER_SCORE = 0.79;
-    public double HIGH_BASKET_SCORE_PREP = 0.85;
-    public double HIGH_BASKET_SCORE = 0.85;
+    public double HIGH_BASKET_SCORE_PREP = 0.785;
+    public double HIGH_BASKET_SCORE = 0.785;
     public double LOW_BASKET_SCORE_PREP = 0.85;
     public double LOW_BASKET_SCORE = 0.85;
     public double CLIMB_PREP = 0.75;
     public double CLIMB_DONE = 0.75;
-    public double HANDOFF = 0.75;
+    public double HANDOFF = 1;
+    public double HANDOFF_PREP = 0.990;
     public double MID = 0.5;
-    public double SAFE_MAX = 0.9;
-    public double SAFE_MIN = 0.08;
+    public double SAFE_MAX = 1;
+    public double SAFE_MIN = 0;
+    public double DIRECT_SCORE = 0.888;
+
 
     public enum ScoringArmState {
         INIT,
@@ -41,7 +44,9 @@ public class Scoring_Arm extends SubsystemBase {
         CLIMB_PREP,
         CLIMB_DONE,
         HANDOFF,
-        MID
+        HANDOFF_PREP,
+        MID,
+        DIRECT_SCORE;
     }
 
     private Servo arm1;
@@ -88,6 +93,8 @@ public class Scoring_Arm extends SubsystemBase {
             case CLIMB_DONE -> CLIMB_DONE;
             case HANDOFF -> HANDOFF;
             case MID -> MID;
+            case HANDOFF_PREP -> HANDOFF_PREP;
+            case DIRECT_SCORE -> DIRECT_SCORE;
         };
         arm1.setPosition(pos);
         arm2.setPosition(pos);

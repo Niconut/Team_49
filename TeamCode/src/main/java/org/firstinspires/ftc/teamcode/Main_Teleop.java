@@ -34,7 +34,10 @@ import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.ScoringGripperState.OPEN;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.CLIMB_DONE;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.CLIMB_PREP;
+import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.HAND_OFF;
+import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.HAND_OFF_PREP;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.HIGH_BASKET_SCORE;
+import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.HIGH_BASKET_SCORE_PREP;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.HIGH_CHAMBER_SCORE_PREP;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.WALL_PICKUP;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.WALL_PICKUP_DONE;
@@ -195,6 +198,7 @@ public class Main_Teleop extends LinearOpMode
         //Button wallPickupButton = new GamepadButton(driver, GamepadKeys.Button.B);
         Button highChamberScoreButton = new GamepadButton(driver, GamepadKeys.Button.Y);
         Button highChamberScorePrepButton = new GamepadButton(driver, GamepadKeys.Button.X);
+        Button highChamberDirectScore = new GamepadButton(driver, GamepadKeys.Button.B);
 
         //Button openScoringGripperButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER);
         //Button driveSpeedButton = new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER);
@@ -204,7 +208,7 @@ public class Main_Teleop extends LinearOpMode
         Button openScoringGripperButton = new GamepadButton(driver, GamepadKeys.Button.RIGHT_STICK_BUTTON);
 
         Button groundPickUpButton = new GamepadButton(driver, GamepadKeys.Button.DPAD_DOWN);
-        Button highBasketScoreButton = new GamepadButton(driver, GamepadKeys.Button.DPAD_UP);
+        //Button highBasketScoreButton = new GamepadButton(driver, GamepadKeys.Button.DPAD_UP);
         Button highClimbPrep = new GamepadButton(driver, GamepadKeys.Button.DPAD_LEFT);
         Button highClimbDone = new GamepadButton(driver, GamepadKeys.Button.DPAD_RIGHT);
         Button handOffDriver = new GamepadButton(driver, GamepadKeys.Button.BACK);
@@ -235,8 +239,10 @@ public class Main_Teleop extends LinearOpMode
         Button openIntakeGripperButton = new GamepadButton(operator, GamepadKeys.Button.RIGHT_STICK_BUTTON);
         //Button dropSampleButton = new GamepadButton(operator, GamepadKeys.Button.LEFT_BUMPER);
         Button dropSampleButton = new GamepadButton(operator, GamepadKeys.Button.DPAD_LEFT);
-        Button handOffOperator = new GamepadButton(operator, GamepadKeys.Button.BACK);
+        Button handOffOperator = new GamepadButton(operator, GamepadKeys.Button.LEFT_BUMPER);
         Button syscheckButton = new GamepadButton(operator, GamepadKeys.Button.START);
+        Button highBasketScoreButton = new GamepadButton(operator, GamepadKeys.Button.DPAD_UP);
+        Button resetScoringButton = new GamepadButton(operator, GamepadKeys.Button.DPAD_DOWN);
         waitForStart();
 
         // start teleop with safe subsystem states
@@ -282,8 +288,10 @@ public class Main_Teleop extends LinearOpMode
                 .whenHeld(
                     new SequentialCommandGroup(
                         new ActuateScoringGripperCommand(scoringGripper,OPEN),
-                        new MoveScoringArmCommand(scoringArm, ScoringArmState.WALL_PICKUP),
-                        new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(WALL_PICKUP);})
+                        new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(WALL_PICKUP);}),
+                        new WaitCommand(100),
+                        new MoveScoringArmCommand(scoringArm, ScoringArmState.WALL_PICKUP)
+
                     )
                 )
                 .whenReleased(
@@ -307,6 +315,13 @@ public class Main_Teleop extends LinearOpMode
                     new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(Scoring_Slide.ScoringSlideState.HIGH_CHAMBER_SCORE);}),
                     new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_CHAMBER_SCORE)
                 )
+            );
+
+            highChamberDirectScore.whenPressed(
+                    new SequentialCommandGroup(
+                            new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(Scoring_Slide.ScoringSlideState.DIRECT_SCORE);}),
+                            new MoveScoringArmCommand(scoringArm, ScoringArmState.DIRECT_SCORE)
+                    )
             );
 
             highBasketScoreButton.whenPressed(
@@ -412,6 +427,57 @@ public class Main_Teleop extends LinearOpMode
                         new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.INIT)
                     )
                 ));
+
+            handOffOperator.whenHeld(
+                    new SequentialCommandGroup(
+                            new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.CLOSE),
+                            new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.HAND_OFF),
+                            new WaitCommand(200),
+                            new ParallelCommandGroup(
+                                    new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.HAND_OFF),
+                                    new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.HAND_OFF_PREP),
+                                    new ActuateScoringGripperCommand(scoringGripper, OPEN),
+                                    new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(HAND_OFF_PREP);})
+                            ),
+                            new WaitCommand(200),
+                            new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.HANDOFF),
+                            new MoveScoringArmCommand(scoringArm, ScoringArmState.HANDOFF_PREP)
+                    ));
+
+            handOffOperator.whenReleased(
+                    new SequentialCommandGroup(
+                            new WaitCommand(50),
+                            new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(HAND_OFF);}),
+                            new MoveScoringArmCommand(scoringArm, ScoringArmState.HANDOFF),
+                            new WaitCommand(100),
+                            new ActuateScoringGripperCommand(scoringGripper, CLOSED),
+                            new WaitCommand(50),
+                            new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN),
+                            new WaitCommand(50),
+                            new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(HIGH_CHAMBER_SCORE_PREP);}),
+                            new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_BASKET_SCORE_PREP)
+                    )
+            );
+
+            highBasketScoreButton.whenHeld(
+                    new SequentialCommandGroup(
+                            new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(HIGH_BASKET_SCORE_PREP);}),
+                            new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_BASKET_SCORE_PREP)
+                    )
+            );
+
+            highBasketScoreButton.whenReleased(
+                    new SequentialCommandGroup(
+                            new ActuateScoringGripperCommand(scoringGripper, OPEN)
+                    )
+            );
+
+            resetScoringButton.whenPressed(
+                    new SequentialCommandGroup(
+                            new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(HIGH_CHAMBER_SCORE_PREP);}),
+                            new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_BASKET_SCORE_PREP)
+                    )
+            );
 
             driveSpeedButton
                     .whenHeld(defaultDriveCommand)

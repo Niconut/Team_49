@@ -28,10 +28,10 @@ public class Scoring_Arm_Action {
     public double HOME = 0.09;
     public double STOW = 0.81;
     public double GROUND_PICKUP = 0.085;
-    public double WALL_PICKUP_PREP = 0.085;
-    public double WALL_PICKUP = 0.09;
-    public double HIGH_CHAMBER_SCORE_PREP = 0.81;
-    public double HIGH_CHAMBER_SCORE = 0.79;
+    public double WALL_PICKUP_PREP = 0; //0.085;
+    public double WALL_PICKUP = 0; //0.09;
+    public double HIGH_CHAMBER_SCORE_PREP = 0.687; //0.81;
+    public double HIGH_CHAMBER_SCORE = 0.658; //0.79;
     public double HIGH_BASKET_SCORE_PREP = 0.85;
     public double HIGH_BASKET_SCORE = 0.85;
     public double LOW_BASKET_SCORE_PREP = 0.85;
@@ -40,10 +40,11 @@ public class Scoring_Arm_Action {
     public double CLIMB_DONE = 0.75;
     public double HANDOFF = 0.75;
     public double MID = 0.5;
-    public double HAND_OFF = 0.82;
+    public double HAND_OFF = 1;
     public double LEVEL_1_ASCENT = 0.65;
     public double SAFE_MAX = 0.9;
     public double SAFE_MIN = 0.08;
+    public double DIRECT_SCORE = 0.888;
 
     private Servo arm1;
     private Servo arm2;
@@ -224,6 +225,20 @@ public class Scoring_Arm_Action {
 
     }
 
+    public class ScoringArmDirectScore implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                arm1.setPosition(DIRECT_SCORE);
+                arm2.setPosition(DIRECT_SCORE);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
 
 
     public Action scoringArmInit(){return new ScoringArmInit();}
@@ -237,4 +252,5 @@ public class Scoring_Arm_Action {
     public Action scoringArmHighBasketScore(){return new ScoringArmHighBasketScore();}
     public Action scoringArmHandOff(){return new ScoringArmHandOff();}
     public Action scoringArmLevel1Ascent(){return new ScoringArmLevel1Ascent();}
+    public Action scoringArmDirectScore(){return new ScoringArmDirectScore();}
 }

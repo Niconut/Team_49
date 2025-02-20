@@ -27,7 +27,7 @@ public class Intake_Elbow_Action {
     private double MID = 0.5;
     private double SAFE_MAX = 0.76;
     private double SAFE_MIN = 0.08;
-    private double HAND_OFF = 0.5;//0.515;
+    private double HAND_OFF = 0.765;//0.515;
     private double HOVER = 0.13;
 
 

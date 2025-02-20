@@ -34,12 +34,12 @@ public class Scoring_Slide_Action {
     private int HOME = -30;
     private int STOW = -30;
     private int GROUND_PICKUP = -30;
-    private int WALL_PICKUP_PREP = -1000;
+    private int WALL_PICKUP_PREP = -850; //-1000;
     private int WALL_PICKUP_DONE = -1200;
-    private int WALL_PICKUP = -1000;
-    private int HIGH_CHAMBER_SCORE_PREP = -1150;
-    private int HIGH_CHAMBER_SCORE_PREP2 = -1200;//860;
-    private int HIGH_CHAMBER_SCORE = -1650;
+    private int WALL_PICKUP = -850; //-1000;
+    private int HIGH_CHAMBER_SCORE_PREP = -500; //-1150;
+    private int HIGH_CHAMBER_SCORE_PREP2 = -500;//-1200;//860;
+    private int HIGH_CHAMBER_SCORE = -900;//-1650;
     private int HIGH_BASKET_SCORE_PREP = -3765;
     private int HIGH_BASKET_SCORE = -3485;
     private int LOW_BASKET_SCORE_PREP = -3485;
@@ -48,6 +48,7 @@ public class Scoring_Slide_Action {
     private int CLIMB_DONE = -1675;
     private int SAFE_MIN = -3485;
     private int SAFE_MAX = -30;
+    private int DIRECT_SCORE = -2025;
 
 
     public Scoring_Slide_Action(HardwareMap hardwareMap) {
@@ -282,6 +283,27 @@ public class Scoring_Slide_Action {
         }
     }
 
+    public class ScoringSlideDirectScore implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run (@NonNull TelemetryPacket packet){
+            if(!initialized){
+                Viper_Slide1.setTargetPosition(DIRECT_SCORE);
+                Viper_Slide2.setTargetPosition(DIRECT_SCORE);
+                Viper_Slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide1.setPower(-0.8);
+                Viper_Slide2.setPower(-0.8);
+                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+                //initialized = true;
+            }
+
+            return false;
+
+        }
+    }
+
     public Action scoringSlideScorePrep(){return new ScoringSlideScorePrep();}
     public Action scoringSlideScore(){return new ScoringSlideScore();}
     public Action scoringSlideWallPickupPrep(){return new ScoringSlideWallPickUpPrep();}
@@ -291,5 +313,6 @@ public class Scoring_Slide_Action {
     public Action scoringSlideHighBasketScore(){return new ScoringSlideHighBasketScore();}
     public Action scoringSlideWallPickUpDone(){return new ScoringSlideWallPickUpDone();}
     public Action scoringSlideScorePrep2(){return new ScoringSlideScorePrep2();}
+    public Action scoringSlideDirectScore(){return new ScoringSlideDirectScore();}
 }
 
