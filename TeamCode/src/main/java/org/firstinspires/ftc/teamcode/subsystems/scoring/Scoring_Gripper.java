@@ -11,12 +11,14 @@ public class Scoring_Gripper extends SubsystemBase {
     public double OPEN = 0.55;
     public double INIT = 0.55;
     private double MID = 0.5;
+    public double AUTO_SCORE = 0.35;
 
     public enum ScoringGripperState {
         INIT,
         CLOSED,
         OPEN,
-        MID
+        MID,
+        AUTO_SCORE;
     }
 
     public Scoring_Gripper(final HardwareMap hardwareMap) {
@@ -36,6 +38,7 @@ public class Scoring_Gripper extends SubsystemBase {
             case CLOSED -> CLOSED;
             case OPEN -> OPEN;
             case MID -> MID;
+            case AUTO_SCORE -> AUTO_SCORE;
             default -> INIT;
         };
         Scoring_Gripper.setPosition(pos);

@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Arm.ScoringArmState;
+import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.ScoringGripperState.AUTO_SCORE;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.ScoringGripperState.CLOSED;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.ScoringGripperState.INIT;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.ScoringGripperState.MID;
@@ -312,7 +313,19 @@ public class Main_Teleop extends LinearOpMode
                 new SequentialCommandGroup(
                     new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_CHAMBER_SCORE_PREP),
                     new WaitCommand(300),
-                    new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(HIGH_CHAMBER_SCORE_PREP);})
+                    new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(HIGH_CHAMBER_SCORE_PREP);}),
+                    new WaitCommand(200),
+                    new ActuateScoringGripperCommand(scoringGripper, AUTO_SCORE),
+                    new WaitCommand(50),
+                    new ActuateScoringGripperCommand(scoringGripper, CLOSED),
+                    new WaitCommand(50),
+                    new ActuateScoringGripperCommand(scoringGripper, AUTO_SCORE),
+                    new WaitCommand(50),
+                    new ActuateScoringGripperCommand(scoringGripper, CLOSED),
+                    new WaitCommand(50),
+                    new ActuateScoringGripperCommand(scoringGripper, AUTO_SCORE),
+                    new WaitCommand(50),
+                    new ActuateScoringGripperCommand(scoringGripper, CLOSED)
                 )
             );
 
