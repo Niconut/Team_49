@@ -14,7 +14,7 @@ public class Intake_Wrist extends SubsystemBase {
     private double SAFE_MAX = 0.9;
     private double SAFE_MIN = 0.1;
     private double MID = 0.5;
-    private double HANDOFF = 0.115;
+    private double HANDOFF = 0.5;
 
     public enum IntakeWristState {
         INIT,

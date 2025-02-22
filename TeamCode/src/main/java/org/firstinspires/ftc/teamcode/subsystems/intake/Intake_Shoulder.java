@@ -15,7 +15,7 @@ public class Intake_Shoulder extends SubsystemBase {
     private double SAFE_MAX = 1;//0.8;//0.5411
     private double MID = 0.5;
     private double PARALLEL = 0.84;
-    private double HAND_OFF = 0.84;
+    private double HAND_OFF = 0.5;
 
     public enum IntakeShoulderState {
         INIT,
