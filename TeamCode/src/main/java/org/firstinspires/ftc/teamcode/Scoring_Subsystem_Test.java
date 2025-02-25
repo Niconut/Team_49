@@ -78,7 +78,7 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.ActuateScoringGripperCommand;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.MoveScoringArmCommand;
 
-@Disabled
+//@Disabled
 @TeleOp(name="Score_Subsystem_Test", group="AA_DriveCode")
 public class Scoring_Subsystem_Test extends LinearOpMode
 {
@@ -325,7 +325,6 @@ public class Scoring_Subsystem_Test extends LinearOpMode
 
             highClimbPrep.whenPressed(
                 new SequentialCommandGroup(
-                    new InstantCommand(() -> {scoringSlidePID.setPID(0.02, 0 , 0);}),
                     new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(CLIMB_PREP);}),
                     new MoveScoringArmCommand(scoringArm, ScoringArmState.CLIMB_PREP)
                 )
@@ -333,6 +332,7 @@ public class Scoring_Subsystem_Test extends LinearOpMode
 
             highClimbDone.whenPressed(
                 new SequentialCommandGroup(
+                    new InstantCommand(() -> {scoringSlidePID.setPID(0.2, 0 , 0);}),
                     new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(CLIMB_DONE);}),
                     new MoveScoringArmCommand(scoringArm, ScoringArmState.CLIMB_PREP)
                 )

@@ -12,9 +12,9 @@ public class Intake_Wrist extends SubsystemBase {
     private Servo Wrist;
 
     private double INIT = 0.5;
-    private double DROP = 0.6;
+    private double DROP = 0.276;
     private double PICKUP_PREP = 0.5;
-    private double STOW = 0.5;
+    private double STOW = 0.180;
     private double SAFE_MAX = 0.9;
     private double SAFE_MIN = 0.1;
     private double MID = 0.5;

@@ -7,17 +7,17 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Elbow extends SubsystemBase {
     private Servo IntakeElbow;
 
-    private  double INIT = 0.3;
-    private  double STOW = 0.27;
-    private  double DROP = 0.800;
-    private  double PICKUP_PREP = 0.75; //0.555;
-    private  double PICKUP = 0.865;
-    private double PICKUP_DONE = 0.7;
+    private  double INIT = 0.724;//0.3;
+    private  double STOW = 0.832;
+    private  double DROP = 0.173;
+    private  double PICKUP_PREP = 0.173; //0.555;
+    private  double PICKUP = 0.015;
+    private double PICKUP_DONE = 0.094;
     private double MID = 0.5;
-    private double SAFE_MAX = 0.875;
-    private double SAFE_MIN = 0.275;
-    private double HAND_OFF = 0.5;//0.515;
-    private double HOVER = 0.825;
+    private double SAFE_MAX = 1;//0.875;
+    private double SAFE_MIN = 0;//0.275;
+    private double HAND_OFF = 0.756;//0.515;
+    private double HOVER = 0.061;
 
 
 

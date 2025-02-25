@@ -8,11 +8,19 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Gripper extends SubsystemBase {
     private Servo IntakeGripper;
 
-    private double INIT = 0.285;
+    /*private double INIT = 0.285;
     private static double OPEN = 0.55;
     private static double CLOSE = 0.285;
     private static double HAND_OFF_PREP = 0.315;
+    private double MID = 0.5;*/
+
+    public double CLOSE = 0.715;//0.3;
+    public double OPEN = 0.45;//0.55;
+    public double INIT = 0.5;//0.715;//0.55;
     private double MID = 0.5;
+    public double AUTO_SCORE = 0.665;//0.35;
+    private static double HAND_OFF_PREP = 0.665;
+
 
     public enum IntakeGripperState {
         INIT,

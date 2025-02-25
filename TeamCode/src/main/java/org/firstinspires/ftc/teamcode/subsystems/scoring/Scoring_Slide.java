@@ -24,10 +24,11 @@ public class Scoring_Slide extends SubsystemBase {
     private int HIGH_BASKET_SCORE = -2700;
     private int LOW_BASKET_SCORE_PREP = -2500;
     private int LOW_BASKET_SCORE = -2500;
-    private int CLIMB_PREP = -2200;
-    private int CLIMB_DONE = -1200;
+    private int CLIMB_PREP = -2160;
+    private int CLIMB_DONE = -1820;
     private int SAFE_MIN = -2500;
     private int SAFE_MAX = -20;
+    private int DIRECT_SCORE = -1850;
 
 
     public enum ScoringSlideState {
@@ -46,7 +47,8 @@ public class Scoring_Slide extends SubsystemBase {
         LOW_BASKET_SCORE_PREP,
         LOW_BASKET_SCORE,
         CLIMB_PREP,
-        CLIMB_DONE;
+        CLIMB_DONE,
+        DIRECT_SCORE;
     }
 
     public Scoring_Slide(HardwareMap hardwareMap) {
@@ -112,6 +114,7 @@ public class Scoring_Slide extends SubsystemBase {
             case LOW_BASKET_SCORE -> LOW_BASKET_SCORE;
             case CLIMB_PREP -> CLIMB_PREP;
             case CLIMB_DONE -> CLIMB_DONE;
+            case DIRECT_SCORE -> DIRECT_SCORE;
         };
         newpos = (newpos > SAFE_MAX)? SAFE_MAX:newpos;
         newpos = (newpos < SAFE_MIN)? SAFE_MIN:newpos;
@@ -136,6 +139,7 @@ public class Scoring_Slide extends SubsystemBase {
             case LOW_BASKET_SCORE -> LOW_BASKET_SCORE;
             case CLIMB_PREP -> CLIMB_PREP;
             case CLIMB_DONE -> CLIMB_DONE;
+            case DIRECT_SCORE -> DIRECT_SCORE;
         };
         newpos = (newpos > SAFE_MAX)? SAFE_MAX:newpos;
         newpos = (newpos < SAFE_MIN)? SAFE_MIN:newpos;

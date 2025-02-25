@@ -7,14 +7,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Shoulder extends SubsystemBase {
     private Servo Intake_Shoulder;
 
-    private static double INIT = 0.840;
-    private static double STOW = 0.85;
+    private static double INIT = 0.858;//0.840;
+    private static double STOW = 0.858;
     private static double PICKUP_PREP = 0.5;
-    private static double DROP = 0.925;
-    private double SAFE_MIN = 0.365;//0.02;
-    private double SAFE_MAX = 0.98;//0.8;//0.5411
+    private static double DROP = 1;
+    private double SAFE_MIN = 0.343;//0.02;
+    private double SAFE_MAX = 1;//0.8;//0.5411
     private double MID = 0.5;
-    private double PARALLEL = 0.84;
+    private double PARALLEL = 0.858;
     private double HAND_OFF = 0.5;
 
     public enum IntakeShoulderState {
