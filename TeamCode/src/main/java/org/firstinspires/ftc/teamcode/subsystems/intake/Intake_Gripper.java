@@ -8,26 +8,22 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Gripper extends SubsystemBase {
     private Servo IntakeGripper;
 
-    /*private double INIT = 0.285;
-    private static double OPEN = 0.55;
-    private static double CLOSE = 0.285;
-    private static double HAND_OFF_PREP = 0.315;
-    private double MID = 0.5;*/
-
-    public double CLOSE = 0.715;//0.3;
-    public double OPEN = 0.45;//0.55;
-    public double INIT = 0.5;//0.715;//0.55;
-    private double MID = 0.5;
-    public double AUTO_SCORE = 0.665;//0.35;
-    private static double HAND_OFF_PREP = 0.665;
-
+    public double CLOSE = 0.72;
+    public double OPEN = 0.41;
+    public double INIT = 0.5;
+    public double MID = 0.5;
+    public double PARTIAL_CLOSE = 0.665;
+    public double HAND_OFF_PREP = 0.665;
+    public double SYSCHECK = 0.5;
 
     public enum IntakeGripperState {
         INIT,
         OPEN,
         CLOSE,
         HAND_OFF_PREP,
-        MID
+        MID,
+        PARTIAL_CLOSE,
+        SYSCHECK
     }
 
     public Intake_Gripper(HardwareMap hardwareMap) {
@@ -48,6 +44,8 @@ public class Intake_Gripper extends SubsystemBase {
             case CLOSE -> CLOSE;
             case HAND_OFF_PREP -> HAND_OFF_PREP;
             case MID -> MID;
+            case PARTIAL_CLOSE -> PARTIAL_CLOSE;
+            case SYSCHECK -> SYSCHECK;
         };
         IntakeGripper.setPosition(pos);
     }

@@ -11,9 +11,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Gripper_Action {
     private Servo IntakeGripper;
 
-    private double INIT = 0.285;
-    private static double OPEN = 0.55;
-    private static double CLOSE = 0.285;
+    private static double CLOSE = 0.72;
+    private static double OPEN = 0.41;
+    private static double INIT = 0.5;
 
     public Intake_Gripper_Action(HardwareMap hardwareMap) {
         this.IntakeGripper = hardwareMap.get(Servo.class, "Intake_Gripper");

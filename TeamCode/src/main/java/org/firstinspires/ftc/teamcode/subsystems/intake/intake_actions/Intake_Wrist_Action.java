@@ -11,13 +11,13 @@ public class Intake_Wrist_Action {
     private Servo Wrist;
 
     private double INIT = 0.5;
-    private double DROP = 0.5;
+    private double DROP = 0.3;
     private double PICKUP_PREP = 0.5;
-    private double STOW = 0.5;
+    private double STOW = 0.180;
     private double AUTO_RIGHT_PICKUP = 0.5;
     private double AUTO_LEFT_PICKUP = 0.5;
-    private double SAFE_MAX = 0.75;
-    private double SAFE_MIN = 0.25;
+    private double SAFE_MAX = 0.9;
+    private double SAFE_MIN = 0.1;
 
     public Intake_Wrist_Action(HardwareMap hardwareMap) {
         this.Wrist = hardwareMap.get(Servo.class, "Wrist");

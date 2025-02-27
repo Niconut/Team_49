@@ -7,20 +7,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Scoring_Gripper extends SubsystemBase {
     private Servo Scoring_Gripper;
 
-    public double CLOSED = 0.715;//0.3;
-    public double OPEN = 0.45;//0.55;
-    public double INIT = 0.5;//0.55;
-    private double MID = 0.5;
-    public double AUTO_SCORE = 0.665;//0.35;
-
-
+    public double CLOSED = 0.715;
+    public double OPEN = 0.41;
+    public double INIT = 0.5;
+    public double MID = 0.5;
+    public double AUTO_SCORE = 0.665;
+    public double SYSCHECK = 0.5;
 
     public enum ScoringGripperState {
         INIT,
         CLOSED,
         OPEN,
         MID,
-        AUTO_SCORE;
+        AUTO_SCORE,
+        SYSCHECK
     }
 
     public Scoring_Gripper(final HardwareMap hardwareMap) {
@@ -41,7 +41,7 @@ public class Scoring_Gripper extends SubsystemBase {
             case OPEN -> OPEN;
             case MID -> MID;
             case AUTO_SCORE -> AUTO_SCORE;
-            default -> INIT;
+            case SYSCHECK -> SYSCHECK;
         };
         Scoring_Gripper.setPosition(pos);
     }

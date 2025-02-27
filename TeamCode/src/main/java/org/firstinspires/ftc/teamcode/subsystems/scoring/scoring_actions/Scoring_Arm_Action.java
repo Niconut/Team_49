@@ -9,21 +9,52 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Scoring_Arm_Action {
 
-    public double INIT = 0.81;
-    public double HOME = 0.8;
-    public double STOW = 0.8;
-    public double GROUND_PICKUP = 0.085;
-    public double WALL_PICKUP_PREP = 0.102;//0.1
-    public double WALL_PICKUP = 0.105; //0.125
-    public double HIGH_CHAMBER_SCORE_PREP = 0.780; //0.8;
-    public double HIGH_CHAMBER_SCORE = 0.755; //0.75;
-    public double HIGH_BASKET_SCORE_PREP = 0.75;
-    public double HIGH_BASKET_SCORE = 0.75;
-    public double LOW_BASKET_SCORE_PREP = 0.75;
-    public double LOW_BASKET_SCORE = 0.75;
-    public double HAND_OFF = 0.82;
-    public double LEVEL_1_ASCENT = 0.65;
+    public double INIT = 0.195;
+    public double HOME = 0.270;
+    public double STOW = 0.300;
+    public double GROUND_PICKUP = 0.960;
+    public double WALL_PICKUP_PREP = 0.960;
+    public double WALL_PICKUP = 0.950;
+    public double WALL_PICKUP_RAISE = 0.920;
+    public double HIGH_CHAMBER_SCORE_PREP = 0.255;
+    public double HIGH_CHAMBER_SCORE = 0.288;
+    public double HIGH_BASKET_SCORE_PREP = 0.270;
+    public double HIGH_BASKET_SCORE = 0.270;
+    public double LOW_BASKET_SCORE_PREP = 0.185;
+    public double LOW_BASKET_SCORE = 0.185;
+    public double CLIMB_PREP = 0.800;
+    public double CLIMB_DONE = 0.800;
+    public double HAND_OFF = 0.045;
+    public double HANDOFF_PREP = 0.065;
+    public double HANDOFF_PREP_EARLY = 0.115;
+    public double MID = 0.270;
+    public double DIRECT_SCORE = 0.045;
+    public double SYSCHECK = 0.270;
+    public double LEVEL_1_ASCENT = 0.800;
 
+    /* Gobilda Torque Serv Settings*/
+    /*
+    private static double INIT = 0.825;
+    private static double HOME = 0.8;
+    private static double STOW = 0.8;
+    private static double GROUND_PICKUP = 0.085;
+    private static double WALL_PICKUP_PREP = 0.115;
+    private static double WALL_PICKUP = 0.115;
+    private static double HIGH_CHAMBER_SCORE_PREP = 0.780;
+    private static double HIGH_CHAMBER_SCORE = 0.755;
+    private static double HIGH_BASKET_SCORE_PREP = 0.8;
+    private static double HIGH_BASKET_SCORE = 0.8;
+    private static double LOW_BASKET_SCORE_PREP = 0.9;
+    private static double LOW_BASKET_SCORE = 0.9;
+    private static double CLIMB_PREP = 0.1;
+    private static double CLIMB_DONE = 0.1;
+    private static double HAND_OFF = 1;
+    private static double HANDOFF_PREP = 1;
+    private static double HANDOFF_PREP_EARLY = 0.9;
+    private static double MID = 0.5;
+    private static double DIRECT_SCORE = 0.988;
+    private static double LEVEL_1_ASCENT = 0.1;
+     */
     private Servo arm1;
     private Servo arm2;
 

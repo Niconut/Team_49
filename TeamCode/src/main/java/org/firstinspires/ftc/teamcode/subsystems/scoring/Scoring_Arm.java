@@ -6,7 +6,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Scoring_Arm extends SubsystemBase {
 
-    public double INIT = 0.75;
+    /* Gobilda Torque Servo Settings */
+    /*
+    public double INIT = 0.825;
     public double HOME = 0.8;
     public double STOW = 0.8;
     public double GROUND_PICKUP = 0.085;
@@ -14,15 +16,43 @@ public class Scoring_Arm extends SubsystemBase {
     public double WALL_PICKUP = 0.115;
     public double HIGH_CHAMBER_SCORE_PREP = 0.780;
     public double HIGH_CHAMBER_SCORE = 0.755;
-    public double HIGH_BASKET_SCORE_PREP = 0.75;
-    public double HIGH_BASKET_SCORE = 0.75;
-    public double LOW_BASKET_SCORE_PREP = 0.75;
-    public double LOW_BASKET_SCORE = 0.75;
+    public double HIGH_BASKET_SCORE_PREP = 0.8;
+    public double HIGH_BASKET_SCORE = 0.8;
+    public double LOW_BASKET_SCORE_PREP = 0.9;
+    public double LOW_BASKET_SCORE = 0.9;
     public double CLIMB_PREP = 0.1;
     public double CLIMB_DONE = 0.1;
-    public double HANDOFF = 0.85;
+    public double HANDOFF = 1;
+    public double HANDOFF_PREP = 1;
+    public double HANDOFF_PREP_EARLY = 0.9;
     public double MID = 0.5;
     public double DIRECT_SCORE = 0.988;
+    public double SYSCHECK = 0.75;
+    */
+
+    /* SWYFT Balanced Servo Settings Default Options*/
+
+    public double INIT = 0.175;
+    public double HOME = 0.270;
+    public double STOW = 0.270;
+    public double GROUND_PICKUP = 0.960;
+    public double WALL_PICKUP_PREP = 0.960;
+    public double WALL_PICKUP = 0.950;
+    public double WALL_PICKUP_RAISE = 0.920;
+    public double HIGH_CHAMBER_SCORE_PREP = 0.255;
+    public double HIGH_CHAMBER_SCORE = 0.288;
+    public double HIGH_BASKET_SCORE_PREP = 0.270;
+    public double HIGH_BASKET_SCORE = 0.270;
+    public double LOW_BASKET_SCORE_PREP = 0.185;
+    public double LOW_BASKET_SCORE = 0.185;
+    public double CLIMB_PREP = 0.800;
+    public double CLIMB_DONE = 0.800;
+    public double HANDOFF = 0.015;
+    public double HANDOFF_PREP = 0.045;
+    public double HANDOFF_PREP_EARLY = 0.115;
+    public double MID = 0.270;
+    public double DIRECT_SCORE = 0.045;
+    public double SYSCHECK = 0.270;
 
     public enum ScoringArmState {
         INIT,
@@ -31,6 +61,7 @@ public class Scoring_Arm extends SubsystemBase {
         GROUND_PICKUP,
         WALL_PICKUP_PREP,
         WALL_PICKUP,
+        WALL_PICKUP_RAISE,
         HIGH_CHAMBER_SCORE_PREP,
         HIGH_CHAMBER_SCORE,
         HIGH_BASKET_SCORE_PREP,
@@ -40,8 +71,11 @@ public class Scoring_Arm extends SubsystemBase {
         CLIMB_PREP,
         CLIMB_DONE,
         HANDOFF,
+        HANDOFF_PREP,
+        HANDOFF_PREP_EARLY,
         MID,
-        DIRECT_SCORE;
+        DIRECT_SCORE,
+        SYSCHECK
     }
 
     private Servo arm1;
@@ -76,6 +110,7 @@ public class Scoring_Arm extends SubsystemBase {
             case GROUND_PICKUP -> GROUND_PICKUP;
             case WALL_PICKUP_PREP -> WALL_PICKUP_PREP;
             case WALL_PICKUP -> WALL_PICKUP;
+            case WALL_PICKUP_RAISE -> WALL_PICKUP_RAISE;
             case HIGH_CHAMBER_SCORE_PREP -> HIGH_CHAMBER_SCORE_PREP;
             case HIGH_CHAMBER_SCORE -> HIGH_CHAMBER_SCORE;
             case HIGH_BASKET_SCORE_PREP -> HIGH_BASKET_SCORE_PREP;
@@ -85,8 +120,11 @@ public class Scoring_Arm extends SubsystemBase {
             case CLIMB_PREP -> CLIMB_PREP;
             case CLIMB_DONE -> CLIMB_DONE;
             case HANDOFF -> HANDOFF;
+            case HANDOFF_PREP -> HANDOFF_PREP;
+            case HANDOFF_PREP_EARLY -> HANDOFF_PREP_EARLY;
             case MID -> MID;
             case DIRECT_SCORE -> DIRECT_SCORE;
+            case SYSCHECK -> SYSCHECK;
         };
         arm1.setPosition(pos);
         arm2.setPosition(pos);

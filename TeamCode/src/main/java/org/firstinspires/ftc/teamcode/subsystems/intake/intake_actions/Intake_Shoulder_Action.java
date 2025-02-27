@@ -10,16 +10,16 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Shoulder_Action {
     private Servo Intake_Shoulder;
 
-    private static double INIT = 0.84;
-    private static double STOW = 0.85;
+    private static double INIT = 0.05;;
+    private static double STOW = 0.05;
     private static double PICKUP_PREP = 0.5;
-    private static double AutoRightPickUp = 0.5;
-    private static double AutoLeftPickUp = 0.5;
-    private static double DROP = 0.975;
-    private double SAFE_MIN = 0.365;
-    private double SAFE_MAX = 0.98;
-    private double PARALLEL = 0.84;
-    private double HAND_OFF = 0.5;
+    private static double DROP = 1;
+    private static double SAFE_MIN = 0;
+    private static double SAFE_MAX = 1;
+    private static double PARALLEL = 0.858;
+    private static double HAND_OFF = 0.5;
+    private static double AUTO_RIGHT_PICKUP = 0.5;
+    private static double AUTO_LEFT_PICKUP = 0.5;
 
     public Intake_Shoulder_Action(HardwareMap hardwareMap) {
         this.Intake_Shoulder = hardwareMap.get(Servo.class, "Shoulder");
@@ -79,7 +79,7 @@ public class Intake_Shoulder_Action {
         @Override
         public boolean run (@NonNull TelemetryPacket Packet){
             if (!initialized) {
-                Intake_Shoulder.setPosition(AutoRightPickUp);
+                Intake_Shoulder.setPosition(AUTO_RIGHT_PICKUP);
                 initialized = true;
             }
             return false;
@@ -130,7 +130,7 @@ public class Intake_Shoulder_Action {
         @Override
         public boolean run (@NonNull TelemetryPacket Packet){
             if (!initialized) {
-                Intake_Shoulder.setPosition(AutoLeftPickUp);
+                Intake_Shoulder.setPosition(AUTO_LEFT_PICKUP);
                 initialized = true;
             }
             return false;

@@ -7,15 +7,16 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Shoulder extends SubsystemBase {
     private Servo Intake_Shoulder;
 
-    private static double INIT = 0.858;//0.840;
-    private static double STOW = 0.858;
-    private static double PICKUP_PREP = 0.5;
-    private static double DROP = 1;
-    private double SAFE_MIN = 0.343;//0.02;
-    private double SAFE_MAX = 1;//0.8;//0.5411
+    private double INIT = 0.858;;
+    private double STOW = 0.858;
+    private double PICKUP_PREP = 0.5;
+    private double DROP = 1;
+    private double SAFE_MIN = 0.343;
+    private double SAFE_MAX = 1;
     private double MID = 0.5;
     private double PARALLEL = 0.858;
     private double HAND_OFF = 0.5;
+    private double SYSCHECK = 0.5;
 
     public enum IntakeShoulderState {
         INIT,
@@ -24,7 +25,8 @@ public class Intake_Shoulder extends SubsystemBase {
         DROP,
         MID,
         PARALLEL,
-        HAND_OFF
+        HAND_OFF,
+        SYSCHECK
     }
 
     public Intake_Shoulder(HardwareMap hardwareMap) {
@@ -49,6 +51,7 @@ public class Intake_Shoulder extends SubsystemBase {
             case MID -> MID;
             case PARALLEL -> PARALLEL;
             case HAND_OFF -> HAND_OFF;
+            case SYSCHECK -> SYSCHECK;
         };
         Intake_Shoulder.setPosition(pos);
     }

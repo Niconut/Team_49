@@ -11,22 +11,23 @@ public class Scoring_Slide extends SubsystemBase {
     private DcMotorEx Viper_Slide2;
 
     private int INIT = 0;
-    private int HAND_OFF = 0;
+    private int HAND_OFF = -600;
+    private int HAND_OFF_PREP = -570;
     private int HOME = -20;
     private int STOW = -20;
     private int GROUND_PICKUP = -20;
     private int WALL_PICKUP_PREP = -700;
-    private int WALL_PICKUP_DONE = -1000;
+    private int WALL_PICKUP_DONE = -1100;
     private int WALL_PICKUP = -700;
-    private int HIGH_CHAMBER_SCORE_PREP = -870; //860;
-    private int HIGH_CHAMBER_SCORE = -1200;
-    private int HIGH_BASKET_SCORE_PREP = -2700;
-    private int HIGH_BASKET_SCORE = -2700;
-    private int LOW_BASKET_SCORE_PREP = -2500;
-    private int LOW_BASKET_SCORE = -2500;
+    private int HIGH_CHAMBER_SCORE_PREP = -880; //860;
+    private int HIGH_CHAMBER_SCORE = -1225;
+    private int HIGH_BASKET_SCORE_PREP = -2725;
+    private int HIGH_BASKET_SCORE = -2725;
+    private int LOW_BASKET_SCORE_PREP = -1400;
+    private int LOW_BASKET_SCORE = -1400;
     private int CLIMB_PREP = -2160;
     private int CLIMB_DONE = -1820;
-    private int SAFE_MIN = -2500;
+    private int SAFE_MIN = -2800;
     private int SAFE_MAX = -20;
     private int DIRECT_SCORE = -1850;
 
@@ -34,6 +35,7 @@ public class Scoring_Slide extends SubsystemBase {
     public enum ScoringSlideState {
         INIT,
         HAND_OFF,
+        HAND_OFF_PREP,
         HOME,
         STOW,
         GROUND_PICKUP,
@@ -100,6 +102,7 @@ public class Scoring_Slide extends SubsystemBase {
         int newpos = switch (state){
             case INIT -> INIT;
             case HAND_OFF -> HAND_OFF;
+            case HAND_OFF_PREP -> HAND_OFF_PREP;
             case HOME -> HOME;
             case STOW -> STOW;
             case GROUND_PICKUP -> GROUND_PICKUP;
@@ -125,6 +128,7 @@ public class Scoring_Slide extends SubsystemBase {
         int newpos = switch (state){
             case INIT -> INIT;
             case HAND_OFF -> HAND_OFF;
+            case HAND_OFF_PREP -> HAND_OFF_PREP;
             case HOME -> HOME;
             case STOW -> STOW;
             case GROUND_PICKUP -> GROUND_PICKUP;
