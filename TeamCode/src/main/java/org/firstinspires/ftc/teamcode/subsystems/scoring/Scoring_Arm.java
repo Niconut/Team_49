@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Scoring_Arm extends SubsystemBase {
 
-    public double INIT = 0.75;
+    /*public double INIT = 0.75;
     public double HOME = 0.09;
     public double STOW = 0.09;
     public double GROUND_PICKUP = 0.085;
@@ -25,6 +25,31 @@ public class Scoring_Arm extends SubsystemBase {
     public double MID = 0.5;
     public double SAFE_MAX = 1;
     public double SAFE_MIN = 0;
+    public double DIRECT_SCORE = 0.888;*/
+
+
+
+    public double INIT = 0.81;
+    public double HOME = 0.09;
+    public double STOW = 0.81;
+    public double GROUND_PICKUP = 0.085;
+    public double WALL_PICKUP_PREP = 0; //0.085;
+    public double WALL_PICKUP = 0; //0.09;
+    public double HIGH_CHAMBER_SCORE_PREP = 0.687; //0.81;
+    public double HIGH_CHAMBER_SCORE = 0.658; //0.79;
+    public double HIGH_BASKET_SCORE_PREP = 0.85;
+    public double HIGH_BASKET_SCORE = 0.85;
+    public double LOW_BASKET_SCORE_PREP = 0.85;
+    public double LOW_BASKET_SCORE = 0.85;
+    public double CLIMB_PREP = 0.75;
+    public double CLIMB_DONE = 0.75;
+    public double HANDOFF = 0.75;
+    public double MID = 0.5;
+    public double HAND_OFF = 1;
+    public double HANDOFF_PREP = 1;
+    public double LEVEL_1_ASCENT = 0.65;
+    public double SAFE_MAX = 0.9;
+    public double SAFE_MIN = 0.08;
     public double DIRECT_SCORE = 0.888;
 
 

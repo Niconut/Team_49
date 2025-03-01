@@ -18,7 +18,7 @@ public class Intake_Elbow_Action {
     private double PICKUP_DONE = 0.7;
     private double HAND_OFF = 0.5; */
 
-    private  double INIT = 0.75;
+    /*private  double INIT = 0.75;
     private  double STOW = 0.75;
     private  double DROP = 0.275;
     private  double PICKUP_PREP = 0.18; //0.555;
@@ -28,7 +28,21 @@ public class Intake_Elbow_Action {
     private double SAFE_MAX = 0.76;
     private double SAFE_MIN = 0.08;
     private double HAND_OFF = 0.765;//0.515;
-    private double HOVER = 0.13;
+    private double HOVER = 0.13;*/
+
+
+
+    private  double INIT = 0.75;
+    private  double STOW = 0.683;
+    private  double DROP = 0.163;
+    private  double PICKUP_PREP = 0.1; //0.555;
+    private  double PICKUP = 0.05;
+    private double PICKUP_DONE = 0.1;
+    private double MID = 0.5;
+    private double SAFE_MAX = 0.9;
+    private double SAFE_MIN = 0;
+    private double HAND_OFF = 0.757;//0.515;
+    private double HOVER = 0.06;
 
 
     public Intake_Elbow_Action(HardwareMap hardwareMap) {

@@ -19,13 +19,26 @@ public class Intake_Wrist_Action {
     private double SAFE_MAX = 0.75;
     private double SAFE_MIN = 0.25;*/
 
-    private double INIT = 0.5;
+    /*private double INIT = 0.5;
     private double DROP = 0.1;
     private double PICKUP_PREP = 0.5;
     private double STOW = 0.1;
     private double SAFE_MAX = 0.9;
     private double SAFE_MIN = 0.1;
     private double MID = 0.5;
+    private double AUTO_RIGHT_PICKUP = 0.5;
+    private double AUTO_LEFT_PICKUP = 0.5;*/
+
+
+
+    private double INIT = 0.115;
+    private double DROP = 0.1;
+    private double PICKUP_PREP = 0.5;
+    private double STOW = 0.115;
+    private double SAFE_MAX = 0.9;
+    private double SAFE_MIN = 0.1;
+    private double MID = 0.5;
+    private double HANDOFF = 0.5;
     private double AUTO_RIGHT_PICKUP = 0.5;
     private double AUTO_LEFT_PICKUP = 0.5;
 

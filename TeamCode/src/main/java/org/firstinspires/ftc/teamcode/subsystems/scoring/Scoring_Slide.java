@@ -9,7 +9,7 @@ public class Scoring_Slide extends SubsystemBase {
     private DcMotorEx Viper_Slide1;
     private DcMotorEx Viper_Slide2;
 
-    private int INIT = 0;
+    /*private int INIT = 0;
     private int HOME = -30;
     private int STOW = -30;
     private int GROUND_PICKUP = -30;
@@ -28,7 +28,31 @@ public class Scoring_Slide extends SubsystemBase {
     private int SAFE_MAX = -30;
     private int DIRECT_SCORE = -2025;
     private int HAND_OFF = -550;
-    private int HAND_OFF_PREP = -600;
+    private int HAND_OFF_PREP = -600;*/
+
+
+
+    private int INIT = 0;
+    private int HAND_OFF = 0;
+    private int HAND_OFF_PREP = 0;
+    private int HOME = -30;
+    private int STOW = -30;
+    private int GROUND_PICKUP = -30;
+    private int WALL_PICKUP_PREP = -850; //-1000;
+    private int WALL_PICKUP_DONE = -1200;
+    private int WALL_PICKUP = -850; //-1000;
+    private int HIGH_CHAMBER_SCORE_PREP = -550; //-1150;
+    private int HIGH_CHAMBER_SCORE_PREP2 = -550;//-1200;//860;
+    private int HIGH_CHAMBER_SCORE = -950;//-1650;
+    private int HIGH_BASKET_SCORE_PREP = -3765;
+    private int HIGH_BASKET_SCORE = -3485;
+    private int LOW_BASKET_SCORE_PREP = -3485;
+    private int LOW_BASKET_SCORE = -3485;
+    private int CLIMB_PREP = -3075;
+    private int CLIMB_DONE = -1675;
+    private int SAFE_MIN = -3485;
+    private int SAFE_MAX = -30;
+    private int DIRECT_SCORE = -2025;
 
 
     public enum ScoringSlideState {

@@ -24,7 +24,7 @@ public class Intake_Slide_Action {
 
     private double SAFE_MAX = 0.73;*/
 
-    private static double INIT = 0.6;
+    /*private static double INIT = 0.6;
     private static double STOW = 0.6;
     private static double DROP = 0.6;
     private static double PICKUP_PREP = 0.5;
@@ -33,7 +33,20 @@ public class Intake_Slide_Action {
     private double HAND_OFF = 0.5;
     private double SYSCHECK = 0.5;
     private double SAFE_MAX = .61;
-    private static double MID = 0.5;
+    private static double MID = 0.5;*/
+
+
+    private static double INIT = 0.732;
+    private static double STOW = 0.732;
+    private static double DROP = 0.785;
+    private static double PICKUP_PREP = 0.5;
+    private double SAFE_MIN = 0.249;
+    private double HAND_OFF_PREP = 0.5;
+    private double HAND_OFF = 0.61;
+    private double MID = 0.5;
+    private double SYSCHECK = 0.5;
+    private double SAFE_MAX = 0.785;
+
 
     public Intake_Slide_Action(HardwareMap hardwareMap) {
         this.Intake_Slide = hardwareMap.get(Servo.class, "SlideLeft");
