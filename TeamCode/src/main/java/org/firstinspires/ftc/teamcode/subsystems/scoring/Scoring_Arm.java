@@ -47,9 +47,9 @@ public class Scoring_Arm extends SubsystemBase {
     public double LOW_BASKET_SCORE = 0.185;
     public double CLIMB_PREP = 0.800;
     public double CLIMB_DONE = 0.800;
-    public double HANDOFF = 0.015;
-    public double HANDOFF_PREP = 0.045;
-    public double HANDOFF_PREP_EARLY = 0.115;
+    public double HANDOFF = 0.000;
+    public double HANDOFF_PREP = 0.020;
+    public double HANDOFF_PREP_EARLY = 0.100;
     public double MID = 0.270;
     public double DIRECT_SCORE = 0.045;
     public double SYSCHECK = 0.270;

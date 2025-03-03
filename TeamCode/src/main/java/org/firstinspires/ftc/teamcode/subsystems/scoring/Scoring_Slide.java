@@ -11,25 +11,26 @@ public class Scoring_Slide extends SubsystemBase {
     private DcMotorEx Viper_Slide2;
 
     private int INIT = 0;
-    private int HAND_OFF = -600;
-    private int HAND_OFF_PREP = -570;
+    private int HAND_OFF = -660;
+    private int HAND_OFF_PREP = -680;
     private int HOME = -20;
     private int STOW = -20;
     private int GROUND_PICKUP = -20;
     private int WALL_PICKUP_PREP = -700;
     private int WALL_PICKUP_DONE = -1100;
     private int WALL_PICKUP = -700;
-    private int HIGH_CHAMBER_SCORE_PREP = -880; //860;
-    private int HIGH_CHAMBER_SCORE = -1225;
+    private int HIGH_CHAMBER_SCORE_PREP = -900; //860;
+    private int HIGH_CHAMBER_SCORE = -1360;
     private int HIGH_BASKET_SCORE_PREP = -2725;
     private int HIGH_BASKET_SCORE = -2725;
     private int LOW_BASKET_SCORE_PREP = -1400;
     private int LOW_BASKET_SCORE = -1400;
     private int CLIMB_PREP = -2160;
-    private int CLIMB_DONE = -1820;
+    private int CLIMB_DONE = -1500;
     private int SAFE_MIN = -2800;
     private int SAFE_MAX = -20;
     private int DIRECT_SCORE = -1850;
+    private int TELEOP_START = -450;
 
 
     public enum ScoringSlideState {
@@ -50,7 +51,8 @@ public class Scoring_Slide extends SubsystemBase {
         LOW_BASKET_SCORE,
         CLIMB_PREP,
         CLIMB_DONE,
-        DIRECT_SCORE;
+        DIRECT_SCORE,
+        TELEOP_START
     }
 
     public Scoring_Slide(HardwareMap hardwareMap) {
@@ -118,6 +120,7 @@ public class Scoring_Slide extends SubsystemBase {
             case CLIMB_PREP -> CLIMB_PREP;
             case CLIMB_DONE -> CLIMB_DONE;
             case DIRECT_SCORE -> DIRECT_SCORE;
+            case TELEOP_START -> TELEOP_START;
         };
         newpos = (newpos > SAFE_MAX)? SAFE_MAX:newpos;
         newpos = (newpos < SAFE_MIN)? SAFE_MIN:newpos;
@@ -144,6 +147,7 @@ public class Scoring_Slide extends SubsystemBase {
             case CLIMB_PREP -> CLIMB_PREP;
             case CLIMB_DONE -> CLIMB_DONE;
             case DIRECT_SCORE -> DIRECT_SCORE;
+            case TELEOP_START -> TELEOP_START;
         };
         newpos = (newpos > SAFE_MAX)? SAFE_MAX:newpos;
         newpos = (newpos < SAFE_MIN)? SAFE_MIN:newpos;

@@ -15,15 +15,17 @@ public class Scoring_Slide_Action {
     private int INIT = 0;
     private int HOME = -20;
     private int STOW = -20;
+    private int HANDOFF = -670;
+    private int HANDOFF_PREP = -900;
     private int GROUND_PICKUP = -20;
     private int WALL_PICKUP_PREP = -675; //-700;
     private int WALL_PICKUP_DONE = -800;
     private int WALL_PICKUP = -650; //-735;
-    private int HIGH_CHAMBER_SCORE_PREP = -850;//-810;
-    private int HIGH_CHAMBER_SCORE_PREP2 = -850;//-820;
-    private int HIGH_CHAMBER_SCORE = -1300;//-1200;
-    private int HIGH_BASKET_SCORE_PREP = -2700;
-    private int HIGH_BASKET_SCORE = -2700;
+    private int HIGH_CHAMBER_SCORE_PREP = -875;//-810;
+    private int HIGH_CHAMBER_SCORE_PREP2 = -875;//-820;
+    private int HIGH_CHAMBER_SCORE = -1360;//-1200;
+    private int HIGH_BASKET_SCORE_PREP = -2725;
+    private int HIGH_BASKET_SCORE = -2725;
     private int LOW_BASKET_SCORE_PREP = -2500;
     private int LOW_BASKET_SCORE = -2500;
     private int SAFE_MIN = -2500;
@@ -262,6 +264,48 @@ public class Scoring_Slide_Action {
         }
     }
 
+    public class ScoringSlideHandOff implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run (@NonNull TelemetryPacket packet){
+            if(!initialized){
+                Viper_Slide1.setTargetPosition(HANDOFF);
+                Viper_Slide2.setTargetPosition(HANDOFF);
+                Viper_Slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide1.setPower(-0.8);
+                Viper_Slide2.setPower(-0.8);
+                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+                //initialized = true;
+            }
+
+            return false;
+
+        }
+    }
+
+    public class ScoringSlideHandOffPrep implements Action {
+        private boolean initialized = false;
+
+        @Override
+        public boolean run (@NonNull TelemetryPacket packet){
+            if(!initialized){
+                Viper_Slide1.setTargetPosition(HANDOFF_PREP);
+                Viper_Slide2.setTargetPosition(HANDOFF_PREP);
+                Viper_Slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Viper_Slide1.setPower(-0.8);
+                Viper_Slide2.setPower(-0.8);
+                initialized = (!Viper_Slide1.isBusy() && !Viper_Slide2.isBusy());
+                //initialized = true;
+            }
+
+            return false;
+
+        }
+    }
+
     public Action scoringSlideScorePrep(){return new ScoringSlideScorePrep();}
     public Action scoringSlideScore(){return new ScoringSlideScore();}
     public Action scoringSlideWallPickupPrep(){return new ScoringSlideWallPickUpPrep();}
@@ -271,5 +315,7 @@ public class Scoring_Slide_Action {
     public Action scoringSlideHighBasketScore(){return new ScoringSlideHighBasketScore();}
     public Action scoringSlideWallPickUpDone(){return new ScoringSlideWallPickUpDone();}
     public Action scoringSlideScorePrep2(){return new ScoringSlideScorePrep2();}
+    public Action scoringSlideHandOff(){return new ScoringSlideHandOff();}
+    public Action scoringSlideHandOffPrep(){return new ScoringSlideHandOffPrep();}
 }
 

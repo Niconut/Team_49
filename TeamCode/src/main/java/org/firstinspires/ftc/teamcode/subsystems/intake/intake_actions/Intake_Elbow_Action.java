@@ -16,8 +16,8 @@ public class Intake_Elbow_Action {
     private double PICKUP_PREP = 0.23;;
     private double PICKUP = 0.093;
     private double PICKUP_DONE = 0.14;
-    private double HAND_OFF = 0.775;
-    private double HOVER = 0.132;
+    private double HAND_OFF = 0.795;
+    private double HOVER = 0.145;
 
     public Intake_Elbow_Action(HardwareMap hardwareMap) {
         this.IntakeElbow = hardwareMap.get(Servo.class, "Elbow");
@@ -119,6 +119,19 @@ public class Intake_Elbow_Action {
 
     }
 
+    public class IntakeElbowHover implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                IntakeElbow.setPosition(HOVER);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
     public Action intakeElbowInit(){return new IntakeElbowInit();}
     public Action intakeElbowStow(){return new IntakeElbowStow();}
     public Action intakeElbowDrop(){return new IntakeElbowDrop();}
@@ -126,4 +139,5 @@ public class Intake_Elbow_Action {
     public Action intakeElbowPickUp(){return new IntakeElbowPickUp();}
     public Action intakeElbowPickUpDone(){return new IntakeElbowPickUpDone();}
     public Action intakeElbowHandOff(){return new IntakeElbowHandOff();}
+    public Action intakeElbowHover(){return new IntakeElbowHover();}
 }

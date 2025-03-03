@@ -46,6 +46,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.Sc
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.HOME;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.LOW_BASKET_SCORE;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.LOW_BASKET_SCORE_PREP;
+import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.TELEOP_START;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.WALL_PICKUP;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.WALL_PICKUP_DONE;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.WALL_PICKUP_PREP;
@@ -218,6 +219,9 @@ public class Main_Teleop extends LinearOpMode
         Button wallPickupButton = new GamepadButton(driver, GamepadKeys.Button.LEFT_BUMPER);
         Button openScoringGripperButton = new GamepadButton(driver, GamepadKeys.Button.RIGHT_STICK_BUTTON);
 
+        Button backButton = new GamepadButton(driver, GamepadKeys.Button.BACK);
+        Button startButton = new GamepadButton(driver, GamepadKeys.Button.START);
+
         Button highClimbPrep = new GamepadButton(driver, GamepadKeys.Button.DPAD_UP);
         Button highClimbDone = new GamepadButton(driver, GamepadKeys.Button.DPAD_DOWN);
 
@@ -274,8 +278,8 @@ public class Main_Teleop extends LinearOpMode
         intakeSlide.setState(Intake_Slide.IntakeSlideState.INIT);
 
         scoringGripper.setState(INIT);
-        scoringArm.setState(ScoringArmState.INIT);
-        SCORING_SLIDE_SETPOINT = scoringSlide.setState(HAND_OFF_PREP);
+        scoringArm.setState(ScoringArmState.HIGH_CHAMBER_SCORE);
+        SCORING_SLIDE_SETPOINT = scoringSlide.setState(TELEOP_START);
 
         CommandScheduler.getInstance().setDefaultCommand(drive, slowModeCommand);
         CommandScheduler.getInstance().schedule();
@@ -352,6 +356,7 @@ public class Main_Teleop extends LinearOpMode
 
             highClimbPrep.whenPressed(
                 new ParallelCommandGroup(
+                    new InstantCommand(() -> {scoringSlidePID.setPID(0.005, 0 , 0);}),
                     new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(CLIMB_PREP);}),
                     new MoveScoringArmCommand(scoringArm, ScoringArmState.CLIMB_PREP)
                 )
@@ -360,7 +365,7 @@ public class Main_Teleop extends LinearOpMode
             // NOTE : Scoring slide will oscillate it not in the submersible!!!
             highClimbDone.whenPressed(
                 new ParallelCommandGroup(
-                    new InstantCommand(() -> {scoringSlidePID.setPID(0.2, 0 , 0);}),
+                    new InstantCommand(() -> {scoringSlidePID.setPID(0.5, 0.1 , 0);}),
                     new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(CLIMB_DONE);}),
                     new MoveScoringArmCommand(scoringArm, ScoringArmState.CLIMB_PREP)
                 )
@@ -389,7 +394,7 @@ public class Main_Teleop extends LinearOpMode
             pickUpPrepButton.whenPressed(
                 new SequentialCommandGroup(
                     new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.PICKUP_PREP),
-                    new WaitCommand(100),
+                    new WaitCommand(250),
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP_PREP),
                     new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.OPEN)
                 ));
@@ -421,7 +426,7 @@ public class Main_Teleop extends LinearOpMode
             stowArmButton.whenPressed(
                 new SequentialCommandGroup(
                     new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
-                    new WaitCommand(150),
+                    new WaitCommand(250),
                     new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.STOW),
                     new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW),
                     new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW),
@@ -529,7 +534,7 @@ public class Main_Teleop extends LinearOpMode
             //slide_move = (operator.getLeftY());
             double slide_move = (operator.gamepad.left_stick_y);
             if (Math.abs(slide_move) > SLIDE_MOVE_THRESHOLD) {
-                SLIDE_TARGGET_POSITION = intakeSlide.getCurrentPositionLeft() - (slide_move * Math.abs(slide_move) * SLIDE_MOVE_INCREMENTS);
+                SLIDE_TARGGET_POSITION = intakeSlide.getCurrentPositionLeft() + (slide_move * Math.abs(slide_move) * SLIDE_MOVE_INCREMENTS);
                 intakeSlide.setPosition(SLIDE_TARGGET_POSITION);
             }
 
@@ -542,22 +547,26 @@ public class Main_Teleop extends LinearOpMode
                 SCORING_SLIDE_SETPOINT = 0;
             }
 
-            /* move scoring slide down if auto did not finish */
-            //if (driverLeftTrigger.isDown() && driverRightTrigger.isDown()) {
-            /*if ((driver.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.5) && (driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.5)) {
-                SCORING_SLIDE_SETPOINT = SCORING_SLIDE_SETPOINT + 25;
+
+            /* calculate new wrist position */
+            wrist_move = (operator.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) - operator.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER));
+            if (Math.abs(wrist_move) > WRIST_MOVE_THRESHOLD) {
+                WRIST_TARGET_POSITION = intakeWrist.getCurrentPosition() - (wrist_move * Math.abs(wrist_move) * WRIST_MOVE_INCREMENTS);
+                intakeWrist.setPosition(WRIST_TARGET_POSITION);
             }
 
+
             backButton
-                .and(startButton)
-                .whenActive(
-                    new ParallelCommandGroup(
-                        new InstantCommand(() -> {
-                            scoringSlide.stopAndResetEncoder();
-                            }
-                        )
-                    )
-                );*/
+                    .and(startButton)
+                    .whenActive(
+                            new ParallelCommandGroup(
+                                    new InstantCommand(() -> {
+                                        scoringSlide.stopAndResetEncoder();
+                                    }
+                                    )
+                            )
+                    );
+
 
             /* move scoring slide to new setpoint */
             scoringSlidePID.setSetPoint(SCORING_SLIDE_SETPOINT);

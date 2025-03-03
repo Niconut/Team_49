@@ -11,7 +11,7 @@ public class Scoring_Arm_Action {
 
     public double INIT = 0.195;
     public double HOME = 0.270;
-    public double STOW = 0.300;
+    public double STOW = 0.400;
     public double GROUND_PICKUP = 0.960;
     public double WALL_PICKUP_PREP = 0.960;
     public double WALL_PICKUP = 0.950;
@@ -24,8 +24,8 @@ public class Scoring_Arm_Action {
     public double LOW_BASKET_SCORE = 0.185;
     public double CLIMB_PREP = 0.800;
     public double CLIMB_DONE = 0.800;
-    public double HAND_OFF = 0.045;
-    public double HANDOFF_PREP = 0.065;
+    public double HAND_OFF = 0.0;
+    public double HANDOFF_PREP = 0.02;
     public double HANDOFF_PREP_EARLY = 0.115;
     public double MID = 0.270;
     public double DIRECT_SCORE = 0.045;
@@ -233,6 +233,19 @@ public class Scoring_Arm_Action {
         }
 
     }
+    public class ScoringArmHandOffPrep implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                arm1.setPosition(HANDOFF_PREP);
+                arm2.setPosition(HANDOFF_PREP);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
 
 
 
@@ -247,4 +260,5 @@ public class Scoring_Arm_Action {
     public Action scoringArmHighBasketScore(){return new ScoringArmHighBasketScore();}
     public Action scoringArmHandOff(){return new ScoringArmHandOff();}
     public Action scoringArmLevel1Ascent(){return new ScoringArmLevel1Ascent();}
+    public Action scoringArmHandOffPrep(){return new ScoringArmHandOffPrep();}
 }

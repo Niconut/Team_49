@@ -19,7 +19,7 @@ public class Scoring_Gripper_Action {
     public double OPEN = 0.45;//0.55;
     public double INIT = 0.5;//0.55;
     private double MID = 0.5;
-    public double AUTO_SCORE = 0.685;//0.35;
+    public double AUTO_SCORE = 0.68;//0.35;
 
     public Scoring_Gripper_Action(final HardwareMap hardwareMap) {
         this.Scoring_Gripper = hardwareMap.get(Servo.class, "Gripper");

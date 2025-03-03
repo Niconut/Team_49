@@ -14,6 +14,7 @@ public class Intake_Gripper_Action {
     private static double CLOSE = 0.72;
     private static double OPEN = 0.41;
     private static double INIT = 0.5;
+    public double PARTIAL_CLOSE = 0.665;
 
     public Intake_Gripper_Action(HardwareMap hardwareMap) {
         this.IntakeGripper = hardwareMap.get(Servo.class, "Intake_Gripper");
@@ -65,7 +66,19 @@ public class Intake_Gripper_Action {
 
     }
 
+    public class IntakeGripperPartialClose implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                IntakeGripper.setPosition(PARTIAL_CLOSE);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
     public Action intakeGripperOpen(){return new IntakeGripperOpen();}
     public Action intakeGripperClose(){return new IntakeGripperClose();}
     public Action intakeGripperInit(){return new IntakeGripperInit();}
-}
+    public Action intakeGripperPartialClose(){return new IntakeGripperPartialClose();}}

@@ -10,14 +10,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Intake_Slide_Action {
     private Servo Intake_Slide;
 
-    private static double INIT = 0.495; //0.425;
-    private static double STOW = 0.495;
+    private static double INIT = 0.52; //0.425;
+    private static double STOW = 0.52;
     private static double PICKUP_PREP = 0.495;
     private static double SAFE_MIN = 0.13;
-    private static double HAND_OFF_PREP = 0.425;
-    private static double HAND_OFF = 0.5;
+    private static double HAND_OFF_PREP = 0.52;
+    private static double HAND_OFF = 0.52;
     private static double MID = 0.5;
-    private static double SAFE_MAX = 0.5;
+    private static double SAFE_MAX = 0.52;
+    private double AUTO_LEFT_PICKUP = 0.425;
 
     public Intake_Slide_Action(HardwareMap hardwareMap) {
         this.Intake_Slide = hardwareMap.get(Servo.class, "SlideLeft");
@@ -111,10 +112,24 @@ public class Intake_Slide_Action {
 
     }
 
+    public class IntakeSlideAutoLeftPickUp implements Action {
+        private boolean initialized = false;
+        @Override
+        public boolean run (@NonNull TelemetryPacket Packet){
+            if (!initialized) {
+                Intake_Slide.setPosition(AUTO_LEFT_PICKUP);
+                initialized = true;
+            }
+            return false;
+        }
+
+    }
+
     public Action intakeSlideInit(){return new IntakeSlideInit();}
     public Action intakeSlideStow(){return new IntakeSlideStow();}
     public Action intakeSlidePickUpPrep(){return new IntakeSlidePickUpPrep();}
     public Action intakeSlidePickUpMid(){return new IntakeSlidePickUpMid();}
     public Action intakeSlideHandOffPrep(){return new IntakeSlideHandOffPrep();}
     public Action intakeSlideHandOff(){return new IntakeSlideHandOff();}
+    public Action intakeSlideAutoLeftPickUp(){return new IntakeSlideAutoLeftPickUp();}
 }
