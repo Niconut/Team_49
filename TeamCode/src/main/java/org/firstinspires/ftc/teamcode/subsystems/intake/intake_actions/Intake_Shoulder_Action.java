@@ -21,6 +21,7 @@ public class Intake_Shoulder_Action {
     private static double AUTO_RIGHT_PICKUP = 0.5;
     private static double AUTO_LEFT_PICKUP = 0.47;
 
+
     public Intake_Shoulder_Action(HardwareMap hardwareMap) {
         this.Intake_Shoulder = hardwareMap.get(Servo.class, "Shoulder");
         this.Intake_Shoulder.setDirection(Servo.Direction.FORWARD);

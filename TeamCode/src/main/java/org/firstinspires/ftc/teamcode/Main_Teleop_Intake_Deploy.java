@@ -46,7 +46,6 @@ import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.Sc
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.LOW_BASKET_SCORE_PREP;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.TELEOP_START;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.WALL_PICKUP;
-import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.WALL_PICKUP_DONE;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.Command;
@@ -87,8 +86,8 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.Actuat
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.MoveScoringArmCommand;
 
 //@Disabled
-@TeleOp(name="Main_Intake_Deploy", group="AA_DriveCode")
-public class Main_Teleop_Intake_Init extends LinearOpMode
+@TeleOp(name="DEPLOY_INTAKE", group="AA_DriveCode")
+public class Main_Teleop_Intake_Deploy extends LinearOpMode
 {
     private ElapsedTime runtime = new ElapsedTime();
     private static int gametime = 120;
@@ -417,10 +416,10 @@ public class Main_Teleop_Intake_Init extends LinearOpMode
             stowArmButton.whenPressed(
                 new SequentialCommandGroup(
                         new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.STOW),
-                        new WaitCommand(250),
+                        new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW),
+                        new WaitCommand(200),
                         new MoveIntakeWristCommand(intakeWrist, Intake_Wrist.IntakeWristState.STOW),
                         new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.STOW),
-                        new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW),
                         new ActuateIntakeGripperCommand(intakeGripper, Intake_Gripper.IntakeGripperState.CLOSE)
                 )
             );
@@ -569,17 +568,6 @@ public class Main_Teleop_Intake_Init extends LinearOpMode
                 scoringSlide.stopAndResetEncoder();
                 SCORING_SLIDE_SETPOINT = 0;
             }
-
-            backButton
-                .and(startButton)
-                .whenActive(
-                    new ParallelCommandGroup(
-                        new InstantCommand(() -> {
-                            scoringSlide.stopAndResetEncoder();
-                            }
-                        )
-                    )
-                );
 
             /* move scoring slide to new setpoint */
             scoringSlidePID.setSetPoint(SCORING_SLIDE_SETPOINT);

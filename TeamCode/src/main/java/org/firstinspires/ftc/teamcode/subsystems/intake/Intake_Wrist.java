@@ -20,6 +20,8 @@ public class Intake_Wrist extends SubsystemBase {
     private double MID = 0.5;
     private double HANDOFF = 0.5;
     private double SYSCHECK = 0.5;
+    private double LEFT_DROP = 0.7;
+    private double LEFT_STOW = 0.820;
 
     public enum IntakeWristState {
         INIT,
@@ -28,7 +30,9 @@ public class Intake_Wrist extends SubsystemBase {
         STOW,
         MID,
         HANDOFF,
-        SYSCHECK
+        SYSCHECK,
+        LEFT_DROP,
+        LEFT_STOW
     }
 
     public Intake_Wrist(HardwareMap hardwareMap) {
@@ -55,6 +59,8 @@ public class Intake_Wrist extends SubsystemBase {
             case MID -> MID;
             case HANDOFF -> HANDOFF;
             case SYSCHECK -> SYSCHECK;
+            case LEFT_DROP -> LEFT_DROP;
+            case LEFT_STOW -> LEFT_STOW;
         };
         Wrist.setPosition(pos);
     }

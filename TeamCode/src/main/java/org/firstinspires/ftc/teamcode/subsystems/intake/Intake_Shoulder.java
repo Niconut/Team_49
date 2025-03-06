@@ -17,6 +17,9 @@ public class Intake_Shoulder extends SubsystemBase {
     private double PARALLEL = 0.858;
     private double HAND_OFF = 0.5;
     private double SYSCHECK = 0.5;
+    private double LEFT_INIT = 0.1;;
+    private double LEFT_STOW = 0.1;
+    private double LEFT_DROP = 0;
 
     public enum IntakeShoulderState {
         INIT,
@@ -26,7 +29,10 @@ public class Intake_Shoulder extends SubsystemBase {
         MID,
         PARALLEL,
         HAND_OFF,
-        SYSCHECK
+        SYSCHECK,
+        LEFT_INIT,
+        LEFT_STOW,
+        LEFT_DROP
     }
 
     public Intake_Shoulder(HardwareMap hardwareMap) {
@@ -52,6 +58,9 @@ public class Intake_Shoulder extends SubsystemBase {
             case PARALLEL -> PARALLEL;
             case HAND_OFF -> HAND_OFF;
             case SYSCHECK -> SYSCHECK;
+            case LEFT_INIT -> LEFT_INIT;
+            case LEFT_DROP -> LEFT_DROP;
+            case LEFT_STOW -> LEFT_STOW;
         };
         Intake_Shoulder.setPosition(pos);
     }

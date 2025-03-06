@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.teamcode.MecanumDrive;
 
 //@Disabled
 @Autonomous
-public final class Left_Basket_Auto_Spline_Alternate extends LinearOpMode {
+public final class LEFT_1_SPECIMEN_3_SAMPLE extends LinearOpMode {
 
     Action  TrajectoryScorePreload,
             TrajectoryPickUpSamples1,

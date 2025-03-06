@@ -86,8 +86,8 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.Actuat
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.MoveScoringArmCommand;
 
 //@Disabled
-@TeleOp(name="STOWED", group="AA_DriveCode")
-public class Main_Teleop extends LinearOpMode
+@TeleOp(name="DEPLOY_INTAKE_SCORE", group="AA_DriveCode")
+public class Main_Teleop_Deploy_Score extends LinearOpMode
 {
     private ElapsedTime runtime = new ElapsedTime();
     private static int gametime = 120;
@@ -261,10 +261,10 @@ public class Main_Teleop extends LinearOpMode
         waitForStart();
 
         // start teleop with safe subsystem states
-        intakeGripper.setState(Intake_Gripper.IntakeGripperState.INIT);
+        intakeGripper.setState(Intake_Gripper.IntakeGripperState.OPEN);
         intakeWrist.setState(Intake_Wrist.IntakeWristState.INIT);
-        intakeElbow.setState(Intake_Elbow.IntakeElbowState.INIT);
-        intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.INIT);
+        intakeElbow.setState(Intake_Elbow.IntakeElbowState.PICKUP_PREP);
+        intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.PICKUP_PREP);
         intakeSlide.setState(Intake_Slide.IntakeSlideState.INIT);
 
         scoringGripper.setState(INIT);
@@ -306,7 +306,23 @@ public class Main_Teleop extends LinearOpMode
                         new ActuateScoringGripperCommand(scoringGripper,CLOSED),
                         new WaitCommand(200),
                         new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(HIGH_CHAMBER_SCORE_PREP);}),
-                        new MoveScoringArmCommand(scoringArm, ScoringArmState.WALL_PICKUP_RAISE)
+                        new MoveScoringArmCommand(scoringArm, ScoringArmState.WALL_PICKUP_RAISE),
+
+                            // auto deploy score prep
+                        new WaitCommand(750),
+                        new MoveScoringArmCommand(scoringArm, ScoringArmState.HIGH_CHAMBER_SCORE_PREP),
+                        new WaitCommand(200),
+                        new ActuateScoringGripperCommand(scoringGripper, AUTO_SCORE),
+                        new WaitCommand(50),
+                        new ActuateScoringGripperCommand(scoringGripper, CLOSED),
+                        new WaitCommand(50),
+                        new ActuateScoringGripperCommand(scoringGripper, AUTO_SCORE),
+                        new WaitCommand(50),
+                        new ActuateScoringGripperCommand(scoringGripper, CLOSED),
+                        new WaitCommand(50),
+                        new ActuateScoringGripperCommand(scoringGripper, AUTO_SCORE),
+                        new WaitCommand(50),
+                        new ActuateScoringGripperCommand(scoringGripper, CLOSED)
                     )
                 );
 
