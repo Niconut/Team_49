@@ -164,6 +164,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
             scoringArm.scoringArmHighBasketScore(),
             new SleepAction(.5),
             scoringGripper.scoringGripperOpen(),
+            new SleepAction(.5),
             scoringArm.scoringArmStow(),
             new SleepAction(0.2)
            /* scoringSlide.scoringSlideGroundPickUp(),
@@ -395,6 +396,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                 scoringArm.scoringArmHighBasketScore(),
                 new SleepAction(.5),
                 scoringGripper.scoringGripperOpen(),
+                new SleepAction(.25),
                 scoringArm.scoringArmStow(),
                 new SleepAction(0.2)
                 /* scoringSlide.scoringSlideGroundPickUp(),
@@ -432,6 +434,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                 scoringArm.scoringArmHighBasketScore(),
                 new SleepAction(.5),
                 scoringGripper.scoringGripperOpen(),
+                new SleepAction(.25),
                 scoringArm.scoringArmStow(),
                 new SleepAction(0.2)
         );
@@ -467,6 +470,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                 scoringArm.scoringArmHighBasketScore(),
                 new SleepAction(.5),
                 scoringGripper.scoringGripperOpen(),
+                new SleepAction(.25),
                 scoringArm.scoringArmStow(),
                 new SleepAction(0.2)
         );

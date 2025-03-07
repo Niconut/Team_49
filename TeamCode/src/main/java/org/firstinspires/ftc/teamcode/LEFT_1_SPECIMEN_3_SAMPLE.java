@@ -40,7 +40,7 @@ public final class LEFT_1_SPECIMEN_3_SAMPLE extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Pose2d beginPose = new Pose2d(-9.5, -63.5, Math.toRadians(90));
+        Pose2d beginPose = new Pose2d(-10, -63.5, Math.toRadians(90));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         Intake_Gripper_Action intakeGripper = new Intake_Gripper_Action(hardwareMap);
@@ -92,7 +92,7 @@ public final class LEFT_1_SPECIMEN_3_SAMPLE extends LinearOpMode {
         TrajectoryActionBuilder trajectoryHighSpecimenPreload = drive.actionBuilder(beginPose)
                 .setReversed(false)
                 //.lineToY(-35);
-                .strafeToLinearHeading(new Vector2d(-9.5,-33.5), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-10,-33.5), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryPickUpSamples1 = trajectoryHighSpecimenPreload.endTrajectory().fresh()
                 .setReversed(true)

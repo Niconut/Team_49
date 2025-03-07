@@ -8,18 +8,15 @@ public class Intake_Slide extends SubsystemBase {
     private Servo Intake_SlideLeft;
     private Servo Intake_SlideRight;
 
-    private static double INIT = 0.52; //0.425;
-    private static double STOW = 0.52;
-    private static double DROP = 0.52;
-    private static double PICKUP_PREP = 0.45;
+    private double INIT = 0.52; //0.425;
+    private double STOW = 0.52;
+    private double DROP = 0.52;
+    private double PICKUP_PREP = 0.45;
     private double SAFE_MIN = 0.13;
     private double HAND_OFF_PREP = 0.425;
     private double HAND_OFF = 0.5;
     private double SYSCHECK = 0.52;
-
-    // if required for expansion limits : 0.73
-    // for max extension if passes inspection : 0.85
-    // approximately 1.5" delta
+    private double FRONT_DROP = 0.13;
     private double SAFE_MAX = 0.52;
 
     public enum IntakeSlideState {
@@ -29,7 +26,8 @@ public class Intake_Slide extends SubsystemBase {
         HAND_OFF_PREP,
         HAND_OFF,
         DROP,
-        SYSCHECK
+        SYSCHECK,
+        FRONT_DROP
     }
 
     public Intake_Slide(HardwareMap hardwareMap) {
@@ -59,6 +57,7 @@ public class Intake_Slide extends SubsystemBase {
             case HAND_OFF_PREP -> HAND_OFF_PREP;
             case HAND_OFF -> HAND_OFF;
             case SYSCHECK -> SYSCHECK;
+            case FRONT_DROP -> FRONT_DROP;
         };
         Intake_SlideLeft.setPosition(pos);
         Intake_SlideRight.setPosition(pos);

@@ -19,6 +19,7 @@ public class Intake_Elbow extends SubsystemBase {
     private double HAND_OFF = 0.795;
     private double HOVER = 0.145;
     private double SYSCHECK = 0.500;
+    private double FRONT_DROP = 0.145;
 
     public enum IntakeElbowState {
         INIT,
@@ -30,7 +31,8 @@ public class Intake_Elbow extends SubsystemBase {
         MID,
         HAND_OFF,
         HOVER,
-        SYSCHECK
+        SYSCHECK,
+        FRONT_DROP
     }
 
     public Intake_Elbow(HardwareMap hardwareMap) {
@@ -56,6 +58,7 @@ public class Intake_Elbow extends SubsystemBase {
             case HAND_OFF -> HAND_OFF;
             case HOVER -> HOVER;
             case SYSCHECK -> SYSCHECK;
+            case FRONT_DROP -> FRONT_DROP;
         };
         IntakeElbow.setPosition(pos);
     }

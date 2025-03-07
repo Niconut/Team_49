@@ -36,9 +36,9 @@ public class Scoring_Arm extends SubsystemBase {
     public double HOME = 0.270;
     public double STOW = 0.270;
     public double GROUND_PICKUP = 0.960;
-    public double WALL_PICKUP_PREP = 0.960;
-    public double WALL_PICKUP = 0.950;
-    public double WALL_PICKUP_RAISE = 0.920;
+    public double WALL_PICKUP_PREP = 0.950;
+    public double WALL_PICKUP = 0.940;
+    public double WALL_PICKUP_RAISE = 0.910;
     public double HIGH_CHAMBER_SCORE_PREP = 0.260;
     public double HIGH_CHAMBER_SCORE = 0.300; //0.288;
     public double HIGH_BASKET_SCORE_PREP = 0.270;
@@ -52,7 +52,7 @@ public class Scoring_Arm extends SubsystemBase {
     public double HANDOFF_PREP_EARLY = 0.100;
     public double MID = 0.270;
     public double DIRECT_SCORE = 0.080;
-    public double SYSCHECK = 0.270;
+    public double SYSCHECK = 0.280;
 
     public enum ScoringArmState {
         INIT,

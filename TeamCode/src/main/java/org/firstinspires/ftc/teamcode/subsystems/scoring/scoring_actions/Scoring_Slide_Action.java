@@ -18,9 +18,9 @@ public class Scoring_Slide_Action {
     private int HANDOFF = -670;
     private int HANDOFF_PREP = -900;
     private int GROUND_PICKUP = -20;
-    private int WALL_PICKUP_PREP = -675; //-700;
+    private int WALL_PICKUP_PREP = -680; //-700;
     private int WALL_PICKUP_DONE = -800;
-    private int WALL_PICKUP = -650; //-735;
+    private int WALL_PICKUP = -690; //-735;
     private int HIGH_CHAMBER_SCORE_PREP = -875;//-810;
     private int HIGH_CHAMBER_SCORE_PREP2 = -875;//-820;
     private int HIGH_CHAMBER_SCORE = -1360;//-1200;
