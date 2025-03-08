@@ -92,29 +92,29 @@ public final class LEFT_1_SPECIMEN_3_SAMPLE extends LinearOpMode {
         TrajectoryActionBuilder trajectoryHighSpecimenPreload = drive.actionBuilder(beginPose)
                 .setReversed(false)
                 //.lineToY(-35);
-                .strafeToLinearHeading(new Vector2d(-10,-33.5), Math.toRadians(90));
+                .strafeToLinearHeading(new Vector2d(-10.5,-33.5), Math.toRadians(90));
 
         TrajectoryActionBuilder trajectoryPickUpSamples1 = trajectoryHighSpecimenPreload.endTrajectory().fresh()
                 .setReversed(true)
                 //.strafeToLinearHeading((new Vector2d(-49.5, -48)), Math.toRadians(-90))
                 //.strafeToLinearHeading((new Vector2d(-49.5, -38.5)), Math.toRadians(-90));
-                //.strafeToLinearHeading((new Vector2d(-50, -45)), Math.toRadians(90));
-                .splineToConstantHeading(new Vector2d(-24, -48), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(-50, -45), Math.toRadians(90));
+                //.strafeToLinearHeading((new Vector2d(-50, -44)), Math.toRadians(90));
+                //.splineToConstantHeading(new Vector2d(-24, -48), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(-49.5, -44), Math.toRadians(90));
 
 
         TrajectoryActionBuilder trajectoryScoreSamplesPrep1 = trajectoryPickUpSamples1.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(-52,-52), Math.toRadians(-135));
 
         TrajectoryActionBuilder trajectoryScoreSamples1 = trajectoryScoreSamplesPrep1.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-52.5, -52.5), Math.toRadians(-135));
+                .strafeToLinearHeading(new Vector2d(-54, -52.5), Math.toRadians(-135));
 
 
 
         TrajectoryActionBuilder trajectoryPickUpSamples2 = trajectoryScoreSamples1.endTrajectory().fresh()
                 //.splineToLinearHeading(new Vector2d(60, -44), Math.toRadians(90));
                 //.strafeToLinearHeading(new Vector2d(48, -52), Math.toRadians(90))
-                .strafeToLinearHeading((new Vector2d(-59, -45)), Math.toRadians(90));
+                .strafeToLinearHeading((new Vector2d(-59.5, -44)), Math.toRadians(90));
                 //.strafeToLinearHeading(new Vector2d(48, -53), Math.toRadians(90))
                 //.strafeToLinearHeading(new Vector2d(60, -53), Math.toRadians(90));
                 //.splineToConstantHeading(new Vector2d(60, -53), Math.toRadians(90));;
@@ -123,16 +123,16 @@ public final class LEFT_1_SPECIMEN_3_SAMPLE extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(-52,-52), Math.toRadians(-135));
 
         TrajectoryActionBuilder trajectoryScoreSamples2 = trajectoryScoreSamplesPrep2.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-52.5, -52.5), Math.toRadians(-135));
+                .strafeToLinearHeading(new Vector2d(-54, -52.5), Math.toRadians(-135));
 
         TrajectoryActionBuilder trajectoryPickUpSamples3 = trajectoryScoreSamples2.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-59, -45), Math.toRadians(115));
+                .strafeToLinearHeading(new Vector2d(-59.75, -44.5), Math.toRadians(115));
 
         TrajectoryActionBuilder trajectoryScoreSamplesPrep3 = trajectoryPickUpSamples3.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(-52,-52), Math.toRadians(-135));
 
         TrajectoryActionBuilder trajectoryScoreSamples3 = trajectoryScoreSamplesPrep3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-52.5, -52.5), Math.toRadians(-135));
+                .strafeToLinearHeading(new Vector2d(-54, -52.5), Math.toRadians(-135));
 
         TrajectoryActionBuilder trajectoryParkPrep = trajectoryScoreSamples2.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(-50, -50), Math. toRadians(-135));
@@ -396,6 +396,7 @@ public final class LEFT_1_SPECIMEN_3_SAMPLE extends LinearOpMode {
                 scoringArm.scoringArmHighBasketScore(),
                 new SleepAction(.5),
                 scoringGripper.scoringGripperOpen(),
+                new SleepAction(.25),
                 scoringArm.scoringArmStow(),
                 new SleepAction(0.2)
                 /* scoringSlide.scoringSlideGroundPickUp(),
@@ -433,6 +434,7 @@ public final class LEFT_1_SPECIMEN_3_SAMPLE extends LinearOpMode {
                 scoringArm.scoringArmHighBasketScore(),
                 new SleepAction(.5),
                 scoringGripper.scoringGripperOpen(),
+                new SleepAction(.25),
                 scoringArm.scoringArmStow(),
                 new SleepAction(0.2)
         );
@@ -468,6 +470,7 @@ public final class LEFT_1_SPECIMEN_3_SAMPLE extends LinearOpMode {
                 scoringArm.scoringArmHighBasketScore(),
                 new SleepAction(.5),
                 scoringGripper.scoringGripperOpen(),
+                new SleepAction(.25),
                 scoringArm.scoringArmStow(),
                 new SleepAction(0.2)
         );

@@ -14,8 +14,8 @@ public class Intake_Slide_Action {
     private static double STOW = 0.52;
     private static double PICKUP_PREP = 0.495;
     private static double SAFE_MIN = 0.13;
-    private static double HAND_OFF_PREP = 0.52;
-    private static double HAND_OFF = 0.52;
+    private static double HAND_OFF_PREP = 0.51;
+    private static double HAND_OFF = 0.51;
     private static double MID = 0.5;
     private static double SAFE_MAX = 0.52;
     private double AUTO_LEFT_PICKUP = 0.425;
