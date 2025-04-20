@@ -12,9 +12,9 @@ public class Scoring_Arm_Action {
     public double INIT = 0.195;
     public double HOME = 0.270;
     public double STOW = 0.400;
-    public double GROUND_PICKUP = 0.960;
-    public double WALL_PICKUP_PREP = 0.960;
-    public double WALL_PICKUP = 0.950;
+    public double GROUND_PICKUP = 0.955;
+    public double WALL_PICKUP_PREP = 0.95;
+    public double WALL_PICKUP = 0.94;
     public double WALL_PICKUP_RAISE = 0.920;
     public double HIGH_CHAMBER_SCORE_PREP = 0.255;
     public double HIGH_CHAMBER_SCORE = 0.288;
