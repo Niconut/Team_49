@@ -28,12 +28,12 @@ public class Light_Indicator extends SubsystemBase {
     }
 
     public Light_Indicator(HardwareMap hardwareMap) {
-        this.LightSensorLeft = hardwareMap.get(Servo.class, "LightLeft");
+        //this.LightSensorLeft = hardwareMap.get(Servo.class, "LightLeft");
         this.LightSensorRight = hardwareMap.get(Servo.class, "LightRight");
     }
 
     public void setPosition(double position){
-        LightSensorLeft.setPosition(position);
+        //LightSensorLeft.setPosition(position);
         LightSensorRight.setPosition(position);
     }
 
@@ -47,7 +47,7 @@ public class Light_Indicator extends SubsystemBase {
             case WHITE -> WHITE;
             case PURPLE -> PURPLE;
         };
-        LightSensorLeft.setPosition(pos);
+        //LightSensorLeft.setPosition(pos);
         LightSensorRight.setPosition(pos);
     }
 }

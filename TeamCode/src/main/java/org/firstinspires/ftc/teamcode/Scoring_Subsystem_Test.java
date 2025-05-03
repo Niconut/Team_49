@@ -76,6 +76,8 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.ActuateScoringGripperCommand;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.MoveScoringArmCommand;
+import org.firstinspires.ftc.teamcode.subsystems.Climb.Climb_Servos;
+import org.firstinspires.ftc.teamcode.subsystems.Climb.Climb_Commands.MoveClimbServoCommand;
 
 //@Disabled
 @TeleOp(name="Score_Subsystem_Test", group="AA_DriveCode")
@@ -119,6 +121,9 @@ public class Scoring_Subsystem_Test extends LinearOpMode
     private static double SLIDE_MOVE_INCREMENTS = 0.01;
     private static double SLIDE_MOVE_THRESHOLD = 0.25;
 
+    private static double CLIMB_MOVE_INCREMENTS = 0.01;
+    private static double Climb_MOVE_THRESHOLD = 0.25;
+
     private static double ELBOW_MOVE_INCREMENTS = 0.005;
     private static double ELBOW_MOVE_THRESHOLD = 0.25;
 
@@ -139,6 +144,8 @@ public class Scoring_Subsystem_Test extends LinearOpMode
     Intake_Shoulder intakeShoulder = null;
     Intake_Slide intakeSlide = null;
 
+    Climb_Servos climbServos = null;
+
 
     @Override public void runOpMode()
     {
@@ -155,6 +162,7 @@ public class Scoring_Subsystem_Test extends LinearOpMode
         intakeElbow = new Intake_Elbow(hardwareMap);
         intakeShoulder = new Intake_Shoulder(hardwareMap);
         intakeSlide = new Intake_Slide(hardwareMap);
+        climbServos = new Climb_Servos(hardwareMap);
 
 
         PIDController scoringSlidePID = new PIDController(0.005, 0, 0);
@@ -203,6 +211,8 @@ public class Scoring_Subsystem_Test extends LinearOpMode
         Button highClimbDone = new GamepadButton(driver, GamepadKeys.Button.DPAD_RIGHT);
         Button handOffDriver = new GamepadButton(driver, GamepadKeys.Button.BACK);
 
+        Button climbDriver = new GamepadButton(driver, GamepadKeys.Button.LEFT_STICK_BUTTON);
+
 
         /* ******** GROUP ALL OPERATOR CONTROLS HERE ******** */
         /*
@@ -243,6 +253,10 @@ public class Scoring_Subsystem_Test extends LinearOpMode
         scoringGripper.setState(OPEN);
         scoringArm.setState(ScoringArmState.INIT);
         SCORING_SLIDE_SETPOINT = scoringSlide.setState(HOME);
+
+        climbServos.setState(Climb_Servos.ClimbSubsystemState.INIT);
+
+
 
       //  CommandScheduler.getInstance().setDefaultCommand(drive, slowModeCommand);
         CommandScheduler.getInstance().schedule();
@@ -343,6 +357,12 @@ public class Scoring_Subsystem_Test extends LinearOpMode
                             new MoveIntakeElbowCommand(intakeElbow, Intake_Elbow.IntakeElbowState.PICKUP),
                             new MoveIntakeShoulderCommand(intakeShoulder, Intake_Shoulder.IntakeShoulderState.PICKUP_PREP),
                             new MoveIntakeSlideCommand(intakeSlide, Intake_Slide.IntakeSlideState.STOW)
+                    )
+            );
+
+            climbDriver.whenPressed(
+                    new SequentialCommandGroup(
+                            new MoveClimbServoCommand(climbServos, Climb_Servos.ClimbSubsystemState.CLIMB)
                     )
             );
             /* ************************************************** */
@@ -490,7 +510,7 @@ public class Scoring_Subsystem_Test extends LinearOpMode
                 SCORING_SLIDE_SETPOINT = SCORING_SLIDE_SETPOINT + 25;
             }
 
-            double scoringSlide_move = (-driver.gamepad.right_stick_y);
+            double scoringSlide_move = (driver.gamepad.right_stick_y);
             if (scoringSlide_move != 0){
                 SCORING_SLIDE_SETPOINT = SCORING_SLIDE_SETPOINT + (25 * (int)scoringSlide_move);
             }
@@ -527,6 +547,8 @@ public class Scoring_Subsystem_Test extends LinearOpMode
             telemetry.addData("scoringArm1: ", scoringArm.getSoringArm1position());
             telemetry.addData("scoringArm2: ", scoringArm.getSoringArm2position());
             telemetry.addData("scoringSlide: ", scoringSlide.getLeftCurrentPosition());
+
+            telemetry.addData("climbSensors: ", climbServos.getCurrentPosition());
 
             telemetry.update();
         }
