@@ -13,7 +13,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Elbow_Action;
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Gripper_Action;
-import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Shoulder_Action;
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Slide_Action;
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Wrist_Action;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_actions.Scoring_Arm_Action;
@@ -45,7 +44,6 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
         Intake_Gripper_Action intakeGripper = new Intake_Gripper_Action(hardwareMap);
         Intake_Wrist_Action intakeWrist = new Intake_Wrist_Action(hardwareMap);
         Intake_Elbow_Action intakeElbow = new Intake_Elbow_Action(hardwareMap);
-        Intake_Shoulder_Action intakeShoulder = new Intake_Shoulder_Action(hardwareMap);
         Intake_Slide_Action intakeSlide = new Intake_Slide_Action(hardwareMap);
 
         Scoring_Gripper_Action scoringGripper = new Scoring_Gripper_Action(hardwareMap);
@@ -63,7 +61,6 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                 intakeGripper.intakeGripperInit(),
                 intakeWrist.intakeWristInit(),
                 intakeElbow.intakeElbowInit(),
-                intakeShoulder.intakeShoulderInit(),
                 intakeSlide.intakeSlideInit()
                 )
         );
@@ -72,15 +69,15 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
             Actions.runBlocking(
                 new SequentialAction(
                     scorePreload(scoringGripper, scoringArm, scoringSlide),
-                    pickupSample1(intakeGripper, intakeWrist, intakeElbow, intakeShoulder, intakeSlide, scoringGripper, scoringArm, scoringSlide),
-                    HandOff(scoringSlide,scoringArm,scoringGripper,intakeGripper,intakeWrist,intakeElbow,intakeShoulder,intakeSlide),
-                    scoreSample1(TrajectoryScoreSamples1, scoringSlide, scoringArm, scoringGripper, intakeElbow, intakeShoulder),
-                    pickupSample2(scoringSlide, scoringArm, scoringGripper, intakeGripper, intakeWrist, intakeElbow, intakeShoulder, intakeSlide),
-                    HandOff(scoringSlide,scoringArm,scoringGripper,intakeGripper,intakeWrist,intakeElbow,intakeShoulder,intakeSlide),
-                    scoreSample2(TrajectoryScoreSamples2, scoringSlide, scoringArm, scoringGripper, intakeElbow, intakeShoulder),
-                    pickupSample3(scoringSlide, scoringArm, scoringGripper, intakeGripper, intakeWrist, intakeElbow, intakeShoulder, intakeSlide),
-                    HandOff(scoringSlide,scoringArm,scoringGripper,intakeGripper,intakeWrist,intakeElbow,intakeShoulder,intakeSlide),
-                    scoreSample3(TrajectoryScoreSamples3, scoringSlide, scoringArm, scoringGripper, intakeElbow, intakeShoulder),
+                    pickupSample1(intakeGripper, intakeWrist, intakeElbow, intakeSlide, scoringGripper, scoringArm, scoringSlide),
+                    //HandOff(scoringSlide,scoringArm,scoringGripper,intakeGripper,intakeWrist,intakeElbow,intakeSlide),
+                    scoreSample1(TrajectoryScoreSamples1, scoringSlide, scoringArm, scoringGripper, intakeElbow),
+                    pickupSample2(scoringSlide, scoringArm, scoringGripper, intakeGripper, intakeWrist, intakeElbow,intakeSlide),
+                    //HandOff(scoringSlide,scoringArm,scoringGripper,intakeGripper,intakeWrist,intakeElbow,intakeSlide),
+                    scoreSample2(TrajectoryScoreSamples2, scoringSlide, scoringArm, scoringGripper, intakeElbow,),
+                    pickupSample3(scoringSlide, scoringArm, scoringGripper, intakeGripper, intakeWrist, intakeElbow,  intakeSlide),
+                    //HandOff(scoringSlide,scoringArm,scoringGripper,intakeGripper,intakeWrist,intakeElbow,intakeSlide),
+                    scoreSample3(TrajectoryScoreSamples3, scoringSlide, scoringArm, scoringGripper, intakeElbow),
                     park(TrajectoryPark, scoringArm, scoringSlide)
                     )
                 );
@@ -175,7 +172,6 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
     public Action pickupSample1(Intake_Gripper_Action intakeGripper,
                                 Intake_Wrist_Action intakeWrist,
                                 Intake_Elbow_Action intakeElbow,
-                                Intake_Shoulder_Action intakeShoulder,
                                 Intake_Slide_Action intakeSlide,
                                 Scoring_Gripper_Action scoringGripper,
                                 Scoring_Arm_Action scoringArm,
@@ -189,7 +185,6 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                         scoringSlide.scoringSlideHandOffPrep(),
                         intakeSlide.intakeSlidePickUpMid(),
                         intakeGripper.intakeGripperOpen(),
-                        intakeShoulder.intakeShoulderPickUpPrep(),
                         intakeElbow.intakeElbowHover(),
                         intakeWrist.intakeWristInit()
                 ),
@@ -210,7 +205,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                                 Intake_Gripper_Action intakeGripper,
                                 Intake_Wrist_Action intakeWrist,
                                 Intake_Elbow_Action intakeElbow,
-                                Intake_Shoulder_Action intakeShoulder,
+                                //Intake_Shoulder_Action intakeShoulder,
                                 Intake_Slide_Action intakeSlide){
         return new SequentialAction(
               /*  new ParallelAction(
@@ -241,7 +236,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                         scoringSlide.scoringSlideHandOffPrep(),
                         intakeSlide.intakeSlidePickUpMid(),
                         intakeGripper.intakeGripperOpen(),
-                        intakeShoulder.intakeShoulderPickUpPrep(),
+                        //intakeShoulder.intakeShoulderPickUpPrep(),
                         intakeElbow.intakeElbowHover(),
                         intakeWrist.intakeWristInit()
                 ),
@@ -260,7 +255,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                                 Intake_Gripper_Action intakeGripper,
                                 Intake_Wrist_Action intakeWrist,
                                 Intake_Elbow_Action intakeElbow,
-                                Intake_Shoulder_Action intakeShoulder,
+                                //Intake_Shoulder_Action intakeShoulder,
                                 Intake_Slide_Action intakeSlide){
         return new SequentialAction(
               /*  new ParallelAction(
@@ -293,7 +288,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                         scoringSlide.scoringSlideHandOffPrep(),
                         intakeSlide.intakeSlideAutoLeftPickUp(),
                         intakeGripper.intakeGripperOpen(),
-                        intakeShoulder.intakeShoulderAutoLeftPickUp(),
+                        //intakeShoulder.intakeShoulderAutoLeftPickUp(),
                         intakeElbow.intakeElbowHover(),
                         intakeWrist.intakeWristLeftPickUp()
                 ),
@@ -313,7 +308,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                           Intake_Gripper_Action intakeGripper,
                           Intake_Wrist_Action intakeWrist,
                           Intake_Elbow_Action intakeElbow,
-                          Intake_Shoulder_Action intakeShoulder,
+                          //Intake_Shoulder_Action intakeShoulder,
                           Intake_Slide_Action intakeSlide){
         return new SequentialAction(
            /* new ParallelAction(
@@ -368,8 +363,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                              Scoring_Slide_Action scoringSlide,
                               Scoring_Arm_Action scoringArm,
                               Scoring_Gripper_Action scoringGripper,
-                               Intake_Elbow_Action intakeElbow,
-                               Intake_Shoulder_Action intakeShoulder) {
+                               Intake_Elbow_Action intakeElbow) {
         return new SequentialAction(
                /* new ParallelAction(
                         TrajectoryScorePrep1,
@@ -390,7 +384,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                         scoringArm.scoringArmStow(),
                         scoringSlide.scoringSlideHighBasketScore(),
                         intakeElbow.intakeElbowStow(),
-                        intakeShoulder.intakeShoulderStow()
+                        //intakeShoulder.intakeShoulderStow()
                 ),
                 new SleepAction(0.1),
                 scoringArm.scoringArmHighBasketScore(),
@@ -408,8 +402,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                                Scoring_Slide_Action scoringSlide,
                                Scoring_Arm_Action scoringArm,
                                Scoring_Gripper_Action scoringGripper,
-                               Intake_Elbow_Action intakeElbow,
-                               Intake_Shoulder_Action intakeShoulder) {
+                               Intake_Elbow_Action intakeElbow,) {
         return new SequentialAction(
                 /*new ParallelAction(
                         TrajectoryScorePrep2,
@@ -428,7 +421,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                         scoringArm.scoringArmStow(),
                         scoringSlide.scoringSlideHighBasketScore(),
                         intakeElbow.intakeElbowStow(),
-                        intakeShoulder.intakeShoulderStow()
+                        //intakeShoulder.intakeShoulderStow()
                 ),
                 new SleepAction(0.1),
                 scoringArm.scoringArmHighBasketScore(),
@@ -444,8 +437,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                                Scoring_Slide_Action scoringSlide,
                                Scoring_Arm_Action scoringArm,
                                Scoring_Gripper_Action scoringGripper,
-                               Intake_Elbow_Action intakeElbow,
-                               Intake_Shoulder_Action intakeShoulder) {
+                               Intake_Elbow_Action intakeElbow,) {
         return new SequentialAction(
                 /* new ParallelAction(
                         TrajectoryScorePrep3,
@@ -464,7 +456,7 @@ public final class LEFT_4_SAMPLE extends LinearOpMode {
                         scoringArm.scoringArmStow(),
                         scoringSlide.scoringSlideHighBasketScore(),
                         intakeElbow.intakeElbowStow(),
-                        intakeShoulder.intakeShoulderStow()
+                        //intakeShoulder.intakeShoulderStow()
                 ),
                 new SleepAction(0.1),
                 scoringArm.scoringArmHighBasketScore(),

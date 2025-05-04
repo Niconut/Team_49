@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Gripper;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Wrist;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Elbow;
-import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Shoulder;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Slide;
 
 import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper;
@@ -24,7 +23,6 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Arm.ScoringArmS
 import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState;
 import org.firstinspires.ftc.teamcode.teamcode.MecanumDrive;
 
-import org.firstinspires.ftc.teamcode.subsystems.Constants;
 @Disabled
 @TeleOp(name="Teleop", group="A_DriveCode")
 public class Teleop extends LinearOpMode {
@@ -36,7 +34,7 @@ public class Teleop extends LinearOpMode {
     Intake_Gripper intakeGripper = null;
     Intake_Wrist intakeWrist = null;
     Intake_Elbow intakeElbow = null;
-    Intake_Shoulder intakeShoulder = null;
+    //Intake_Shoulder intakeShoulder = null;
     Intake_Slide intakeSlide = null;
 
     Scoring_Gripper scoringGripper = null;
@@ -82,7 +80,7 @@ public class Teleop extends LinearOpMode {
         intakeGripper = new Intake_Gripper(hardwareMap);
         intakeWrist = new Intake_Wrist(hardwareMap);
         intakeElbow = new Intake_Elbow(hardwareMap);
-        intakeShoulder = new Intake_Shoulder(hardwareMap);
+        //intakeShoulder = new Intake_Shoulder(hardwareMap);
         intakeSlide = new Intake_Slide(hardwareMap);
 
         scoringGripper = new Scoring_Gripper(hardwareMap);
@@ -99,7 +97,7 @@ public class Teleop extends LinearOpMode {
         intakeGripper.setState(Intake_Gripper.IntakeGripperState.INIT);
         intakeWrist.setState(Intake_Wrist.IntakeWristState.INIT);
         intakeElbow.setState(Intake_Elbow.IntakeElbowState.INIT);
-        intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.INIT);
+        //intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.INIT);
         intakeSlide.setState(Intake_Slide.IntakeSlideState.INIT);
 
         scoringArm.setState(ScoringArmState.INIT);
@@ -113,7 +111,7 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("intakeGripper: ", intakeGripper.getCurrentPosition());
             telemetry.addData("intakeWrist: ", intakeWrist.getCurrentPosition());
             telemetry.addData("intakeElbow: ", elbowpos); //intakeElbow.getCurrentPosition());
-            telemetry.addData("intakeShoulder: ", intakeShoulder.getCurrentPosition());
+            //telemetry.addData("intakeShoulder: ", intakeShoulder.getCurrentPosition());
             telemetry.addData("intakeSlide: ", intakeSlide.getCurrentPositionLeft());
 
             telemetry.addData("scoringGripper: ", scoringGripper.getCurrentPosition());
@@ -168,7 +166,7 @@ public class Teleop extends LinearOpMode {
             ));
 
             if (gamepad1.options){
-                intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.MID);
+                //intakeShoulder.setState(Intake_Shoulder.IntakeShoulderState.MID);
                 intakeElbow.setState(Intake_Elbow.IntakeElbowState.MID);
                 intakeGripper.setState(Intake_Gripper.IntakeGripperState.MID);
                 intakeWrist.setState(Intake_Wrist.IntakeWristState.MID);

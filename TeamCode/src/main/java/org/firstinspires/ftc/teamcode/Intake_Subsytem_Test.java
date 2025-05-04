@@ -54,7 +54,6 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -64,7 +63,6 @@ import org.firstinspires.ftc.teamcode.subsystems.drive.driveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.gyro.gyroSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Elbow;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Gripper;
-import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Shoulder;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Slide;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Wrist;
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_commands.ActuateIntakeGripperCommand;

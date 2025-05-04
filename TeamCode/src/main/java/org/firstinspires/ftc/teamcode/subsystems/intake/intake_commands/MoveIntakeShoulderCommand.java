@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems.intake.intake_commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Shoulder;
-
 public class MoveIntakeShoulderCommand extends CommandBase {
         private final Intake_Shoulder intakeShoulderSubsystem;
         private final Intake_Shoulder.IntakeShoulderState targetState;

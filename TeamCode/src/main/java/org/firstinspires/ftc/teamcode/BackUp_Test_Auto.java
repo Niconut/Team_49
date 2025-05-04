@@ -14,7 +14,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Elbow_Action;
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Gripper_Action;
-import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Shoulder_Action;
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Slide_Action;
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_actions.Intake_Wrist_Action;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_actions.Scoring_Arm_Action;
@@ -23,7 +22,7 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_actions.Scoring
 import org.firstinspires.ftc.teamcode.teamcode.MecanumDrive;
 @Disabled
 @Autonomous
-public final class BackUp_Test_Auto extends LinearOpMode {
+public final class ackUp_Test_Auto extends LinearOpMode {
 
     Action  TrajectoryHighSpecimenPrep1,
             TrajectoryPickUpSamples1,

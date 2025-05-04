@@ -72,7 +72,6 @@ import org.firstinspires.ftc.teamcode.subsystems.drive.driveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.gyro.gyroSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Elbow;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Gripper;
-import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Shoulder;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Slide;
 import org.firstinspires.ftc.teamcode.subsystems.intake.Intake_Wrist;
 import org.firstinspires.ftc.teamcode.subsystems.intake.intake_commands.ActuateIntakeGripperCommand;
