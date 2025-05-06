@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Arm.ScoringArmState;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.ScoringGripperState.CLOSED;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Gripper.ScoringGripperState.OPEN;
+import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.CLIMB;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.CLIMB_DONE;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.CLIMB_PREP;
 import static org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Slide.ScoringSlideState.HAND_OFF;
@@ -78,6 +79,7 @@ import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.Actuat
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.MoveScoringArmCommand;
 import org.firstinspires.ftc.teamcode.subsystems.Climb.Climb_Servos;
 import org.firstinspires.ftc.teamcode.subsystems.Climb.Climb_Commands.MoveClimbServoCommand;
+import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.MoveScoringSlideCommand;
 
 //@Disabled
 @TeleOp(name="Score_Subsystem_Test", group="AA_DriveCode")
@@ -362,7 +364,13 @@ public class Scoring_Subsystem_Test extends LinearOpMode
 
             climbDriver.whenPressed(
                     new SequentialCommandGroup(
-                            new MoveClimbServoCommand(climbServos, Climb_Servos.ClimbSubsystemState.CLIMB)
+                            new MoveScoringSlideCommand(scoringSlide, CLIMB_PREP),
+                            new WaitCommand(100),
+                            new MoveClimbServoCommand(climbServos, Climb_Servos.ClimbSubsystemState.CLIMB),
+                            new WaitCommand(2000),
+                            new MoveScoringSlideCommand(scoringSlide, CLIMB),
+                            new WaitCommand(5000),
+                            new MoveScoringSlideCommand(scoringSlide, HOME)
                     )
             );
             /* ************************************************** */

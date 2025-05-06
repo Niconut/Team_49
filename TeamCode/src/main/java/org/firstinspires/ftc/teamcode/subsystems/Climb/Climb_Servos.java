@@ -5,10 +5,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Climb_Servos extends SubsystemBase {
-    private Servo Climb_Servo1;
-    private Servo Climb_Servo2;
+    private Servo climbServo1;
+    private Servo climb_Servo2;
 
-    private  double INIT = 0.25;
+    private  double INIT = 0;
     private double CLIMB = 0.75;
     /*private  double STOW = 0.683;
     private  double DROP = 0.163;
@@ -35,21 +35,21 @@ public class Climb_Servos extends SubsystemBase {
     }
 
     public Climb_Servos(HardwareMap hardwareMap) {
-        this.Climb_Servo1 = hardwareMap.get(Servo.class, "Climb_Servo1");
-        this.Climb_Servo1.setDirection(Servo.Direction.FORWARD);
+        this.climbServo1 = hardwareMap.get(Servo.class, "Climb_Servo1");
+        this.climbServo1.setDirection(Servo.Direction.FORWARD);
 
-        this.Climb_Servo2 = hardwareMap.get(Servo.class, "Climb_Servo2");
-        this.Climb_Servo2.setDirection(Servo.Direction.REVERSE);
+        this.climb_Servo2 = hardwareMap.get(Servo.class, "Climb_Servo2");
+        this.climb_Servo2.setDirection(Servo.Direction.REVERSE);
     }
     public void setPosition(double position){
         //position = (position > SAFE_MAX) ? SAFE_MAX : position;
         //position = (position < SAFE_MIN) ? SAFE_MIN: position;
-        Climb_Servo1.setPosition(position);
-        Climb_Servo2.setPosition(position);
+        climbServo1.setPosition(position);
+        climb_Servo2.setPosition(position);
     }
 
 
-    public double getCurrentPosition(){return Climb_Servo1.getPosition();}
+    public double getCurrentPosition(){return climbServo1.getPosition();}
 
     public void setState(ClimbSubsystemState state){
         double pos = switch (state){
@@ -64,8 +64,8 @@ public class Climb_Servos extends SubsystemBase {
             case HAND_OFF -> HAND_OFF;
             case HOVER -> HOVER;*/
         };
-        Climb_Servo1.setPosition(pos);
-        Climb_Servo2.setPosition(pos);
+        climbServo1.setPosition(pos);
+        climb_Servo2.setPosition(pos);
     }
 
 }
