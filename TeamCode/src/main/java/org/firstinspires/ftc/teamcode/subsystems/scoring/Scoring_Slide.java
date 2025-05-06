@@ -48,8 +48,7 @@ public class Scoring_Slide extends SubsystemBase {
     private int HIGH_BASKET_SCORE = -3485;
     private int LOW_BASKET_SCORE_PREP = -3485;
     private int LOW_BASKET_SCORE = -3485;
-    private int CLIMB_PREP = -3200;
-    private int CLIMB = -3805;
+    private int CLIMB_PREP = -3075;
     private int CLIMB_DONE = -1675;
     private int SAFE_MIN = -3485;
     private int SAFE_MAX = -30;
