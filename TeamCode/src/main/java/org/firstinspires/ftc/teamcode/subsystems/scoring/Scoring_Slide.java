@@ -48,7 +48,8 @@ public class Scoring_Slide extends SubsystemBase {
     private int HIGH_BASKET_SCORE = -3485;
     private int LOW_BASKET_SCORE_PREP = -3485;
     private int LOW_BASKET_SCORE = -3485;
-    private int CLIMB_PREP = -3075;
+    private int CLIMB_PREP = -2500;
+    private int CLIMB = -4700;//-3805;
     private int CLIMB_DONE = -1675;
     private int SAFE_MIN = -3485;
     private int SAFE_MAX = -30;
@@ -70,6 +71,7 @@ public class Scoring_Slide extends SubsystemBase {
         LOW_BASKET_SCORE_PREP,
         LOW_BASKET_SCORE,
         CLIMB_PREP,
+        CLIMB,
         CLIMB_DONE,
         HAND_OFF,
         HAND_OFF_PREP,
@@ -137,6 +139,7 @@ public class Scoring_Slide extends SubsystemBase {
             case LOW_BASKET_SCORE_PREP -> LOW_BASKET_SCORE_PREP;
             case LOW_BASKET_SCORE -> LOW_BASKET_SCORE;
             case CLIMB_PREP -> CLIMB_PREP;
+            case CLIMB -> CLIMB;
             case CLIMB_DONE -> CLIMB_DONE;
             case HAND_OFF_PREP -> HAND_OFF_PREP;
             case HAND_OFF -> HAND_OFF;
@@ -163,6 +166,7 @@ public class Scoring_Slide extends SubsystemBase {
             case LOW_BASKET_SCORE_PREP -> LOW_BASKET_SCORE_PREP;
             case LOW_BASKET_SCORE -> LOW_BASKET_SCORE;
             case CLIMB_PREP -> CLIMB_PREP;
+            case CLIMB -> CLIMB;
             case CLIMB_DONE -> CLIMB_DONE;
             case HAND_OFF_PREP -> HAND_OFF_PREP;
             case HAND_OFF -> HAND_OFF;
