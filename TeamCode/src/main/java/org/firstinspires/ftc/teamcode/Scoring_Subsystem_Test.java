@@ -213,7 +213,10 @@ public class Scoring_Subsystem_Test extends LinearOpMode
         Button highClimbDone = new GamepadButton(driver, GamepadKeys.Button.DPAD_RIGHT);
         Button handOffDriver = new GamepadButton(driver, GamepadKeys.Button.BACK);
 
-        Button climbDriver = new GamepadButton(driver, GamepadKeys.Button.LEFT_STICK_BUTTON);
+        Button climbDriver1 = new GamepadButton(driver, GamepadKeys.Button.LEFT_STICK_BUTTON);
+        Button climbDriver2 = new GamepadButton(driver, GamepadKeys.Button.START);
+
+        Button home = new GamepadButton(driver, GamepadKeys.Button.B);
 
 
         /* ******** GROUP ALL OPERATOR CONTROLS HERE ******** */
@@ -285,6 +288,12 @@ public class Scoring_Subsystem_Test extends LinearOpMode
                     new WaitCommand(300),
                     new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(WALL_PICKUP_PREP);})
                 )
+            );
+
+            home.whenPressed(
+                    new SequentialCommandGroup(
+                            new InstantCommand(() -> {SCORING_SLIDE_SETPOINT = scoringSlide.setState(HOME);})
+                    )
             );
 
             wallPickupButton
@@ -362,7 +371,7 @@ public class Scoring_Subsystem_Test extends LinearOpMode
                     )
             );
 
-            climbDriver.whenPressed(
+            /*climbDriver.whenPressed(
                     new SequentialCommandGroup(
                             new MoveScoringSlideCommand(scoringSlide, CLIMB_PREP),
                             new WaitCommand(100),
@@ -371,6 +380,33 @@ public class Scoring_Subsystem_Test extends LinearOpMode
                             new MoveScoringSlideCommand(scoringSlide, CLIMB),
                             new WaitCommand(5000),
                             new MoveScoringSlideCommand(scoringSlide, HOME)
+                    )
+            );*/
+            climbDriver1.whenHeld(
+                    new SequentialCommandGroup(
+                            new MoveClimbServoCommand(climbServos, Climb_Servos.ClimbSubsystemState.CLIMB)
+                    )
+            );
+
+            climbDriver1.whenReleased(
+                    new SequentialCommandGroup(
+                            new SequentialCommandGroup(
+                                    new MoveClimbServoCommand(climbServos, Climb_Servos.ClimbSubsystemState.INIT)
+                            )
+                    )
+            );
+
+            climbDriver2.whenHeld(
+                    new SequentialCommandGroup(
+                            new MoveClimbServoCommand(climbServos, Climb_Servos.ClimbSubsystemState.RETRACT)
+                    )
+            );
+
+            climbDriver2.whenReleased(
+                    new SequentialCommandGroup(
+                            new SequentialCommandGroup(
+                                    new MoveClimbServoCommand(climbServos, Climb_Servos.ClimbSubsystemState.INIT)
+                            )
                     )
             );
             /* ************************************************** */
