@@ -76,8 +76,8 @@ public class RoadRunnerTeleOp extends LinearOpMode {
     private DcMotor Wheel2;
     private Servo Pusher;
     private double START = 0.5;
-    private double EXTEND = 0.75;
-    private double RETRACT = 0.5;
+    private double EXTEND = 0.65;
+    private double RETRACT = 0.55;
     private double STRAFE_SCALE = 1;
     private double DRIVE_SCALE = 1;
     private double ROT_SCALE = 1;
@@ -140,6 +140,11 @@ public class RoadRunnerTeleOp extends LinearOpMode {
                 Wheel2.setPower(0);
             }
 
+            if (gamepad1.y) {
+                Pusher.setPosition(EXTEND);
+            } else {
+                Pusher.setPosition(RETRACT);
+            }
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
