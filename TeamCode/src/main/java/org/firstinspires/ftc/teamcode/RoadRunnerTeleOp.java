@@ -67,7 +67,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp", group="TeleOp")
+@TeleOp(name="RoadrunnerTeleOp", group="TeleOp")
 public class RoadRunnerTeleOp extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
@@ -75,9 +75,9 @@ public class RoadRunnerTeleOp extends LinearOpMode {
     private DcMotor Wheel1;
     private DcMotor Wheel2;
     private Servo Pusher;
-    private double START = 0.5;
-    private double EXTEND = 0.65;
-    private double RETRACT = 0.55;
+    private double START = 0.21;
+    private double EXTEND = 0.35;
+    private double RETRACT = 0.21;
     private double STRAFE_SCALE = 1;
     private double DRIVE_SCALE = 1;
     private double ROT_SCALE = 1;
@@ -111,6 +111,8 @@ public class RoadRunnerTeleOp extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        Pusher.setPosition(START);
+
         waitForStart();
         runtime.reset();
 
@@ -130,11 +132,11 @@ public class RoadRunnerTeleOp extends LinearOpMode {
             ));
 
             if (gamepad1.a) {
-                Wheel1.setPower(1);
-                Wheel2.setPower(1);
+                Wheel1.setPower(0.5);
+                Wheel2.setPower(0.5);
             } else if (gamepad1.b){
-                Wheel1.setPower(-1);
-                Wheel2.setPower(-1);
+                Wheel1.setPower(-0.5);
+                Wheel2.setPower(-0.5);
             } else {
                 Wheel1.setPower(0);
                 Wheel2.setPower(0);
