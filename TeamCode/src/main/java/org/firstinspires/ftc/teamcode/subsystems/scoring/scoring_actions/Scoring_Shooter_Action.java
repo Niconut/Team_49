@@ -1,14 +1,11 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_actions;
 
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 public class Scoring_Shooter_Action {
     private DcMotorEx Wheel1;
@@ -34,8 +31,9 @@ public class Scoring_Shooter_Action {
             if(!initialized){
                 Wheel1.setPower(0.5);
                 Wheel2.setPower(0.5);
-                double currentVel = Wheel1.getVelocity();
-                initialized = (currentVel == targetvel);
+                initialized = true;
+               /* double currentVel = Wheel1.getVelocity();
+                initialized = (currentVel == targetvel);*/
             }
 
             return false;
@@ -51,8 +49,9 @@ public class Scoring_Shooter_Action {
             if(!initialized){
                 Wheel1.setPower(0);
                 Wheel2.setPower(0);
-                double currentVel = Wheel1.getVelocity();
-                initialized = (currentVel == targetvel);
+                initialized = true;
+                /*double currentVel = Wheel1.getVelocity();
+                initialized = (currentVel == targetvel);*/
             }
 
             return false;
