@@ -137,7 +137,7 @@ public class RoadRunnerTeleOp extends LinearOpMode {
             } else if (gamepad1.b){
                 Wheel1.setPower(-0.5);
                 Wheel2.setPower(-0.5);
-            } else {
+            } else if (gamepad1.x) {
                 Wheel1.setPower(0);
                 Wheel2.setPower(0);
             }

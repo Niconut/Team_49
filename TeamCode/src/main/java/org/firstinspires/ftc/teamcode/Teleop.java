@@ -29,8 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.arcrobotics.ftclib.controller.PIDController;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -38,11 +37,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
-import org.firstinspires.ftc.teamcode.subsystems.Spin;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Park_Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Wrist;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /*
  * This file contains an example of a Linear "OpMode".
@@ -81,7 +78,7 @@ public class Teleop extends LinearOpMode {
     private static Arm arm1 = null;
     private static Wrist wrist = null;
     private static Park_Arm Park_Arm = null;
-    private static Spin Spin= null;
+
     public static double armkP = 0.01;
     public static double armkD = 0.00001;
     public static double armkI = 0.0001;
@@ -112,7 +109,6 @@ public class Teleop extends LinearOpMode {
         Park_Arm = new Park_Arm(hardwareMap);
         */
 
-        Spin = new Spin(hardwareMap);
         /*
         PIDController armPID = new PIDController(armkP, armkI, armkD);
         armPID.setTolerance(50, 10);
@@ -223,11 +219,6 @@ public class Teleop extends LinearOpMode {
 
              */
 
-            Spin.setPowerSpin(1);
-
-            200RPM - 6, 8, 12V
-            435RPM - 12V battery
-            217.5  - 6V
 
             /*
             arm1.setPower1(armPower);
