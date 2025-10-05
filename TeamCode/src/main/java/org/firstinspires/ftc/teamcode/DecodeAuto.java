@@ -26,9 +26,11 @@ public final class DecodeAuto extends LinearOpMode {
         Scoring_Shooter_Action scoringShooter = new Scoring_Shooter_Action(hardwareMap);
         Scoring_Pusher_Action scoringPusher = new Scoring_Pusher_Action(hardwareMap);
 
+        buildTrajectories(drive, beginPose);
         Actions.runBlocking(
                 scoringPusher.StartPusher()
         );
+
         waitForStart();;
             Actions.runBlocking(
                     new SequentialAction(
@@ -41,7 +43,7 @@ public final class DecodeAuto extends LinearOpMode {
             );
     }
 
-    public void buoldTrajectories(MecanumDrive drive, Pose2d beginPose) {
+    public void buildTrajectories(MecanumDrive drive, Pose2d beginPose) {
         TrajectoryActionBuilder trajectoryShootBalls1 = drive.actionBuilder(beginPose)
                 .setReversed(false)
                 .strafeToLinearHeading((new Vector2d(-3, 27)), Math.toRadians(140));
@@ -67,9 +69,13 @@ public final class DecodeAuto extends LinearOpMode {
                                Scoring_Pusher_Action scoringPusher){
         return new SequentialAction(
                 new ParallelAction(
-                targetTrajectory,
+                        targetTrajectory,
                         scoringShooter.ShootBall()
                 ),
+                new SleepAction(0.5),
+                scoringPusher.ExtendPusher(),
+                new SleepAction(0.5),
+                scoringPusher.RetractPusher(),
                 new SleepAction(0.5),
                 scoringPusher.ExtendPusher(),
                 new SleepAction(0.5),
