@@ -160,13 +160,14 @@ public class CommandBasedTeleOp extends LinearOpMode {
                 -gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x) * ROT_SCALE
             ));
 
+
             ShootBall.whenPressed(
                     new SpinScoringShooterCommand(scoringShooter, Scoring_Shooter.ScoringShooterState.OUTTAKE)
             );
             StopShooter.whenPressed(
                     new SpinScoringShooterCommand(scoringShooter, Scoring_Shooter.ScoringShooterState.INIT)
             );
-            
+            scoringShooter.setState(Scoring_Shooter.ScoringShooterState.INIT);
 
             if (gamepad1.y) {
                 Pusher.setPosition(EXTEND);
