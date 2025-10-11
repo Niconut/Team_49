@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
@@ -42,7 +43,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.subsystems.drive.driveCommands.DefaultDriveCommand;
+import org.firstinspires.ftc.teamcode.subsystems.drive.driveCommands.SlowModeCommand;
+import org.firstinspires.ftc.teamcode.subsystems.drive.driveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Pusher;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.Scoring_Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.ActuateScoringPusherCommand;
 import org.firstinspires.ftc.teamcode.subsystems.scoring.scoring_commands.SpinScoringShooterCommand;
 
 /*
@@ -79,7 +85,10 @@ public class CommandBasedTeleOp extends LinearOpMode {
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
     private Scoring_Shooter scoringShooter;
-    private Servo Pusher;
+    private Scoring_Pusher scoringPusher;
+    driveSubsystem drive = null;
+    public Command defaultDriveCommand;
+    public Command slowModeCommand;
     private double START = 0.21;
     private double EXTEND = 0.35;
     private double RETRACT = 0.21;
@@ -96,7 +105,7 @@ public class CommandBasedTeleOp extends LinearOpMode {
         // to the names assigned during the robot configuration step on the DS or RC devices.
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
         scoringShooter = new Scoring_Shooter(hardwareMap);
-        Pusher = hardwareMap.get(Servo.class, "Pusher");
+        scoringPusher = new Scoring_Pusher(hardwareMap);
 
         GamepadEx driver = new GamepadEx(gamepad1);
         GamepadEx operator = new GamepadEx(gamepad2);
@@ -123,6 +132,8 @@ public class CommandBasedTeleOp extends LinearOpMode {
 
         Button ShootBall = new GamepadButton(driver, GamepadKeys.Button.B);
         Button StopShooter = new GamepadButton(driver, GamepadKeys.Button.A);
+        Button PushBall = new GamepadButton(driver, GamepadKeys.Button.Y);
+        Button driveSpeedButton = new GamepadButton(driver, GamepadKeys.Button.RIGHT_BUMPER);
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -139,8 +150,8 @@ public class CommandBasedTeleOp extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        Pusher.setPosition(START);
-
+        scoringPusher.setState(Scoring_Pusher.ScoringPusherState.RETRACT);
+        scoringShooter.setState(Scoring_Shooter.ScoringShooterState.INIT);
         waitForStart();
         runtime.reset();
 
@@ -151,14 +162,11 @@ public class CommandBasedTeleOp extends LinearOpMode {
         }
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            MakeCommands(driver);
             CommandScheduler.getInstance().run();
-            drive.setDrivePowers(new PoseVelocity2d(
-                    new Vector2d(
-                    -gamepad1.left_stick_y * Math.abs(gamepad1.left_stick_y) * DRIVE_SCALE,
-                    -gamepad1.left_stick_x * Math.abs(gamepad1.left_stick_x) * STRAFE_SCALE
-                    ),
-                -gamepad1.right_stick_x * Math.abs(gamepad1.right_stick_x) * ROT_SCALE
-            ));
+            driveSpeedButton
+                    .whenHeld(defaultDriveCommand)
+                    .whenReleased(slowModeCommand);
 
 
             ShootBall.whenPressed(
@@ -167,15 +175,30 @@ public class CommandBasedTeleOp extends LinearOpMode {
             StopShooter.whenPressed(
                     new SpinScoringShooterCommand(scoringShooter, Scoring_Shooter.ScoringShooterState.INIT)
             );
-            scoringShooter.setState(Scoring_Shooter.ScoringShooterState.INIT);
+            PushBall.whenHeld(
+                    new ActuateScoringPusherCommand(scoringPusher, Scoring_Pusher.ScoringPusherState.EXTEND)
+            ).whenReleased(
+                    new ActuateScoringPusherCommand(scoringPusher, Scoring_Pusher.ScoringPusherState.RETRACT)
+            );
 
-            if (gamepad1.y) {
-                Pusher.setPosition(EXTEND);
-            } else {
-                Pusher.setPosition(RETRACT);
-            }
+
+
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
-    }}
+    }
+    private void MakeCommands(GamepadEx gamepad) {
+        defaultDriveCommand = new DefaultDriveCommand(drive,
+                gamepad::getLeftX,
+                gamepad::getLeftY,
+                gamepad::getRightX
+        );
+
+        slowModeCommand = new SlowModeCommand(drive,
+                gamepad::getLeftX,
+                gamepad::getLeftY,
+                gamepad::getRightX
+        );
+    }
+}
