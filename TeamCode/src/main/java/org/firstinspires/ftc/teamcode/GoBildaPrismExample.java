@@ -27,6 +27,7 @@ import static org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver.LayerHeigh
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Prism.Color;
 import org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver;
@@ -62,14 +63,19 @@ import java.util.concurrent.TimeUnit;
 //@Disabled
 
 public class GoBildaPrismExample extends LinearOpMode {
+    ElapsedTime runtime;
 
     GoBildaPrismDriver prism;
 
-    PrismAnimations.Solid solid = new PrismAnimations.Solid(Color.BLUE);
+    PrismAnimations.Solid solid = new PrismAnimations.Solid(Color.WHITE);
+
     PrismAnimations.RainbowSnakes rainbowSnakes = new PrismAnimations.RainbowSnakes();
+
+    PrismAnimations.Blink blink = new PrismAnimations.Blink();
 
     @Override
     public void runOpMode() {
+        runtime =  new ElapsedTime();
         /*
          * Initialize the hardware variables. Note that the strings used here must correspond
          * to the names assigned during the robot configuration step on the driver's station.
@@ -84,12 +90,14 @@ public class GoBildaPrismExample extends LinearOpMode {
          */
         solid.setBrightness(50);
         solid.setStartIndex(0);
-        solid.setStopIndex(12);
+        solid.setStopIndex(23);
 
         rainbowSnakes.setNumberOfSnakes(2);
         rainbowSnakes.setSnakeLength(3);
         rainbowSnakes.setSpacingBetween(6);
         rainbowSnakes.setSpeed(0.5f);
+
+        //blink.setPeriod(500, TimeUnit.MILLISECONDS);
 
         telemetry.addData("Device ID: ", prism.getDeviceID());
         telemetry.addData("Firmware Version: ", prism.getFirmwareVersionString());
@@ -100,48 +108,80 @@ public class GoBildaPrismExample extends LinearOpMode {
         // Wait for the game to start (driver presses START)
         waitForStart();
         resetRuntime();
-
+        runtime.reset();
+        runtime.startTime();
+        prism.clearAllAnimations();
+        solid.setPrimaryColor(Color.GREEN);
+        prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+        prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
 
-
-            if(gamepad1.aWasPressed()){
-                /*
-                 * Here we insert and update the animation to the Prism, this by default does not
-                 * save it to an Artboard, it just starts the Animation playing. If you have
-                 * already inserted an animation at a layer height, you can instead call
-                 * .updateAnimationFromIndex(LayerHeight.LAYER_0) to update an animation at a
-                 * specific layer height without overwriting it completely.
-                 */
-                prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                prism.insertAndUpdateAnimation(LayerHeight.LAYER_1,rainbowSnakes);
-            }
-
-            if(gamepad1.xWasPressed()){
-                /*
-                 * Clearing the animation doesn't erase any saved Artboards, but it removes all the
-                 * currently displayed animations.
-                 */
+        //Testing Portion:
+       /* while (opModeIsActive()) {
+           if ((runtime.seconds() >= 60) && (runtime.seconds() <= 61)){
+           //if ((runtime.seconds() > 60) && (runtime.seconds() < 61)){
                 prism.clearAllAnimations();
-            }
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, rainbowSnakes);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_1,rainbowSnakes);
+            }*/
 
-            if(gamepad1.dpadDownWasPressed()){
-                /*
-                 * Here we save the animation we are currently displaying to Artboard 0.
-                 */
-                prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
-            }
+            //Testing Portion Part 2:
+            while (opModeIsActive()) {
+                if ((runtime.seconds() >= 15) && (runtime.seconds() <= 15.1)) {
+                    //prism.clearAllAnimations();
+                    solid.setPrimaryColor(255, 50, 0 ); //Orange
+                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
+                }
+                if ((runtime.seconds() >= 30) && (runtime.seconds() <= 30.1)){
+                    solid.setPrimaryColor(Color.RED);
+                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
+                }
+                if ((runtime.seconds() >= 40) && (runtime.seconds() <= 40.1)){
+                    //solid.setPrimaryColor(0,0,0);
+                    blink.setPrimaryColor(Color.RED); //Need to figure out how to make it blink
+                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, blink);
+                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, blink);
+                }
 
-            telemetry.addLine("Press A to insert and update the created animations.");
-            telemetry.addLine("Press X to clear current animations.");
-            telemetry.addLine("Press D-Pad Down to save current animations to Artboard #0");
-            telemetry.addLine();
-            telemetry.addData("Run Time (Hours): ",prism.getRunTime(TimeUnit.HOURS));
-            telemetry.addData("Run Time (Minutes): ",prism.getRunTime(TimeUnit.MINUTES));
-            telemetry.addData("Number of LEDS: ", prism.getNumberOfLEDs());
-            telemetry.addData("Current FPS: ", prism.getCurrentFPS());
+//            if(gamepad1.aWasPressed()){
+//                /*
+//                 * Here we insert and update the animation to the Prism, this by default does not
+//                 * save it to an Artboard, it just starts the Animation playing. If you have
+//                 * already inserted an animation at a layer height, you can instead call
+//                 * .updateAnimationFromIndex(LayerHeight.LAYER_0) to update an animation at a
+//                 * specific layer height without overwriting it completely.
+//                 */
+//                prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+//                //prism.insertAndUpdateAnimation(LayerHeight.LAYER_1,rainbowSnakes);
+//            }
+//
+//            if(gamepad1.xWasPressed()){
+//                /*
+//                 * Clearing the animation doesn't erase any saved Artboards, but it removes all the
+//                 * currently displayed animations.
+//                 */
+//                prism.clearAllAnimations();
+//            }
+//
+//            if(gamepad1.dpadDownWasPressed()){
+//                /*
+//                 * Here we save the animation we are currently displaying to Artboard 0.
+//                 */
+//                prism.saveCurrentAnimationsToArtboard(GoBildaPrismDriver.Artboard.ARTBOARD_0);
+//            }
+//
+//            telemetry.addLine("Press A to insert and update the created animations.");
+//            telemetry.addLine("Press X to clear current animations.");
+//            telemetry.addLine("Press D-Pad Down to save current animations to Artboard #0");
+//            telemetry.addLine();
+//            telemetry.addData("Run Time (Hours): ",prism.getRunTime(TimeUnit.HOURS));
+//            telemetry.addData("Run Time (Minutes): ",prism.getRunTime(TimeUnit.MINUTES));
+//            telemetry.addData("Number of LEDS: ", prism.getNumberOfLEDs());
+            telemetry.addData("runtime", runtime.seconds());
             telemetry.update();
-            sleep(50);
+//            sleep(50);
         }
     }
 
