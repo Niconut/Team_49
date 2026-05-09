@@ -1,41 +1,15 @@
-/*   MIT License
- *   Copyright (c) [2025] [Base 10 Assets, LLC]
- *
- *   Permission is hereby granted, free of charge, to any person obtaining a copy
- *   of this software and associated documentation files (the "Software"), to deal
- *   in the Software without restriction, including without limitation the rights
- *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *   copies of the Software, and to permit persons to whom the Software is
- *   furnished to do so, subject to the following conditions:
-
- *   The above copyright notice and this permission notice shall be included in all
- *   copies or substantial portions of the Software.
-
- *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *   SOFTWARE.
- */
-
 package org.firstinspires.ftc.teamcode;
 
 
 import static org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver.LayerHeight;
 
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Prism.Color;
 import org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.Prism.PrismAnimations;
-
-import java.util.concurrent.TimeUnit;
 
 /*
  * This example file shows how to create a couple of different Animations on the Prism, and save
@@ -61,11 +35,10 @@ import java.util.concurrent.TimeUnit;
  * you can have up to 8 unique Artboards. Artboards are easy and computationally fast to switch between.
  */
 
-//Official Competition LED Code
-@TeleOp(name="Prism Animations Example", group="Linear OpMode")
+@TeleOp(name="Prism Easter Egg", group="Linear OpMode")
 //@Disabled
 
-public class GoBildaPrismExample extends LinearOpMode {
+public class PrismEasterEgg extends LinearOpMode {
     ElapsedTime runtime;
 
     GoBildaPrismDriver prism;
@@ -78,12 +51,12 @@ public class GoBildaPrismExample extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        runtime =  new ElapsedTime();
+        runtime = new ElapsedTime();
         /*
          * Initialize the hardware variables. Note that the strings used here must correspond
          * to the names assigned during the robot configuration step on the driver's station.
          */
-        prism = hardwareMap.get(GoBildaPrismDriver.class,"prism");
+        prism = hardwareMap.get(GoBildaPrismDriver.class, "prism");
 
         /*
          * Here you can customize the specifics of different animations. Each animation has it's
@@ -119,56 +92,40 @@ public class GoBildaPrismExample extends LinearOpMode {
         prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
         // run until the end of the match (driver presses STOP)
 
-            //Test Code
-            /*while (opModeIsActive()) {
-                if ((runtime.seconds() >= 60) && (runtime.seconds() <= 60.1)) {
-                    //prism.clearAllAnimations();
-                    solid.setPrimaryColor(255, 50, 0 ); //Orange
-                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
-                }
-                if (runtime.seconds() >= 105) {
-                    // Math: Toggles every 0.5 seconds
-                    if ((int)(runtime.seconds() * 2) % 2 == 0) {
-                        blink.setPrimaryColor(Color.RED);
-                    } else {
-                        blink.setPrimaryColor(114, 47, 55); // This "turns off" the LEDs, Wine Red
-                    }
+        while (opModeIsActive()) {
+            if ((runtime.seconds() >= 60) && (runtime.seconds() <= 60.1)) {
+                //prism.clearAllAnimations();
+                solid.setPrimaryColor(255, 50, 0); //Orange
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
+            }
+            if ((runtime.seconds() >= 95) && (runtime.seconds() <= 95.1)) { //Blip
+                solid.setPrimaryColor(Color.BLUE);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
+            }
 
-                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, blink);
-                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, blink);
-                }*/
+            if ((runtime.seconds() >= 95.5) && (runtime.seconds() <= 95.6)) {
+                solid.setPrimaryColor(255, 50, 0);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
+            }
+            if ((runtime.seconds() >= 105)) {
+                solid.setPrimaryColor(Color.RED);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
+                sleep(500); // 500ms delay
+                solid.setPrimaryColor(Color.BLUE);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
+                sleep(500); // 500ms delay
+            }
+            if ((runtime.seconds() == 120)) {
+                solid.setPrimaryColor(Color.TRANSPARENT);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
+            }
 
-                //Official Code
-                while (opModeIsActive()) {
-                    if ((runtime.seconds() >= 60) && (runtime.seconds() <= 60.1)) {
-                        //prism.clearAllAnimations();
-                        solid.setPrimaryColor(255, 50, 0); //Orange
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
-                    }
-                    if ((runtime.seconds() >= 95) && (runtime.seconds() <= 95.1)) { //Blip
-                        solid.setPrimaryColor(Color.BLUE);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
-                    }
-                    if ((runtime.seconds() >= 95.5) && (runtime.seconds() <= 95.6)) {
-                        solid.setPrimaryColor(255, 50, 0);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
-                    }
-                    if ((runtime.seconds() >= 100) && (runtime.seconds() < 120)) {
-                        sleep(500);// 500ms delay
-                        solid.setPrimaryColor(Color.RED);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
-                        sleep(500); // 500ms delay
-                        solid.setPrimaryColor(Color.GREEN);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
-                    }
-
-                    //Test Code
                     /*if ((runtime.seconds() >= 105) && (runtime.seconds() % 2 < 1.0)) {
                         solid.setPrimaryColor(255, 50, 0);
                         prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, blink);
@@ -237,5 +194,8 @@ public class GoBildaPrismExample extends LinearOpMode {
 
         }
     }
-
 }
+
+
+
+
