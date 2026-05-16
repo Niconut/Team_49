@@ -1,3 +1,4 @@
+package org.firstinspires.ftc.teamcode;
 /*   MIT License
  *   Copyright (c) [2025] [Base 10 Assets, LLC]
  *
@@ -20,22 +21,17 @@
  *   SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
 
 
 import static org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver.LayerHeight;
 
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Prism.Color;
 import org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.Prism.PrismAnimations;
-
-import java.util.concurrent.TimeUnit;
 
 /*
  * This example file shows how to create a couple of different Animations on the Prism, and save
@@ -62,10 +58,10 @@ import java.util.concurrent.TimeUnit;
  */
 
 //Official Competition LED Code
-@TeleOp(name="Prism Animations Example", group="Linear OpMode")
+@TeleOp(name="Prism Code", group="Linear OpMode")
 //@Disabled
 
-public class GoBildaPrismExample extends LinearOpMode {
+public class PrismCode extends LinearOpMode {
     ElapsedTime runtime;
 
     GoBildaPrismDriver prism;
@@ -78,12 +74,12 @@ public class GoBildaPrismExample extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        runtime = new ElapsedTime();
+        runtime =  new ElapsedTime();
         /*
          * Initialize the hardware variables. Note that the strings used here must correspond
          * to the names assigned during the robot configuration step on the driver's station.
          */
-        prism = hardwareMap.get(GoBildaPrismDriver.class, "prism");
+        prism = hardwareMap.get(GoBildaPrismDriver.class,"prism");
 
         /*
          * Here you can customize the specifics of different animations. Each animation has it's
@@ -142,76 +138,43 @@ public class GoBildaPrismExample extends LinearOpMode {
                     prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, blink);
                 }*/
 
-        //Test Code
+        //Official Code
+        //Colors In Use: Green, Orange, Red, Purple (With Green and Red In Varying Shades)
         while (opModeIsActive()) {
-            if ((runtime.seconds() >= 60) && (runtime.seconds() <= 60.1)) {
+            if ((runtime.seconds() >= 60) && (runtime.seconds() <= 60.1)) { //1 Minute In, 1 Minutes Remaining
                 //prism.clearAllAnimations();
                 solid.setPrimaryColor(255, 50, 0); //Orange
                 prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
                 prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
             }
-            if ((runtime.seconds() >= 95) && (runtime.seconds() <= 95.1)) { //Blip
-                    solid.setPrimaryColor(Color.GREEN);
-                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
+            if ((runtime.seconds() >= 95) && (runtime.seconds() <= 95.1)) { //Blip: 1 Minute 35 Seconds In, 25 Sec Remaining
+                solid.setPrimaryColor(Color.PURPLE);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
             }
-            if ((runtime.seconds() >= 95.5) && (runtime.seconds() <= 95.6)) {
-                    solid.setPrimaryColor(255, 50, 0); //Scarlet Red
-                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
+            if ((runtime.seconds() >= 95.5) && (runtime.seconds() <= 95.6)) { //25 Sec Still Remaining
+                solid.setPrimaryColor(255, 50, 0); //Scarlet Red
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
             }
-            if ((runtime.seconds() >= 100) && (runtime.seconds() < 120)) {
-                    sleep(500);// 500ms delay
-                    solid.setPrimaryColor(Color.RED);
-                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
-                    sleep(500); // 500ms delay
-                    solid.setPrimaryColor(Color.PURPLE);
-                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
+            if ((runtime.seconds() >= 100) && (runtime.seconds() < 120)) { //1 Minute 40 Seconds In, 20 Sec Remaining
+                sleep(500);// 500ms delay
+                solid.setPrimaryColor(Color.RED);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
+                sleep(500); // 500ms delay
+                solid.setPrimaryColor(Color.PURPLE);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
             }
-            else if ((runtime.seconds() == 120)) {
-                    solid.setPrimaryColor(Color.GREEN);
-                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                    prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
-                }
+            if ((runtime.seconds() > 121)) { //2 Minutes
+                solid.setPrimaryColor(0, 100, 4); //Some Shade Of Green
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+                prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
+                sleep(10000000);
+            }
 
-            //Old Test Code?
-            /*while (opModeIsActive()) {
-                    if ((runtime.seconds() >= 60) && (runtime.seconds() <= 60.1)) {
-                        //prism.clearAllAnimations();
-                        solid.setPrimaryColor(255, 50, 0); //Orange
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
-                    }
-                    if ((runtime.seconds() >= 95) && (runtime.seconds() <= 95.1)) { //Blip
-                        solid.setPrimaryColor(Color.GREEN);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
-                    }
-                    if ((runtime.seconds() >= 95.5) && (runtime.seconds() <= 95.6)) {
-                        solid.setPrimaryColor(255, 50, 0); //Scarlet Red
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
-                    }
-                    if ((runtime.seconds() >= 100) && (runtime.seconds() < 120)) {
-                        sleep(500);// 500ms delay
-                        solid.setPrimaryColor(Color.RED);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
-                        sleep(500); // 500ms delay
-                        solid.setPrimaryColor(Color.PURPLE);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
-                    }
-                    if ((runtime.seconds() > 120) && (runtime.seconds() <= 120.1)) {
-                        solid.setPrimaryColor(Color.GREEN);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
-                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
-                    }
-
-
-                //Test Code
+            //Test Code
                     /*if ((runtime.seconds() >= 105) && (runtime.seconds() % 2 < 1.0)) {
                         solid.setPrimaryColor(255, 50, 0);
                         prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, blink);
@@ -274,12 +237,11 @@ public class GoBildaPrismExample extends LinearOpMode {
 //            telemetry.addData("Run Time (Hours): ",prism.getRunTime(TimeUnit.HOURS));
 //            telemetry.addData("Run Time (Minutes): ",prism.getRunTime(TimeUnit.MINUTES));
 //            telemetry.addData("Number of LEDS: ", prism.getNumberOfLEDs());
-                telemetry.addData("runtime", runtime.seconds());
-                telemetry.update();
+            telemetry.addData("runtime", runtime.seconds());
+            telemetry.update();
 //            sleep(50);
 
-            }
         }
-
     }
 
+}
