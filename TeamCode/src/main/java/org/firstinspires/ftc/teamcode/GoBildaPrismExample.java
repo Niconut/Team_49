@@ -114,6 +114,9 @@ public class GoBildaPrismExample extends LinearOpMode {
         runtime.reset();
         runtime.startTime();
         prism.clearAllAnimations();
+        //solid.setPrimaryColor(Color.GREEN);
+        prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+        prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
         solid.setPrimaryColor(Color.GREEN);
         prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
         prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
@@ -148,12 +151,12 @@ public class GoBildaPrismExample extends LinearOpMode {
                         prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
                     }
                     if ((runtime.seconds() >= 95) && (runtime.seconds() <= 95.1)) { //Blip
-                        solid.setPrimaryColor(Color.BLUE);
+                        solid.setPrimaryColor(Color.GREEN);
                         prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
                         prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
                     }
                     if ((runtime.seconds() >= 95.5) && (runtime.seconds() <= 95.6)) {
-                        solid.setPrimaryColor(255, 50, 0);
+                        solid.setPrimaryColor(255, 50, 0); //Scarlet Red
                         prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
                         prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
                     }
@@ -163,6 +166,11 @@ public class GoBildaPrismExample extends LinearOpMode {
                         prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
                         prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
                         sleep(500); // 500ms delay
+                        solid.setPrimaryColor(Color.PURPLE);
+                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
+                        prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
+                    }
+                    if ((runtime.seconds() > 120) && (runtime.seconds() <= 120.1)) {
                         solid.setPrimaryColor(Color.GREEN);
                         prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, solid);
                         prism.insertAndUpdateAnimation(LayerHeight.LAYER_1, solid);
